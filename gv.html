@@ -84,11 +84,11 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
       $('err').textContent=''; D=d; prep(); $('app').hidden=false; render();
     }, function(m){ $('err').textContent=m; });
   }
-  function site(t){ return /^ETS/.test(t)?'T':/^Cam/.test(t)?'I':''; }
+  function site(t){ return /^(ETS|TOEIC)/.test(t)?'T':/^(Cam|IELTS)/.test(t)?'I':''; }
   function prep(){
     D.rows=D.results.filter(function(r){ return r[5]!=='Góp ý' && r[5]!=='Writing' && String(r[4]).indexOf('Góp ý')!==0; }).map(function(r){
       var b=String(r[9]||''), m=b.match(/TOEIC ~(\d+)/), sc=m&&/\(LC/.test(b)?+m[1]:0, band=!/TOEIC/.test(b)&&b!==''&&!isNaN(+b)?+b:null;
-      return { t:new Date(r[0]), name:String(r[1]||'').trim(), lop:String(r[2]||'').trim(), test:String(r[3]||''), part:String(r[4]||''), mode:String(r[5]||''), got:+r[6]||0, total:+r[7]||0, pct:r[8]===''?null:+r[8], toeic:sc, band:band, sec:/Listening/.test(r[4])?'L':/Reading/.test(r[4])?'R':'', wrong:String(r[11]||''), site:site(String(r[3]||'')) };
+      return { t:new Date(r[0]), name:String(r[1]||'').trim(), lop:String(r[2]||'').trim(), test:String(r[3]||''), part:String(r[4]||''), mode:String(r[5]||''), got:+r[6]||0, total:+r[7]||0, pct:r[8]===''?null:+r[8], toeic:sc, band:band, sec:/Listening/.test(r[4])?'L':/Reading/.test(r[4])?'R':'', wrong:String(r[11]||''), site:site(String(r[3]||'')), place:String(r[5]||'')==='Xếp lớp'?b:'' };
     });
     var lops={}; D.rows.forEach(function(r){ if(r.lop) lops[r.lop]=1; });
     $('fLop').innerHTML='<option value="">Tất cả lớp</option>'+Object.keys(lops).sort().map(function(l){ return '<option>'+esc(l)+'</option>'; }).join('');
@@ -101,22 +101,22 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     var lop=$('fLop').value, st=$('fSite').value, days=+$('fDays').value, q=key($('fName').value), since=days?Date.now()-days*864e5:0;
     var rows=D.rows.filter(function(r){ return (!lop||r.lop===lop) && (!st||r.site===st) && (!q||key(r.name).indexOf(q)>=0); });
     var inRange=rows.filter(function(r){ return r.t>=since; });
-    var S={}; rows.forEach(function(r){ var k=key(r.name)+'|'+r.lop; var s=S[k]||(S[k]={name:r.name,lop:r.lop,all:[],rng:[],last:0,toeic:0,bandL:0,bandR:0});
+    var S={}; rows.forEach(function(r){ var k=key(r.name)+'|'+r.lop; var s=S[k]||(S[k]={name:r.name,lop:r.lop,all:[],rng:[],last:0,toeic:0,bandL:0,bandR:0,place:'',placeT:0}); if(r.place&&+r.t>s.placeT){ s.place=r.place; s.placeT=+r.t; }
       s.all.push(r); if(r.t>=since) s.rng.push(r); if(+r.t>s.last) s.last=+r.t; if(r.toeic>s.toeic) s.toeic=r.toeic; if(r.band!=null){ if(r.sec==='L'&&r.band>s.bandL) s.bandL=r.band; if(r.sec==='R'&&r.band>s.bandR) s.bandR=r.band; } });
     var list=Object.keys(S).map(function(k){ var s=S[k], ps=s.rng.filter(function(r){return r.pct!=null;}); s.avg=ps.length?ps.reduce(function(a,r){return a+r.pct;},0)/ps.length:null; s.n=s.rng.length; s.idle=Math.floor((Date.now()-s.last)/864e5); s.k=k; return s; });
     var weekAgo=Date.now()-7*864e5, active=list.filter(function(s){ return s.last>=weekAgo; }).length, idle=list.filter(function(s){ return s.idle>7; }).length;
     var allP=inRange.filter(function(r){return r.pct!=null;}), avgAll=allP.length?allP.reduce(function(a,r){return a+r.pct;},0)/allP.length:null;
     $('tiles').innerHTML=[['Học sinh',list.length,'đã từng nộp bài'],['Hoạt động 7 ngày',active,idle+' bạn đã nghỉ hơn 7 ngày'],['Bài nộp',inRange.length,days?'trong '+days+' ngày qua':'tất cả'],['% đúng trung bình',pc(avgAll),'các bài trong khoảng đã chọn']].map(function(t){ return '<div class="tile"><small>'+t[0]+'</small><b>'+t[1]+'</b><span>'+t[2]+'</span></div>'; }).join('');
-    var dir=sortDir; list.sort(function(a,b){ var A=a[sortK],B=b[sortK]; if(sortK==='name') return dir*String(A).localeCompare(String(B),'vi'); A=A==null?-1:A; B=B==null?-1:B; return dir*(A-B); });
-    var H=[['name','Họ tên'],['lop','Lớp'],['n','Bài nộp'],['avg','% đúng TB'],['last','Lần cuối'],['toeic','TOEIC cao nhất'],['bandL','Band L / R']];
+    var dir=sortDir; list.sort(function(a,b){ var A=a[sortK],B=b[sortK]; if(sortK==='name'||sortK==='place') return dir*String(A).localeCompare(String(B),'vi'); A=A==null?-1:A; B=B==null?-1:B; return dir*(A-B); });
+    var H=[['name','Họ tên'],['lop','Lớp'],['n','Bài nộp'],['avg','% đúng TB'],['last','Lần cuối'],['toeic','TOEIC cao nhất'],['bandL','Band L / R'],['place','Xếp lớp']];
     var h='<tr>'+H.map(function(c){ return '<th data-k="'+c[0]+'">'+c[1]+(sortK===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>'; }).join('')+'</tr>';
     list.forEach(function(s){
       h+='<tr class="stu" data-k="'+esc(s.k)+'"><td><b>'+esc(s.name||'(chưa nhập tên)')+'</b></td><td>'+esc(s.lop||'–')+'</td><td class="n">'+s.n+'</td><td><span class="tag '+cls(s.avg)+'">'+pc(s.avg)+'</span><div class="bar"><i style="width:'+(s.avg||0)+'%;background:'+(s.avg>=70?'#1f8f6c':s.avg>=50?'#d9a63c':'#c14636')+'"></i></div></td>'+
-        '<td>'+ago(s.last)+(s.idle>7?' <span class="tag bad">nghỉ '+s.idle+' ngày</span>':'')+'</td><td class="n">'+(s.toeic||'–')+'</td><td class="n">'+(s.bandL||'–')+' / '+(s.bandR||'–')+'</td></tr>';
+        '<td>'+ago(s.last)+(s.idle>7?' <span class="tag bad">nghỉ '+s.idle+' ngày</span>':'')+'</td><td class="n">'+(s.toeic||'–')+'</td><td class="n">'+(s.bandL||'–')+' / '+(s.bandR||'–')+'</td><td>'+(s.place?'<span class="tag mid">'+esc(s.place)+'</span>':'–')+'</td></tr>';
       if(open[s.k]){
-        var wc={}; s.all.forEach(function(r){ if(r.site==='T') r.wrong.split(/,\s*/).forEach(function(w){ if(w) wc[r.test.replace('ETS 2026 · ','')+' câu '+w]=(wc[r.test.replace('ETS 2026 · ','')+' câu '+w]||0)+1; }); });
+        var wc={}; s.all.forEach(function(r){ if(r.site==='T'&&r.mode!=='Xếp lớp') r.wrong.split(/,\s*/).forEach(function(w){ if(w) wc[r.test.replace('ETS 2026 · ','')+' câu '+w]=(wc[r.test.replace('ETS 2026 · ','')+' câu '+w]||0)+1; }); });
         var rec=s.all.slice().sort(function(a,b){return b.t-a.t;}).slice(0,12);
-        h+='<tr class="detail"><td colspan="7"><b>Bài gần đây</b><ul>'+rec.map(function(r){ return '<li>'+r.t.toLocaleDateString('vi-VN')+' · '+esc(r.test)+' · '+esc(r.part)+' · '+esc(r.mode)+' · '+r.got+'/'+r.total+(r.toeic?' · TOEIC ~'+r.toeic:'')+(r.band!=null?' · band '+r.band:'')+'</li>'; }).join('')+'</ul>'+(function(){ var top=Object.keys(wc).filter(function(k){return wc[k]>=2;}).sort(function(a,b){return wc[b]-wc[a];}).slice(0,10); return top.length?'<b>Câu sai nhiều lần</b> <small class="hint">(sai từ 2 lần, đáng ôn lại)</small><ul>'+top.map(function(k){return '<li>'+esc(k)+' · sai '+wc[k]+' lần</li>';}).join('')+'</ul>':''; })()+'</td></tr>';
+        h+='<tr class="detail"><td colspan="8"><b>Bài gần đây</b><ul>'+rec.map(function(r){ return '<li>'+r.t.toLocaleDateString('vi-VN')+' · '+esc(r.test)+' · '+esc(r.part)+' · '+esc(r.mode)+' · '+r.got+'/'+r.total+(r.toeic?' · TOEIC ~'+r.toeic:'')+(r.band!=null?' · band '+r.band:'')+'</li>'; }).join('')+'</ul>'+(function(){ var top=Object.keys(wc).filter(function(k){return wc[k]>=2;}).sort(function(a,b){return wc[b]-wc[a];}).slice(0,10); return top.length?'<b>Câu sai nhiều lần</b> <small class="hint">(sai từ 2 lần, đáng ôn lại)</small><ul>'+top.map(function(k){return '<li>'+esc(k)+' · sai '+wc[k]+' lần</li>';}).join('')+'</ul>':''; })()+'</td></tr>';
       }
     });
     $('tbl').innerHTML=h||'<tr><td>Chưa có dữ liệu.</td></tr>';
