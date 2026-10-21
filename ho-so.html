@@ -79,12 +79,35 @@ function render(){
   h+='<div class="two"><div class="card"><h3>🧭 Kiểm tra xếp lớp</h3><div class="list">'+(pl.length?pl.map(function(p){ return '<a href="'+p[4]+'"><span><span class="tag '+p[0]+'">'+p[1]+'</span>'+esc(p[2])+'</span><span class="r">'+p[3]+'</span></a>'; }).join(''):'')+
     '</div><p class="hint" style="margin:6px 0 0">'+(pl.length?'Bấm để xem lại lộ trình gợi ý.':'Chưa làm. <a href="toeic/xep-lop.html">TOEIC</a> · <a href="cam/xep-lop.html">IELTS</a> — 15 phút.')+'</p></div>'+
     '<div class="card"><h3>🏅 Huy hiệu</h3><div class="list"><a href="toeic/#huy-hieu"><span><span class="tag toeic">TOEIC</span>'+o.badges.toeic+' huy hiệu</span><span class="r">Xem →</span></a><a href="cam/#huy-hieu"><span><span class="tag ielts">IELTS</span>'+o.badges.ielts+' huy hiệu</span><span class="r">Xem →</span></a></div></div></div>';
+  h+='<div class="card" id="fbCard"><h3>💬 Nhận xét của thầy</h3><div class="list" id="fbList">'+(a?'<p class="hint">Đang tải…</p>':'<p class="hint">Đăng nhập Google để xem nhận xét của thầy cho bài Writing và bài nói bạn đã gửi.</p>')+'</div></div>';
   app.innerHTML=h;
   var hm=app.querySelector('.mheat'); if(hm) hm.scrollLeft=hm.scrollWidth;
+  if(a&&FBL) drawFb(); else if(a) loadFb();
 }
-window.MACCPAINT=render; render();
+var FBL=null, fbUid='';
+function loadFb(){
+  if(!window.MACC) return; var u=MACC.user(); if(!u||fbUid===u.uid) return; fbUid=u.uid;
+  MACC.fs().then(function(x){ var F=x.F; return Promise.all([
+    F.getDocs(F.query(F.collection(x.db,'fb'),F.where('email','==',(u.email||'').toLowerCase()))).catch(function(){ return null; }),
+    F.getDocs(F.query(F.collection(x.db,'rec'),F.where('uid','==',u.uid))).catch(function(){ return null; }) ]).then(function(r){
+      var L=[];
+      if(r[0]) r[0].forEach(function(d){ var v=d.data(); L.push({kind:'ws',title:(v.test||'')+' · '+(v.task||''),text:v.text,band:v.band,at:v.at&&v.at.toDate?v.at.toDate():new Date(0)}); });
+      if(r[1]) r[1].forEach(function(d){ var v=d.data(); L.push({kind:'sp',id:d.id,mime:v.mime,title:(v.test||'')+' · '+(v.part||''),q:v.q,text:v.fb,band:v.band,at:v.fbAt&&v.fbAt.toDate?v.fbAt.toDate():(v.at&&v.at.toDate?v.at.toDate():new Date(0)),sent:v.at&&v.at.toDate?v.at.toDate():null}); });
+      FBL=L.sort(function(a,b){ return b.at-a.at; }); window._FSX=x; drawFb();
+      try{ localStorage.setItem('mt.fbseen',String(Date.now())); }catch(e){}
+    }); });
+}
+function drawFb(){
+  var el=document.getElementById('fbList'); if(!el||!FBL) return; var esc=MPROG.esc;
+  if(!FBL.length){ el.innerHTML='<p class="hint">Chưa có nhận xét nào. Gửi bài Writing hoặc bài nói (trang Writing & Speaking của web IELTS) để thầy nhận xét nhé.</p>'; return; }
+  el.innerHTML=FBL.map(function(f,i){ return '<div style="display:block"><span class="tag ielts">'+(f.kind==='ws'?'WRITING':'SPEAKING')+'</span><b>'+esc(f.title)+'</b>'+(f.band?' · <b style="color:#6b4410">band '+esc(f.band)+'</b>':'')+(f.q?'<br><small>'+esc(f.q)+'</small>':'')+
+    '<div style="margin-top:6px;white-space:pre-wrap;font-size:14.5px">'+(f.text?esc(f.text):'<span class="hint">Thầy chưa nhận xét bài này — đã gửi '+(f.sent?f.sent.toLocaleDateString('vi-VN'):'')+'.</span>')+'</div>'+
+    (f.kind==='sp'?'<div style="margin-top:6px"><button class="btn" data-pl="'+i+'" style="padding:7px 12px">▶ Nghe lại bài nói</button></div>':'')+'</div>'; }).join('');
+  [].forEach.call(el.querySelectorAll('[data-pl]'),function(b){ b.onclick=function(){ var f=FBL[+b.dataset.pl], x=window._FSX; b.textContent='Đang tải…'; x.F.getDoc(x.F.doc(x.db,'recdata',f.id)).then(function(sn){ var a=document.createElement('audio'); a.controls=true; a.src='data:'+(f.mime||'audio/webm')+';base64,'+sn.data().data; b.replaceWith(a); a.play().catch(function(){}); }).catch(function(){ b.textContent='Không tải được'; }); }; });
+}
+window.MACCPAINT=render; window.afterAcc=function(){ MACC.ready().then(function(){ setTimeout(render,300); }); }; render();
 
 </script>
-<script src="acc.js?v=5" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
+<script src="acc.js?v=6" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
 </body>
 </html>
