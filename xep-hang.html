@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Bảng xếp hạng tuần · Minto English</title>
+<link rel="icon" type="image/png" href="fav-64.png?v=3">
+<meta name="theme-color" content="#a8691a">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--paper:#faf8f4;--card:#fff;--line:#e6e0d3;--ink:#1e232b;--dim:#666e7a;--panel2:#f4f0e8;--brand:#a8691a;--brand-soft:#f2e2c4;--brand-ink:#6b4410;--ok:#1f8f6c}
+*{box-sizing:border-box}
+html{background:var(--paper)}body{margin:0;color:var(--ink);font:16px/1.55 'IBM Plex Sans',system-ui,sans-serif;position:relative}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 50px}
+nav{display:flex;align-items:center;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}.brand .mlogo{width:40px;height:40px;overflow:visible}
+.brand b{display:block;font:600 20px/1 Fraunces,Georgia,serif}.brand small{display:block;font:500 11px/1 "Hiragino Sans","Noto Sans JP",sans-serif;letter-spacing:.3em;color:#9a8f7d;margin-top:5px}
+.back{margin-left:auto;font-weight:700;font-size:14px;color:var(--brand-ink);text-decoration:none}
+h1{font:500 clamp(28px,6vw,40px)/1.1 Fraunces,Georgia,serif;margin:10px 0 4px}
+.lead{color:var(--dim);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin:12px 0}
+.card h3{margin:0 0 10px;font:600 18px/1.3 Fraunces,Georgia,serif}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 14px/1 'IBM Plex Sans',sans-serif;border-radius:12px;padding:11px 15px;text-decoration:none;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--brand-ink)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.hint{font-size:13px;color:var(--dim)}
+.mtoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1e232b;color:#fff;border-radius:12px;padding:12px 16px;font:500 14px/1.4 'IBM Plex Sans',sans-serif;z-index:99;max-width:calc(100vw - 32px)}.mtoast small{display:block;opacity:.8}
+.mdeco { position: absolute; left: 0px; right: 0px; top: 0px; height: 460px; z-index: -1; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2220%22%20viewBox%3D%220%200%2040%2020%22%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200M-14%2010a14%2014%200%200%201%2028%200M-8%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200M26%2010a14%2014%200%200%201%2028%200M32%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200M6%2020a14%2014%200%200%201%2028%200M12%2020a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200M-14%2030a14%2014%200%200%201%2028%200M-8%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200M26%2030a14%2014%200%200%201%2028%200M32%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3C%2Fsvg%3E"); background-size: 56px 28px; -webkit-mask-image: linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0.35) 45%, transparent); mask-image: linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0.35) 45%, transparent); opacity: 0.75; }
+.mdeco2 { position: fixed; inset: 0px; z-index: -2; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2220%22%20viewBox%3D%220%200%2040%2020%22%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200M-14%2010a14%2014%200%200%201%2028%200M-8%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200M26%2010a14%2014%200%200%201%2028%200M32%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200M6%2020a14%2014%200%200%201%2028%200M12%2020a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200M-14%2030a14%2014%200%200%201%2028%200M-8%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200M26%2030a14%2014%200%200%201%2028%200M32%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3C%2Fsvg%3E"); background-size: 56px 28px; opacity: 0.38 !important; }
+html[data-skin="idol"] :is(.mdeco, .mdeco2) { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M15%208l2%205%205%201-4%203%201%205-4-3-4%203%201-5-4-3%205-1z%22%20fill%3D%22%2312a4a3%22%20opacity%3D%22.22%22%2F%3E%3Cpath%20d%3D%22M45%2038v-10l8-2v10M45%2038a3%203%200%201%201-1-1M53%2036a3%203%200%201%201-1-1%22%20stroke%3D%22%23ff5fa2%22%20stroke-width%3D%221.8%22%20fill%3D%22none%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E"); background-size: 60px 60px; }
+html[data-skin="y2k"] :is(.mdeco, .mdeco2) { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23e0559a%22%20opacity%3D%22.07%22%2F%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%238b5cf6%22%20opacity%3D%22.07%22%2F%3E%3Cpath%20d%3D%22M22%206h2v1h1v-1h2v1h1v3h-1v1h-1v1h-1v1h-1v-1h-1v-1h-1v-1h-1v-3h1z%22%20fill%3D%22%23e0559a%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E"); background-size: 32px 32px; }
+html[data-skin="scifi"] :is(.mdeco, .mdeco2) { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2244%22%20height%3D%2244%22%20viewBox%3D%220%200%2044%2044%22%3E%3Cpath%20d%3D%22M44%200H0v44%22%20fill%3D%22none%22%20stroke%3D%22%234ad7ff%22%20stroke-width%3D%22.6%22%20opacity%3D%22.35%22%2F%3E%3Cpath%20d%3D%22M22%2018l4%204-4%204-4-4z%22%20fill%3D%22%23b04cff%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E"); background-size: 44px 44px; opacity: 0.9; }
+
+.wk{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.wk select{font:inherit;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.me{background:var(--brand-soft);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.me b.p{font:600 30px/1 Fraunces,Georgia,serif;color:var(--brand-ink)}
+.bars{display:flex;gap:4px;align-items:flex-end;height:36px}.bars i{width:14px;border-radius:4px 4px 0 0;background:#d9a248;display:block}.bars i.z{background:#eee7da;height:4px!important}
+.tog{display:flex;gap:10px;align-items:center;margin-top:10px;font-size:14.5px;cursor:pointer}.tog input{width:20px;height:20px;accent-color:#a8691a}
+ol.lb{list-style:none;padding:0;margin:0;counter-reset:r}
+ol.lb li{counter-increment:r;display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;margin:6px 0;background:var(--panel2)}
+ol.lb li::before{content:counter(r);width:28px;text-align:center;font:700 16px/1 Fraunces,Georgia,serif;color:var(--dim)}
+ol.lb li:nth-child(1)::before{content:'🥇'}ol.lb li:nth-child(2)::before{content:'🥈'}ol.lb li:nth-child(3)::before{content:'🥉'}
+ol.lb li.me2{outline:2px solid var(--brand);background:#fff6e4}
+ol.lb img,ol.lb .ini{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+ol.lb .nm{flex:1;min-width:0}ol.lb .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}ol.lb .nm small{color:var(--dim)}
+ol.lb .pt{font:600 20px/1 Fraunces,Georgia,serif;color:var(--brand-ink)}
+
+</style>
+</head>
+<body>
+<div class="mdeco2" aria-hidden="true"></div><div class="mdeco" aria-hidden="true"></div>
+<div class="wrap">
+<nav><a class="brand" href="./"><svg class="mlogo" viewBox="0 0 100 100" aria-hidden="true"><defs><filter id="lgf" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter></defs><circle class="lg-bg" cx="50" cy="50" r="48" fill="#a8691a"/><g filter="url(#lgf)" transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" transform="translate(2 2)"/><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 70 l3 -3 M31 71 l3 -3 M66 71 l3 -3 M69 70 l3 -3" stroke="#ff7b6b" stroke-width="2.4" stroke-linecap="round"/></g></svg><span><b>Minto English</b><small lang="ja">ミント英語</small></span></a><a class="back" href="./">← Trang chủ</a></nav>
+<h1>🏆 Bảng xếp hạng tuần</h1>
+<p class="lead">Xếp theo <b>độ chăm chỉ</b> trong tuần (thứ Hai → Chủ nhật), không xếp theo điểm thi — ai học đều cũng lên top được.</p>
+<div id="app"></div>
+<div class="card"><h3>Điểm tính thế nào?</h3><p class="hint" style="margin:0">Mỗi ngày có học (làm đề, đề mini, bài Kiến thức nền, ôn flashcard, game…) được <b>20 điểm</b>, cộng thêm tối đa <b>40 điểm</b> theo số hoạt động trong ngày. Học đều 7 ngày tối đa 420 điểm. Bảng mới bắt đầu lại mỗi thứ Hai. Chỉ hiện tên những bạn bật “Hiện tôi trên bảng xếp hạng”.</p></div>
+<p class="hint" style="text-align:center;margin-top:30px">Minto English · ミント英語</p>
+</div>
+<script src="progress.js?v=1"></script>
+<script>
+window.MTOAST=function(ic,t,sub){ var d=document.createElement('div'); d.className='mtoast'; d.innerHTML='<b></b><small></small>'; d.firstChild.textContent=t||''; d.lastChild.textContent=sub||''; document.body.appendChild(d); setTimeout(function(){ d.remove(); },3200); };
+var GSVG='<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+var INAPP=/FBAN|FBAV|FB_IAB|Messenger|Instagram|Zalo|Line\/|MicroMessenger|TikTok|musical_ly/i.test(navigator.userAgent);
+function mLogin(){ if(window.MACC) window.MACC.quick(); }
+
+var LOP='';
+function render(){
+  var P=MPROG, esc=P.esc, o=P.summary(), a=o.acc, app=document.getElementById('app'), on=localStorage.getItem('mt.board.on')==='1';
+  var w=window.MACC?MACC.board.pts():{pts:o.week.pts,days:o.week.days,per:[]};
+  var h='<div class="card"><div class="me"><div><small class="hint">Điểm của bạn tuần này</small><br><b class="p">'+w.pts+'</b> <span class="hint">· '+w.days+'/7 ngày</span></div>'+
+    '<div class="bars" title="Thứ Hai → Chủ nhật">'+(w.per||[]).map(function(p){ return '<i class="'+(p?'':'z')+'" style="height:'+Math.round(p/60*36)+'px"></i>'; }).join('')+'</div></div>';
+  if(!a) h+='<p style="margin:12px 0 0"><button class="btn pri" onclick="mLogin()">'+GSVG+(INAPP?'Mở bằng trình duyệt để đăng nhập':'Đăng nhập Google để vào bảng')+'</button></p><p class="hint">Cần đăng nhập để xem và có tên trên bảng xếp hạng.</p></div>';
+  else h+='<label class="tog"><input type="checkbox" id="on"'+(on?' checked':'')+'> Hiện tôi trên bảng xếp hạng (tên: <b>'+esc(o.name||a.name)+'</b>'+(localStorage.getItem('cam20.lop')?' · lớp '+esc(localStorage.getItem('cam20.lop')):'')+')</label></div>';
+  if(a) h+='<div class="card"><div class="wk"><h3 style="margin:0;flex:1">Tuần này</h3><select id="lop" aria-label="Lọc theo lớp"><option value="">Tất cả lớp</option></select></div><ol class="lb" id="lb"><li><span class="nm"><small>Đang tải…</small></span></li></ol></div>';
+  app.innerHTML=h;
+  var cb=document.getElementById('on'); if(cb) cb.onchange=function(){ try{ localStorage.setItem('mt.board.on',cb.checked?'1':'0'); }catch(e){} MACC.board.push().then(load); };
+  if(a&&window.MACC) load();
+}
+function load(){
+  var lb=document.getElementById('lb'); if(!lb||!window.MACC) return; var esc=MPROG.esc;
+  MACC.ready().then(function(){ return MACC.board.list(); }).then(function(L){
+    var sel=document.getElementById('lop'), lops={}; L.forEach(function(x){ if(x.lop) lops[x.lop]=1; });
+    if(!LOP&&!sel.dataset.init){ LOP=localStorage.getItem('cam20.lop')||''; if(!lops[LOP]) LOP=''; }
+    sel.dataset.init=1; sel.innerHTML='<option value="">Tất cả lớp</option>'+Object.keys(lops).sort().map(function(l){ return '<option'+(l===LOP?' selected':'')+'>'+esc(l)+'</option>'; }).join('');
+    sel.onchange=function(){ LOP=sel.value; load(); };
+    var R=L.filter(function(x){ return !LOP||x.lop===LOP; });
+    lb.innerHTML=R.length?R.slice(0,50).map(function(x){ return '<li class="'+(x.me?'me2':'')+'">'+(x.photo?'<img src="'+esc(x.photo)+'" alt="" referrerpolicy="no-referrer">':'<span class="ini">'+esc((x.name||'?').charAt(0).toUpperCase())+'</span>')+'<span class="nm"><b>'+esc(x.name)+(x.me?' (bạn)':'')+'</b><small>'+(x.lop?esc(x.lop)+' · ':'')+x.days+'/7 ngày</small></span><span class="pt">'+x.pts+'</span></li>'; }).join(''):'<li><span class="nm"><small>Chưa có ai trên bảng tuần này — bật “Hiện tôi trên bảng xếp hạng” để mở màn nhé!</small></span></li>';
+  }).catch(function(e){ lb.innerHTML='<li><span class="nm"><small>Không tải được bảng xếp hạng ('+esc(e&&e.code||'lỗi')+').</small></span></li>'; });
+}
+window.MACCPAINT=render; window.afterAcc=render; render();
+
+</script>
+<script src="acc.js?v=4" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
+</body>
+</html>
