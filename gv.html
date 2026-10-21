@@ -39,6 +39,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 <header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg><div><b>Bảng theo dõi lớp</b><small>Chỉ dành cho thầy · dữ liệu lấy trực tiếp từ Google Sheet kết quả</small></div></header>
 
 <div class="card" id="setup">
+  <div class="row" id="gRow" style="margin-bottom:12px"><button id="gLogin" type="button" style="background:#fff;color:#3c4043;border:1.5px solid #dadce0;display:inline-flex;gap:8px;align-items:center"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Đăng nhập bằng tài khoản Google của thầy</button><span class="hint" id="gStat" style="margin:0"></span></div>
   <div class="row">
     <label>Mã giáo viên<input id="key" type="password" autocomplete="off" placeholder="Mã trong Nhật ký Apps Script"></label>
     <button id="load" type="button">Tải dữ liệu</button>
@@ -60,6 +61,9 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   <h2>Học sinh</h2>
   <p class="hint">Bấm vào một bạn để xem các bài gần đây và câu hay sai. Bấm tiêu đề cột để sắp xếp.</p>
   <div class="tw"><table id="tbl"></table></div>
+  <h2>Tiến độ học hằng ngày <small class="hint" style="font-family:inherit">(các bạn đã đăng nhập Google)</small></h2>
+  <p class="hint" id="pgHint">Đăng nhập bằng tài khoản Google của thầy để xem.</p>
+  <div class="tw"><table id="pg"></table></div>
   <h2>Góp ý / báo lỗi mới nhất</h2>
   <div class="fb" id="fb"></div>
   <h2>Bài viết gần đây</h2>
@@ -80,7 +84,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     $('err').textContent='Đang tải…';
     jsonp(URL_+'?key='+encodeURIComponent(k), function(d){
       if(!d||!d.results){ $('err').textContent='Mã không đúng, hoặc Apps Script chưa được cập nhật bản mới (xem hướng dẫn trong file Code.gs).'; return; }
-      try{ localStorage.setItem('gv.key',k); }catch(e){}
+      try{ localStorage.setItem('gv.key',k); }catch(e){} saveKey(k);
       $('err').textContent=''; D=d; prep(); $('app').hidden=false; render();
     }, function(m){ $('err').textContent=m; });
   }
@@ -125,13 +129,45 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     var fb=(D.feedback||[]).slice().reverse().slice(0,30);
     $('fb').innerHTML=fb.length?fb.map(function(r){ return '<div class="card"><small>'+new Date(r[0]).toLocaleString('vi-VN')+' · '+esc(r[1])+(r[2]?' · '+esc(r[2]):'')+' · <b>'+esc(r[3])+'</b></small><div>'+esc(r[4])+'</div>'+(r[5]?'<small><a href="'+esc(r[5])+'" target="_blank" rel="noopener">'+esc(String(r[5]).replace('https://mangomint1805.github.io',''))+'</a></small>':'')+'</div>'; }).join(''):'<p class="hint">Chưa có góp ý nào trong tab "Góp ý".</p>';
     var ws=(D.writing||[]).slice().reverse().slice(0,40);
-    $('ws').innerHTML=ws.length?'<tr><th>Thời gian</th><th>Họ tên</th><th>Lớp</th><th>Đề</th><th>Task</th><th>Số từ</th></tr>'+ws.map(function(r){ return '<tr><td>'+new Date(r[0]).toLocaleString('vi-VN')+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td><td class="n">'+esc(r[5])+(r[6]?' / '+esc(r[6]):'')+'</td></tr>'; }).join(''):'<tr><td class="hint">Chưa có bài viết nào trong tab "Bài viết". Nội dung bài xem trực tiếp trong Google Sheet.</td></tr>';
+    $('ws').innerHTML=ws.length?'<tr><th>Thời gian</th><th>Họ tên</th><th>Lớp</th><th>Đề</th><th>Task</th><th>Số từ</th></tr>'+ws.map(function(r,i){ return '<tr class="stu" data-w="'+i+'"><td>'+new Date(r[0]).toLocaleString('vi-VN')+'</td><td>'+esc(r[1])+(r[9]?'<br><small style="color:#8a8f99">'+esc(r[9])+'</small>':'')+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td><td class="n">'+esc(r[5])+(r[6]?' / '+esc(r[6]):'')+'</td></tr><tr class="detail" data-wd="'+i+'" hidden><td colspan="6"><div style="white-space:pre-wrap;font-size:14.5px;line-height:1.6;max-width:760px">'+(r[8]?esc(r[8]):'<span class="hint">Bài viết chưa có trong dữ liệu — cập nhật Apps Script bản mới để xem nội dung ở đây.</span>')+'</div></td></tr>'; }).join(''):'<tr><td class="hint">Chưa có bài viết nào trong tab "Bài viết". Nội dung bài xem trực tiếp trong Google Sheet.</td></tr>';
   }
-  $('load').onclick=load; $('reload').onclick=load;
+  [].forEach.call(document.querySelectorAll('#ws'),function(){});
+  document.addEventListener('click',function(e){ var tr=e.target.closest&&e.target.closest('#ws tr[data-w]'); if(!tr) return; var d=document.querySelector('#ws tr[data-wd="'+tr.dataset.w+'"]'); if(d) d.hidden=!d.hidden; });
+  // ---- đăng nhập Google của thầy: lấy mã giáo viên đã lưu trong Firestore + xem tiến độ học của học sinh ----
+  var FSX=null;
+  function gStat(t){ $('gStat').textContent=t||''; }
+  function afterLogin(){
+    var u=window.MACC&&MACC.user(); if(!u){ gStat(''); return; }
+    gStat('Đang kiểm tra quyền của '+(u.email||'')+'…');
+    MACC.fs().then(function(x){ FSX=x; return x.F.getDoc(x.F.doc(x.db,'config','gv')); }).then(function(sn){
+      $('gLogin').hidden=true;
+      if(sn.exists()&&sn.data().key){ gStat('✓ '+u.email+' · quyền giáo viên'); $('key').value=sn.data().key; load(); }
+      else gStat('✓ '+u.email+' · nhập mã giáo viên một lần, web sẽ lưu vào tài khoản để lần sau tự mở.');
+      loadProgress();
+    }).catch(function(e){ gStat('⚠ Tài khoản '+(u.email||'')+' không có quyền giáo viên ('+((e&&e.code)||'lỗi')+').'); });
+  }
+  function saveKey(k){ if(!FSX||!FSX.user) return; FSX.F.getDoc(FSX.F.doc(FSX.db,'config','gv')).then(function(sn){ if(!sn.exists()||sn.data().key!==k) return FSX.F.setDoc(FSX.F.doc(FSX.db,'config','gv'),{key:k}); }).catch(function(){}); }
+  function loadProgress(){
+    if(!FSX) return; $('pgHint').textContent='Đang tải…';
+    FSX.F.getDocs(FSX.F.collection(FSX.db,'users')).then(function(qs){
+      var L=[]; qs.forEach(function(d){ var x=d.data(), dd=x.d||{}, o=window.MPROG.summaryFrom(dd); o.email=x.email||''; o.gname=x.name||''; o.at=x.at&&x.at.toDate?x.at.toDate():null; L.push(o); });
+      L.sort(function(a,b){ return (b.at||0)-(a.at||0); });
+      $('pgHint').textContent=L.length?L.length+' bạn đã đăng nhập. Số liệu lấy từ tài khoản của từng bạn (cập nhật mỗi khi bạn đó mở web).':'Chưa có bạn nào đăng nhập Google.';
+      $('pg').innerHTML=L.length?'<tr><th>Học sinh</th><th>Lớp</th><th>🔥 Chuỗi</th><th>Ngày học</th><th>Điểm tuần</th><th>Flashcard</th><th>Đề mini</th><th>TOEIC cao nhất</th><th>IELTS L / R</th><th>Đang làm dở</th><th>Mở web lần cuối</th></tr>'+L.map(function(o){
+        return '<tr><td><b>'+esc(o.name||o.gname||'(chưa có tên)')+'</b><br><small style="color:#8a8f99">'+esc(o.email)+'</small></td><td>'+esc(o.lop||'')+'</td><td class="n">'+o.streak+'</td><td class="n">'+o.ndays+'</td><td class="n">'+o.week.pts+' <small style="color:#8a8f99">('+o.week.days+'/7)</small></td><td class="n">'+o.cards+(o.cardsDue?' <small style="color:#8a8f99">('+o.cardsDue+' cần ôn)</small>':'')+'</td><td class="n">'+o.toeic.mini+'</td><td class="n">'+(o.toeic.best||'–')+'</td><td class="n">'+(o.ielts.bestL||'–')+' / '+(o.ielts.bestR||'–')+'</td><td>'+(o.unfinished.length?o.unfinished.slice(0,2).map(function(u){ return esc(u.label)+'<br><small style="color:#8a8f99">'+esc(u.sub)+'</small>'; }).join('<br>'):'–')+'</td><td>'+(o.at?ago(o.at):'–')+'</td></tr>';
+      }).join(''):'';
+    }).catch(function(e){ $('pgHint').textContent='Không đọc được tiến độ ('+((e&&e.code)||'lỗi')+').'; });
+  }
+  $('gLogin').onclick=function(){ if(window.MACC) MACC.quick(); };
+  var doneUid='';
+  window.MACCPAINT=function(){ var u=window.MACC&&MACC.user(); if(u&&u.uid!==doneUid){ doneUid=u.uid; afterLogin(); } };
+  $('load').onclick=load; $('reload').onclick=function(){ load(); loadProgress(); };
   $('forget').onclick=function(){ try{ localStorage.removeItem('gv.key'); }catch(e){} $('key').value=''; $('app').hidden=true; };
   ['fLop','fSite','fDays'].forEach(function(id){ $(id).onchange=function(){ if(D) render(); }; }); $('fName').oninput=function(){ if(D) render(); };
   if($('key').value) load();
 })();
 </script>
+<script src="progress.js?v=3"></script>
+<script src="acc.js?v=5"></script>
 </body>
 </html>
