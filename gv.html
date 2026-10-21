@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bảng theo dõi lớp · Minto English</title>
+<link rel="icon" type="image/png" href="fav-64.png">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#faf8f4;--card:#fff;--line:#e6e0d3;--ink:#1e232b;--dim:#666e7a;--panel2:#f4f0e8;--brand:#a8691a;--brand-soft:#f2e2c4;--brand-ink:#6b4410;--ok:#1f8f6c;--ok-soft:#e1f4ec;--bad:#c14636;--bad-soft:#fbe6e2;--mid:#b9860f;--mid-soft:#fdf3dc}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 'IBM Plex Sans',system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 50px}
+header{display:flex;align-items:center;gap:12px;padding:18px 0 6px}header svg{width:40px;height:40px}header b{font:600 22px/1.1 Fraunces,Georgia,serif;display:block}header small{color:var(--dim)}
+h2{font:500 22px/1.2 Fraunces,Georgia,serif;margin:26px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:600;color:var(--dim)}
+input,select{font:inherit;padding:8px 10px;border:1px solid #ddd7c9;border-radius:9px;background:#fff;color:var(--ink);min-width:150px}
+button{font:inherit;font-weight:700;border:0;border-radius:9px;padding:9px 14px;background:var(--brand);color:#fff;cursor:pointer}button.alt{background:var(--panel2);color:var(--brand-ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.tile small{color:var(--dim);font-weight:600;font-size:12.5px}.tile b{display:block;font:600 30px/1.15 Fraunces,Georgia,serif;color:var(--brand-ink)}.tile span{font-size:12.5px;color:var(--dim)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid #efeae0;text-align:left;vertical-align:top}th{background:var(--panel2);font-size:12.5px;color:var(--dim);cursor:pointer;white-space:nowrap;user-select:none}th:hover{color:var(--brand-ink)}
+tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:700}.ok{background:var(--ok-soft);color:var(--ok)}.mid{background:var(--mid-soft);color:var(--mid)}.bad{background:var(--bad-soft);color:var(--bad)}.dim{background:var(--panel2);color:var(--dim)}
+.bar{height:7px;border-radius:9px;background:#efeae0;overflow:hidden;min-width:70px;margin-top:4px}.bar i{display:block;height:100%}
+.tw{overflow-x:auto;border-radius:14px}
+.stu{cursor:pointer}.stu:hover td{background:#fffaf0}
+.detail td{background:#fcfaf6}.detail ul{margin:4px 0;padding-left:18px;font-size:13px}
+.err{color:var(--bad);font-weight:600;margin-top:8px}
+.hint{color:var(--dim);font-size:13px;margin:6px 0 0}
+.fb{display:grid;gap:8px}.fb .card{padding:10px 14px}.fb small{color:var(--dim)}
+@media (max-width:700px){th:nth-child(n+6),td:nth-child(n+6){display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg><div><b>Bảng theo dõi lớp</b><small>Chỉ dành cho thầy · dữ liệu lấy trực tiếp từ Google Sheet kết quả</small></div></header>
+
+<div class="card" id="setup">
+  <div class="row">
+    <label>Mã giáo viên<input id="key" type="password" autocomplete="off" placeholder="Mã trong Nhật ký Apps Script"></label>
+    <button id="load" type="button">Tải dữ liệu</button>
+    <button id="forget" type="button" class="alt">Quên mã trên máy này</button>
+  </div>
+  <p class="hint">Mã được lưu trên trình duyệt này để lần sau khỏi nhập. Đừng mở trang này trên máy của học sinh.</p>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="app" hidden>
+  <div class="row" style="margin-top:16px">
+    <label>Lớp<select id="fLop"></select></label>
+    <label>Web<select id="fSite"><option value="">Cả TOEIC và IELTS</option><option value="T">TOEIC</option><option value="I">IELTS</option></select></label>
+    <label>Khoảng thời gian<select id="fDays"><option value="7">7 ngày qua</option><option value="30" selected>30 ngày qua</option><option value="90">90 ngày qua</option><option value="0">Tất cả</option></select></label>
+    <label>Tìm tên<input id="fName" placeholder="Nhập tên…"></label>
+    <button id="reload" type="button" class="alt">↻ Tải lại</button>
+  </div>
+  <div class="tiles" id="tiles"></div>
+  <h2>Học sinh</h2>
+  <p class="hint">Bấm vào một bạn để xem các bài gần đây và câu hay sai. Bấm tiêu đề cột để sắp xếp.</p>
+  <div class="tw"><table id="tbl"></table></div>
+  <h2>Góp ý / báo lỗi mới nhất</h2>
+  <div class="fb" id="fb"></div>
+  <h2>Bài viết gần đây</h2>
+  <div class="tw"><table id="ws"></table></div>
+</div>
+</div>
+<script>
+(function(){
+  var URL_='https://script.google.com/macros/s/AKfycby3_45o2Zn3FMEMrVAg9nBCiQEIUvU9HgQxI2ZZtwJ4oUQ_bqXxj1vN0kL6cvhbDQCx/exec';
+  var $=function(id){return document.getElementById(id);}, D=null, sortK='last', sortDir=-1, open={};
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  try{ $('key').value=localStorage.getItem('gv.key')||''; }catch(e){}
+  function jsonp(u,cb,fail){ var n='gvcb'+Date.now(), s=document.createElement('script'), t=setTimeout(function(){ cleanup(); fail('Hết thời gian chờ. Kiểm tra mạng hoặc link Apps Script.'); },25000);
+    function cleanup(){ clearTimeout(t); delete window[n]; s.remove(); }
+    window[n]=function(d){ cleanup(); cb(d); }; s.onerror=function(){ cleanup(); fail('Không gọi được Apps Script.'); }; s.src=u+(u.indexOf('?')<0?'?':'&')+'callback='+n; document.body.appendChild(s); }
+  function load(){
+    var k=$('key').value.trim(); if(!k){ $('err').textContent='Nhập mã giáo viên trước nha.'; return; }
+    $('err').textContent='Đang tải…';
+    jsonp(URL_+'?key='+encodeURIComponent(k), function(d){
+      if(!d||!d.results){ $('err').textContent='Mã không đúng, hoặc Apps Script chưa được cập nhật bản mới (xem hướng dẫn trong file Code.gs).'; return; }
+      try{ localStorage.setItem('gv.key',k); }catch(e){}
+      $('err').textContent=''; D=d; prep(); $('app').hidden=false; render();
+    }, function(m){ $('err').textContent=m; });
+  }
+  function site(t){ return /^ETS/.test(t)?'T':/^Cam/.test(t)?'I':''; }
+  function prep(){
+    D.rows=D.results.filter(function(r){ return r[5]!=='Góp ý' && r[5]!=='Writing' && String(r[4]).indexOf('Góp ý')!==0; }).map(function(r){
+      var b=String(r[9]||''), m=b.match(/TOEIC ~(\d+)/), sc=m&&/\(LC/.test(b)?+m[1]:0, band=!/TOEIC/.test(b)&&b!==''&&!isNaN(+b)?+b:null;
+      return { t:new Date(r[0]), name:String(r[1]||'').trim(), lop:String(r[2]||'').trim(), test:String(r[3]||''), part:String(r[4]||''), mode:String(r[5]||''), got:+r[6]||0, total:+r[7]||0, pct:r[8]===''?null:+r[8], toeic:sc, band:band, sec:/Listening/.test(r[4])?'L':/Reading/.test(r[4])?'R':'', wrong:String(r[11]||''), site:site(String(r[3]||'')) };
+    });
+    var lops={}; D.rows.forEach(function(r){ if(r.lop) lops[r.lop]=1; });
+    $('fLop').innerHTML='<option value="">Tất cả lớp</option>'+Object.keys(lops).sort().map(function(l){ return '<option>'+esc(l)+'</option>'; }).join('');
+  }
+  function key(n){ return n.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/\s+/g,' '); }
+  function ago(d){ var x=Math.floor((Date.now()-d)/864e5); return x<=0?'hôm nay':x===1?'hôm qua':x+' ngày trước'; }
+  function pc(v){ return v==null?'–':Math.round(v)+'%'; }
+  function cls(v){ return v==null?'dim':v>=70?'ok':v>=50?'mid':'bad'; }
+  function render(){
+    var lop=$('fLop').value, st=$('fSite').value, days=+$('fDays').value, q=key($('fName').value), since=days?Date.now()-days*864e5:0;
+    var rows=D.rows.filter(function(r){ return (!lop||r.lop===lop) && (!st||r.site===st) && (!q||key(r.name).indexOf(q)>=0); });
+    var inRange=rows.filter(function(r){ return r.t>=since; });
+    var S={}; rows.forEach(function(r){ var k=key(r.name)+'|'+r.lop; var s=S[k]||(S[k]={name:r.name,lop:r.lop,all:[],rng:[],last:0,toeic:0,bandL:0,bandR:0});
+      s.all.push(r); if(r.t>=since) s.rng.push(r); if(+r.t>s.last) s.last=+r.t; if(r.toeic>s.toeic) s.toeic=r.toeic; if(r.band!=null){ if(r.sec==='L'&&r.band>s.bandL) s.bandL=r.band; if(r.sec==='R'&&r.band>s.bandR) s.bandR=r.band; } });
+    var list=Object.keys(S).map(function(k){ var s=S[k], ps=s.rng.filter(function(r){return r.pct!=null;}); s.avg=ps.length?ps.reduce(function(a,r){return a+r.pct;},0)/ps.length:null; s.n=s.rng.length; s.idle=Math.floor((Date.now()-s.last)/864e5); s.k=k; return s; });
+    var weekAgo=Date.now()-7*864e5, active=list.filter(function(s){ return s.last>=weekAgo; }).length, idle=list.filter(function(s){ return s.idle>7; }).length;
+    var allP=inRange.filter(function(r){return r.pct!=null;}), avgAll=allP.length?allP.reduce(function(a,r){return a+r.pct;},0)/allP.length:null;
+    $('tiles').innerHTML=[['Học sinh',list.length,'đã từng nộp bài'],['Hoạt động 7 ngày',active,idle+' bạn đã nghỉ hơn 7 ngày'],['Bài nộp',inRange.length,days?'trong '+days+' ngày qua':'tất cả'],['% đúng trung bình',pc(avgAll),'các bài trong khoảng đã chọn']].map(function(t){ return '<div class="tile"><small>'+t[0]+'</small><b>'+t[1]+'</b><span>'+t[2]+'</span></div>'; }).join('');
+    var dir=sortDir; list.sort(function(a,b){ var A=a[sortK],B=b[sortK]; if(sortK==='name') return dir*String(A).localeCompare(String(B),'vi'); A=A==null?-1:A; B=B==null?-1:B; return dir*(A-B); });
+    var H=[['name','Họ tên'],['lop','Lớp'],['n','Bài nộp'],['avg','% đúng TB'],['last','Lần cuối'],['toeic','TOEIC cao nhất'],['bandL','Band L / R']];
+    var h='<tr>'+H.map(function(c){ return '<th data-k="'+c[0]+'">'+c[1]+(sortK===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>'; }).join('')+'</tr>';
+    list.forEach(function(s){
+      h+='<tr class="stu" data-k="'+esc(s.k)+'"><td><b>'+esc(s.name||'(chưa nhập tên)')+'</b></td><td>'+esc(s.lop||'–')+'</td><td class="n">'+s.n+'</td><td><span class="tag '+cls(s.avg)+'">'+pc(s.avg)+'</span><div class="bar"><i style="width:'+(s.avg||0)+'%;background:'+(s.avg>=70?'#1f8f6c':s.avg>=50?'#d9a63c':'#c14636')+'"></i></div></td>'+
+        '<td>'+ago(s.last)+(s.idle>7?' <span class="tag bad">nghỉ '+s.idle+' ngày</span>':'')+'</td><td class="n">'+(s.toeic||'–')+'</td><td class="n">'+(s.bandL||'–')+' / '+(s.bandR||'–')+'</td></tr>';
+      if(open[s.k]){
+        var wc={}; s.all.forEach(function(r){ if(r.site==='T') r.wrong.split(/,\s*/).forEach(function(w){ if(w) wc[r.test.replace('ETS 2026 · ','')+' câu '+w]=(wc[r.test.replace('ETS 2026 · ','')+' câu '+w]||0)+1; }); });
+        var rec=s.all.slice().sort(function(a,b){return b.t-a.t;}).slice(0,12);
+        h+='<tr class="detail"><td colspan="7"><b>Bài gần đây</b><ul>'+rec.map(function(r){ return '<li>'+r.t.toLocaleDateString('vi-VN')+' · '+esc(r.test)+' · '+esc(r.part)+' · '+esc(r.mode)+' · '+r.got+'/'+r.total+(r.toeic?' · TOEIC ~'+r.toeic:'')+(r.band!=null?' · band '+r.band:'')+'</li>'; }).join('')+'</ul>'+(function(){ var top=Object.keys(wc).filter(function(k){return wc[k]>=2;}).sort(function(a,b){return wc[b]-wc[a];}).slice(0,10); return top.length?'<b>Câu sai nhiều lần</b> <small class="hint">(sai từ 2 lần, đáng ôn lại)</small><ul>'+top.map(function(k){return '<li>'+esc(k)+' · sai '+wc[k]+' lần</li>';}).join('')+'</ul>':''; })()+'</td></tr>';
+      }
+    });
+    $('tbl').innerHTML=h||'<tr><td>Chưa có dữ liệu.</td></tr>';
+    [].forEach.call($('tbl').querySelectorAll('th'),function(th){ th.onclick=function(){ var k=th.dataset.k; if(sortK===k) sortDir=-sortDir; else { sortK=k; sortDir=k==='name'||k==='lop'?1:-1; } render(); }; });
+    [].forEach.call($('tbl').querySelectorAll('.stu'),function(tr){ tr.onclick=function(){ open[tr.dataset.k]=!open[tr.dataset.k]; render(); }; });
+    var fb=(D.feedback||[]).slice().reverse().slice(0,30);
+    $('fb').innerHTML=fb.length?fb.map(function(r){ return '<div class="card"><small>'+new Date(r[0]).toLocaleString('vi-VN')+' · '+esc(r[1])+(r[2]?' · '+esc(r[2]):'')+' · <b>'+esc(r[3])+'</b></small><div>'+esc(r[4])+'</div>'+(r[5]?'<small><a href="'+esc(r[5])+'" target="_blank" rel="noopener">'+esc(String(r[5]).replace('https://mangomint1805.github.io',''))+'</a></small>':'')+'</div>'; }).join(''):'<p class="hint">Chưa có góp ý nào trong tab "Góp ý".</p>';
+    var ws=(D.writing||[]).slice().reverse().slice(0,40);
+    $('ws').innerHTML=ws.length?'<tr><th>Thời gian</th><th>Họ tên</th><th>Lớp</th><th>Đề</th><th>Task</th><th>Số từ</th></tr>'+ws.map(function(r){ return '<tr><td>'+new Date(r[0]).toLocaleString('vi-VN')+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td><td class="n">'+esc(r[5])+(r[6]?' / '+esc(r[6]):'')+'</td></tr>'; }).join(''):'<tr><td class="hint">Chưa có bài viết nào trong tab "Bài viết". Nội dung bài xem trực tiếp trong Google Sheet.</td></tr>';
+  }
+  $('load').onclick=load; $('reload').onclick=load;
+  $('forget').onclick=function(){ try{ localStorage.removeItem('gv.key'); }catch(e){} $('key').value=''; $('app').hidden=true; };
+  ['fLop','fSite','fDays'].forEach(function(id){ $(id).onchange=function(){ if(D) render(); }; }); $('fName').oninput=function(){ if(D) render(); };
+  if($('key').value) load();
+})();
+</script>
+</body>
+</html>
