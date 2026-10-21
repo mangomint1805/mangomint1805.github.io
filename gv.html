@@ -28,6 +28,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 .tw{overflow-x:auto;border-radius:14px}
 .stu{cursor:pointer}.stu:hover td{background:#fffaf0}
 .detail td{background:#fcfaf6}.detail ul{margin:4px 0;padding-left:18px;font-size:13px}
+.fbx{margin-top:10px;max-width:760px}.fbx textarea{width:100%;min-height:80px;font:inherit;padding:8px 10px;border:1.5px solid #ddd7c9;border-radius:10px}.fbx .r{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}.fbx input{min-width:0;width:90px}.fbx .ok{color:var(--ok);font-weight:600;font-size:13px}
 .err{color:var(--bad);font-weight:600;margin-top:8px}
 .hint{color:var(--dim);font-size:13px;margin:6px 0 0}
 .fb{display:grid;gap:8px}.fb .card{padding:10px 14px}.fb small{color:var(--dim)}
@@ -66,7 +67,11 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   <div class="tw"><table id="pg"></table></div>
   <h2>Góp ý / báo lỗi mới nhất</h2>
   <div class="fb" id="fb"></div>
+  <h2>Bài nói (Speaking) học sinh gửi</h2>
+  <p class="hint" id="spHint">Đăng nhập bằng tài khoản Google của thầy để nghe và nhận xét.</p>
+  <div class="tw"><table id="sp"></table></div>
   <h2>Bài viết gần đây</h2>
+  <p class="hint">Bấm vào một bài để đọc và viết nhận xét. Học sinh đã đăng nhập Google sẽ thấy nhận xét trong trang Hồ sơ của mình.</p>
   <div class="tw"><table id="ws"></table></div>
 </div>
 </div>
@@ -129,7 +134,8 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     var fb=(D.feedback||[]).slice().reverse().slice(0,30);
     $('fb').innerHTML=fb.length?fb.map(function(r){ return '<div class="card"><small>'+new Date(r[0]).toLocaleString('vi-VN')+' · '+esc(r[1])+(r[2]?' · '+esc(r[2]):'')+' · <b>'+esc(r[3])+'</b></small><div>'+esc(r[4])+'</div>'+(r[5]?'<small><a href="'+esc(r[5])+'" target="_blank" rel="noopener">'+esc(String(r[5]).replace('https://mangomint1805.github.io',''))+'</a></small>':'')+'</div>'; }).join(''):'<p class="hint">Chưa có góp ý nào trong tab "Góp ý".</p>';
     var ws=(D.writing||[]).slice().reverse().slice(0,40);
-    $('ws').innerHTML=ws.length?'<tr><th>Thời gian</th><th>Họ tên</th><th>Lớp</th><th>Đề</th><th>Task</th><th>Số từ</th></tr>'+ws.map(function(r,i){ return '<tr class="stu" data-w="'+i+'"><td>'+new Date(r[0]).toLocaleString('vi-VN')+'</td><td>'+esc(r[1])+(r[9]?'<br><small style="color:#8a8f99">'+esc(r[9])+'</small>':'')+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td><td class="n">'+esc(r[5])+(r[6]?' / '+esc(r[6]):'')+'</td></tr><tr class="detail" data-wd="'+i+'" hidden><td colspan="6"><div style="white-space:pre-wrap;font-size:14.5px;line-height:1.6;max-width:760px">'+(r[8]?esc(r[8]):'<span class="hint">Bài viết chưa có trong dữ liệu — cập nhật Apps Script bản mới để xem nội dung ở đây.</span>')+'</div></td></tr>'; }).join(''):'<tr><td class="hint">Chưa có bài viết nào trong tab "Bài viết". Nội dung bài xem trực tiếp trong Google Sheet.</td></tr>';
+    setTimeout(wsFeedback,0);
+    $('ws').innerHTML=ws.length?'<tr><th>Thời gian</th><th>Họ tên</th><th>Lớp</th><th>Đề</th><th>Task</th><th>Số từ</th></tr>'+ws.map(function(r,i){ return '<tr class="stu" data-w="'+i+'"><td>'+new Date(r[0]).toLocaleString('vi-VN')+'</td><td>'+esc(r[1])+(r[9]?'<br><small style="color:#8a8f99">'+esc(r[9])+'</small>':'')+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td><td class="n">'+esc(r[5])+(r[6]?' / '+esc(r[6]):'')+'</td></tr><tr class="detail" data-wd="'+i+'" hidden><td colspan="6"><div style="white-space:pre-wrap;font-size:14.5px;line-height:1.6;max-width:760px">'+(r[8]?esc(r[8]):'<span class="hint">Bài viết chưa có trong dữ liệu — cập nhật Apps Script bản mới để xem nội dung ở đây.</span>')+'</div><div class="fbx" data-wf="'+i+'"></div></td></tr>'; }).join(''):'<tr><td class="hint">Chưa có bài viết nào trong tab "Bài viết". Nội dung bài xem trực tiếp trong Google Sheet.</td></tr>';
   }
   [].forEach.call(document.querySelectorAll('#ws'),function(){});
   document.addEventListener('click',function(e){ var tr=e.target.closest&&e.target.closest('#ws tr[data-w]'); if(!tr) return; var d=document.querySelector('#ws tr[data-wd="'+tr.dataset.w+'"]'); if(d) d.hidden=!d.hidden; });
@@ -143,7 +149,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
       $('gLogin').hidden=true;
       if(sn.exists()&&sn.data().key){ gStat('✓ '+u.email+' · quyền giáo viên'); $('key').value=sn.data().key; load(); }
       else gStat('✓ '+u.email+' · nhập mã giáo viên một lần, web sẽ lưu vào tài khoản để lần sau tự mở.');
-      loadProgress();
+      loadProgress(); loadFb().then(wsFeedback); loadSpeaking();
     }).catch(function(e){ gStat('⚠ Tài khoản '+(u.email||'')+' không có quyền giáo viên ('+((e&&e.code)||'lỗi')+').'); });
   }
   function saveKey(k){ if(!FSX||!FSX.user) return; FSX.F.getDoc(FSX.F.doc(FSX.db,'config','gv')).then(function(sn){ if(!sn.exists()||sn.data().key!==k) return FSX.F.setDoc(FSX.F.doc(FSX.db,'config','gv'),{key:k}); }).catch(function(){}); }
@@ -158,16 +164,47 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
       }).join(''):'';
     }).catch(function(e){ $('pgHint').textContent='Không đọc được tiến độ ('+((e&&e.code)||'lỗi')+').'; });
   }
+  function hid(t){ var h=2166136261; for(var i=0;i<t.length;i++){ h^=t.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0).toString(36); }
+  var FBS={};
+  function fbBox(el,o){ // o: {id, kind, email, name, title, at, save(text,band)}
+    var cur=FBS[o.id]||{};
+    el.innerHTML='<b style="font-size:13px">💬 Nhận xét của thầy</b>'+(o.email?'':' <span class="hint">(bạn này chưa đăng nhập Google nên sẽ không thấy nhận xét trên web)</span>')+'<textarea placeholder="Nhận xét, lỗi cần sửa, gợi ý…">'+esc(cur.text||cur.fb||'')+'</textarea><div class="r"><label style="flex-direction:row;align-items:center;gap:6px">Band<input value="'+esc(cur.band||'')+'" placeholder="vd 6.0"></label><button type="button">Lưu nhận xét</button><span class="ok"></span></div>';
+    var ta=el.querySelector('textarea'), bd=el.querySelector('input'), ok=el.querySelector('.ok');
+    el.querySelector('button').onclick=function(){ ok.textContent='Đang lưu…'; o.save(ta.value.trim(),bd.value.trim()).then(function(){ FBS[o.id]={text:ta.value.trim(),fb:ta.value.trim(),band:bd.value.trim()}; ok.textContent='✓ Đã lưu'+(o.email?' — học sinh sẽ thấy trong Hồ sơ':''); }).catch(function(e){ ok.textContent='Chưa lưu được ('+((e&&e.code)||'lỗi')+')'; }); };
+  }
+  function wsFeedback(){
+    if(!FSX||!D) return;
+    var ws=(D.writing||[]).slice().reverse().slice(0,40);
+    [].forEach.call(document.querySelectorAll('#ws .fbx'),function(el){
+      var r=ws[+el.dataset.wf]; if(!r) return; var em=String(r[9]||'').trim().toLowerCase(), id='ws_'+hid(em+'|'+r[0]+'|'+r[1]);
+      fbBox(el,{id:id,email:em,save:function(text,band){ return FSX.F.setDoc(FSX.F.doc(FSX.db,'fb',id),{kind:'ws',email:em,name:String(r[1]||''),test:String(r[3]||''),task:String(r[4]||''),sent:String(r[0]),text:text,band:band,at:FSX.F.serverTimestamp()}); }});
+    });
+  }
+  function loadFb(){ if(!FSX) return Promise.resolve(); return FSX.F.getDocs(FSX.F.collection(FSX.db,'fb')).then(function(qs){ qs.forEach(function(d){ FBS[d.id]=d.data(); }); }).catch(function(){}); }
+  function loadSpeaking(){
+    if(!FSX) return; $('spHint').textContent='Đang tải…';
+    FSX.F.getDocs(FSX.F.collection(FSX.db,'rec')).then(function(qs){
+      var L=[]; qs.forEach(function(d){ var x=d.data(); x.id=d.id; x.t=x.at&&x.at.toDate?x.at.toDate():new Date(0); L.push(x); });
+      L.sort(function(a,b){ return b.t-a.t; });
+      $('spHint').textContent=L.length?L.length+' bài nói. Bấm ▶ để nghe, viết nhận xét rồi bấm Lưu.':'Chưa có bài nói nào được gửi.';
+      $('sp').innerHTML=L.length?'<tr><th>Thời gian</th><th>Học sinh</th><th>Đề · câu hỏi</th><th>Độ dài</th><th></th></tr>'+L.map(function(x,i){
+        return '<tr class="stu" data-sp="'+i+'"><td>'+x.t.toLocaleString('vi-VN')+'</td><td><b>'+esc(x.name||'(chưa có tên)')+'</b><br><small style="color:#8a8f99">'+esc(x.email)+(x.lop?' · '+esc(x.lop):'')+'</small></td><td>'+esc(x.test)+' · '+esc(x.part)+'<br><small style="color:#8a8f99">'+esc(x.q)+'</small></td><td class="n">'+(x.dur?Math.floor(x.dur/60)+':'+('0'+x.dur%60).slice(-2):'–')+'</td><td>'+(x.fb?'<span class="tag ok">Đã nhận xét</span>':'<span class="tag mid">Chưa nhận xét</span>')+'</td></tr><tr class="detail" data-spd="'+i+'" hidden><td colspan="5"><div class="aud" style="margin-bottom:6px"><button type="button" class="alt" data-play="'+i+'">▶ Nghe bài nói</button></div><div class="fbx" data-sf="'+i+'"></div></td></tr>';
+      }).join(''):'';
+      L.forEach(function(x,i){ FBS['rec_'+x.id]={fb:x.fb,band:x.band}; var el=document.querySelector('#sp [data-sf="'+i+'"]'); if(el) fbBox(el,{id:'rec_'+x.id,email:x.email,save:function(text,band){ return FSX.F.setDoc(FSX.F.doc(FSX.db,'rec',x.id),{fb:text,band:band,fbAt:FSX.F.serverTimestamp()},{merge:true}); }}); });
+      [].forEach.call(document.querySelectorAll('#sp tr[data-sp]'),function(tr){ tr.onclick=function(){ var d=document.querySelector('#sp tr[data-spd="'+tr.dataset.sp+'"]'); d.hidden=!d.hidden; }; });
+      [].forEach.call(document.querySelectorAll('#sp [data-play]'),function(b){ b.onclick=function(e){ e.stopPropagation(); var x=L[+b.dataset.play]; b.textContent='Đang tải…'; FSX.F.getDoc(FSX.F.doc(FSX.db,'recdata',x.id)).then(function(sn){ var a=document.createElement('audio'); a.controls=true; a.src='data:'+(x.mime||'audio/webm')+';base64,'+sn.data().data; b.replaceWith(a); a.play().catch(function(){}); }).catch(function(e){ b.textContent='Không tải được ('+((e&&e.code)||'lỗi')+')'; }); }; });
+    }).catch(function(e){ $('spHint').textContent='Không đọc được bài nói ('+((e&&e.code)||'lỗi')+').'; });
+  }
   $('gLogin').onclick=function(){ if(window.MACC) MACC.quick(); };
   var doneUid='';
   window.MACCPAINT=function(){ var u=window.MACC&&MACC.user(); if(u&&u.uid!==doneUid){ doneUid=u.uid; afterLogin(); } };
-  $('load').onclick=load; $('reload').onclick=function(){ load(); loadProgress(); };
+  $('load').onclick=load; $('reload').onclick=function(){ load(); loadProgress(); loadFb().then(wsFeedback); loadSpeaking(); };
   $('forget').onclick=function(){ try{ localStorage.removeItem('gv.key'); }catch(e){} $('key').value=''; $('app').hidden=true; };
   ['fLop','fSite','fDays'].forEach(function(id){ $(id).onchange=function(){ if(D) render(); }; }); $('fName').oninput=function(){ if(D) render(); };
   if($('key').value) load();
 })();
 </script>
 <script src="progress.js?v=3"></script>
-<script src="acc.js?v=5"></script>
+<script src="acc.js?v=6"></script>
 </body>
 </html>
