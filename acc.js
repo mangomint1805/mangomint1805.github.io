@@ -222,6 +222,7 @@
   }
   window.MACC = { render: render, load: load, preload: function () { load(); }, quick: quick, inApp: inApp, extUrl: extUrl, sync: function () { return sync('manual'); },
     user: function () { return USER; }, ready: function () { return load(); },
+    fs: function () { return loadDB().then(function () { return { F: FB.F, db: FB.db, user: USER }; }); },
     board: { week: week, pts: weekPts, push: function () { return (FB && FB.F ? Promise.resolve() : loadDB()).then(function () { return pushBoard(true); }); }, list: listBoard } };
   if (get('mt.acc')) load();
 })();
