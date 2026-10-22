@@ -7,7 +7,9 @@
   function J(k, d) { try { var v = JSON.parse(raw(k)); return v == null ? d : v; } catch (e) { return d; } }
   function dkey(t) { var d = t instanceof Date ? t : new Date(t); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  var BOOKS = [17, 18, 19, 20, 21];
+  var BOOKS = [17, 18, 19, 20, 21, 'v7'];
+  function BN(b) { return /^v/.test(b) ? 'Original Exams VOL ' + String(b).slice(1) : 'Cambridge IELTS ' + b; }
+  function BD(b) { return /^v/.test(b) ? String(b) : 'c' + b; }
   var TMODE = { full: 'Full test', lc: 'Listening', rc: 'Reading' }; for (var i = 1; i <= 7; i++) TMODE['p' + i] = 'Luyện Part ' + i;
 
   function summary() {
@@ -37,19 +39,19 @@
       if ((m = /^ets26\.t(\d+)\.(full|lc|rc|p[1-7])$/.exec(key))) {
         var s = J(key, null); if (!s || s.done || !s.ans) continue; var na = Object.keys(s.ans).length; if (!na) continue;
         U.push({ site: 'toeic', label: (+m[1] > 10 ? 'ETS 2024 · Test ' + (m[1] - 10) : 'ETS 2026 · Test ' + m[1]), sub: TMODE[m[2]] + ' · đã chọn ' + na + ' câu', href: 'toeic/test.html?t=' + m[1] + '&m=' + m[2], at: s.t0 || 0 });
-      } else if ((m = /^cam(\d+)\.t(\d+)(?:\.([LR]\d?))?(\.thi)?$/.exec(key))) {
+      } else if ((m = /^cam(\d+|v\d+)\.t(\d+)(?:\.([LR]\d?))?(\.thi)?$/.exec(key))) {
         var st = J(key, null); if (!st || !st.ans) continue; var secs = {};
         Object.keys(st.ans).forEach(function (q) { if (st.ans[q] !== '' && st.ans[q] != null) secs[q.charAt(0)] = (secs[q.charAt(0)] || 0) + 1; });
         var open = Object.keys(secs).filter(function (x) { return !(st.done && st.done[x]); }); if (!open.length) continue;
         var mode = m[3] || '', cnt = open.reduce(function (a, x) { return a + secs[x]; }, 0);
-        U.push({ site: 'ielts', label: 'Cambridge IELTS ' + m[1] + ' · Test ' + m[2], sub: (open.indexOf('L') >= 0 && open.indexOf('R') >= 0 ? 'Listening + Reading' : open[0] === 'L' ? 'Listening' : 'Reading') + (mode && mode.length > 1 ? (mode[0] === 'L' ? ' Part ' : ' Passage ') + mode.slice(1) : '') + (m[4] ? ' · thi thử' : '') + ' · đã làm ' + cnt + ' câu', href: 'cam/c' + m[1] + '/test-' + m[2] + '.html' + (mode ? '?part=' + mode + (m[4] ? '&thi=1' : '') : ''), at: (st.time && 0) || 0 });
+        U.push({ site: 'ielts', label: BN(m[1]) + ' · Test ' + m[2], sub: (open.indexOf('L') >= 0 && open.indexOf('R') >= 0 ? 'Listening + Reading' : open[0] === 'L' ? 'Listening' : 'Reading') + (mode && mode.length > 1 ? (mode[0] === 'L' ? ' Part ' : ' Passage ') + mode.slice(1) : '') + (m[4] ? ' · thi thử' : '') + ' · đã làm ' + cnt + ' câu', href: 'cam/' + BD(m[1]) + '/test-' + m[2] + '.html' + (mode ? '?part=' + mode + (m[4] ? '&thi=1' : '') : ''), at: (st.time && 0) || 0 });
       }
     }
     o.unfinished = U;
     // bài nộp gần đây
     var R = [];
     th.forEach(function (r) { if (r && r.at) R.push({ site: 'toeic', at: +new Date(r.at), label: (r.test > 10 ? 'ETS 2024 · Test ' + (r.test - 10) : 'ETS 2026 · Test ' + r.test) + ' · ' + (r.name || ''), res: r.got + '/' + r.total + (r.lcS || r.rcS ? ' · ~' + ((r.lcS || 0) + (r.rcS || 0)) : ''), href: r.ans && r.mode ? 'toeic/test.html?t=' + r.test + '&m=' + r.mode + '&xem=' + r.at : '' }); });
-    BOOKS.forEach(function (b) { J('cam' + b + '.hist', []).forEach(function (r) { if (r && r.t) R.push({ site: 'ielts', at: +r.t, label: 'Cambridge ' + b + ' · Test ' + r.test + ' · ' + (r.sec === 'L' ? 'Listening' : r.sec === 'R' ? 'Reading' : (r.sec || '')), res: r.got + '/' + r.total + (r.band ? ' · band ' + r.band : ''), href: r.ans ? 'cam/c' + b + '/test-' + r.test + '.html?xem=' + r.t : '' }); }); });
+    BOOKS.forEach(function (b) { J('cam' + b + '.hist', []).forEach(function (r) { if (r && r.t) R.push({ site: 'ielts', at: +r.t, label: BN(b).replace('Cambridge IELTS', 'Cambridge') + ' · Test ' + r.test + ' · ' + (r.sec === 'L' ? 'Listening' : r.sec === 'R' ? 'Reading' : (r.sec || '')), res: r.got + '/' + r.total + (r.band ? ' · band ' + r.band : ''), href: r.ans ? 'cam/' + BD(b) + '/test-' + r.test + '.html?xem=' + r.t : '' }); }); });
     o.recent = R.sort(function (a, b) { return b.at - a.at; }).slice(0, 8);
     // điểm tuần (giống bảng xếp hạng)
     var dd = new Date(), mon = new Date(dd.getFullYear(), dd.getMonth(), dd.getDate() - (dd.getDay() + 6) % 7), wp = 0, wd = 0;
