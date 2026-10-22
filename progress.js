@@ -36,7 +36,7 @@
       var key = KS[k], m;
       if ((m = /^ets26\.t(\d+)\.(full|lc|rc|p[1-7])$/.exec(key))) {
         var s = J(key, null); if (!s || s.done || !s.ans) continue; var na = Object.keys(s.ans).length; if (!na) continue;
-        U.push({ site: 'toeic', label: 'ETS 2026 · Test ' + m[1], sub: TMODE[m[2]] + ' · đã chọn ' + na + ' câu', href: 'toeic/test.html?t=' + m[1] + '&m=' + m[2], at: s.t0 || 0 });
+        U.push({ site: 'toeic', label: (+m[1] > 10 ? 'ETS 2024 · Test ' + (m[1] - 10) : 'ETS 2026 · Test ' + m[1]), sub: TMODE[m[2]] + ' · đã chọn ' + na + ' câu', href: 'toeic/test.html?t=' + m[1] + '&m=' + m[2], at: s.t0 || 0 });
       } else if ((m = /^cam(\d+)\.t(\d+)(?:\.([LR]\d?))?(\.thi)?$/.exec(key))) {
         var st = J(key, null); if (!st || !st.ans) continue; var secs = {};
         Object.keys(st.ans).forEach(function (q) { if (st.ans[q] !== '' && st.ans[q] != null) secs[q.charAt(0)] = (secs[q.charAt(0)] || 0) + 1; });
@@ -48,7 +48,7 @@
     o.unfinished = U;
     // bài nộp gần đây
     var R = [];
-    th.forEach(function (r) { if (r && r.at) R.push({ site: 'toeic', at: +new Date(r.at), label: 'ETS 2026 · Test ' + r.test + ' · ' + (r.name || ''), res: r.got + '/' + r.total + (r.lcS || r.rcS ? ' · ~' + ((r.lcS || 0) + (r.rcS || 0)) : ''), href: r.ans && r.mode ? 'toeic/test.html?t=' + r.test + '&m=' + r.mode + '&xem=' + r.at : '' }); });
+    th.forEach(function (r) { if (r && r.at) R.push({ site: 'toeic', at: +new Date(r.at), label: (r.test > 10 ? 'ETS 2024 · Test ' + (r.test - 10) : 'ETS 2026 · Test ' + r.test) + ' · ' + (r.name || ''), res: r.got + '/' + r.total + (r.lcS || r.rcS ? ' · ~' + ((r.lcS || 0) + (r.rcS || 0)) : ''), href: r.ans && r.mode ? 'toeic/test.html?t=' + r.test + '&m=' + r.mode + '&xem=' + r.at : '' }); });
     BOOKS.forEach(function (b) { J('cam' + b + '.hist', []).forEach(function (r) { if (r && r.t) R.push({ site: 'ielts', at: +r.t, label: 'Cambridge ' + b + ' · Test ' + r.test + ' · ' + (r.sec === 'L' ? 'Listening' : r.sec === 'R' ? 'Reading' : (r.sec || '')), res: r.got + '/' + r.total + (r.band ? ' · band ' + r.band : ''), href: r.ans ? 'cam/c' + b + '/test-' + r.test + '.html?xem=' + r.t : '' }); }); });
     o.recent = R.sort(function (a, b) { return b.at - a.at; }).slice(0, 8);
     // điểm tuần (giống bảng xếp hạng)
