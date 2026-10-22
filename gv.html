@@ -156,11 +156,11 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   function loadProgress(){
     if(!FSX) return; $('pgHint').textContent='Đang tải…';
     FSX.F.getDocs(FSX.F.collection(FSX.db,'users')).then(function(qs){
-      var L=[]; qs.forEach(function(d){ var x=d.data(), dd=x.d||{}, o=window.MPROG.summaryFrom(dd); o.email=x.email||''; o.gname=x.name||''; o.at=x.at&&x.at.toDate?x.at.toDate():null; L.push(o); });
+      var L=[]; qs.forEach(function(d){ var x=d.data(), dd=x.d||{}, o=window.MPROG.summaryFrom(dd); o.uid=d.id; o.email=x.email||''; o.gname=x.name||''; o.at=x.at&&x.at.toDate?x.at.toDate():null; L.push(o); });
       L.sort(function(a,b){ return (b.at||0)-(a.at||0); });
-      $('pgHint').textContent=L.length?L.length+' bạn đã đăng nhập. Số liệu lấy từ tài khoản của từng bạn (cập nhật mỗi khi bạn đó mở web).':'Chưa có bạn nào đăng nhập Google.';
+      $('pgHint').textContent=L.length?L.length+' bạn đã đăng nhập. Bấm tên để xem Hồ sơ của bạn đó. Số liệu lấy từ tài khoản của từng bạn (cập nhật mỗi khi bạn đó mở web).':'Chưa có bạn nào đăng nhập Google.';
       $('pg').innerHTML=L.length?'<tr><th>Học sinh</th><th>Lớp</th><th>🔥 Chuỗi</th><th>Ngày học</th><th>Điểm tuần</th><th>Flashcard</th><th>Đề mini</th><th>TOEIC cao nhất</th><th>IELTS L / R</th><th>Đang làm dở</th><th>Mở web lần cuối</th></tr>'+L.map(function(o){
-        return '<tr><td><b>'+esc(o.name||o.gname||'(chưa có tên)')+'</b><br><small style="color:#8a8f99">'+esc(o.email)+'</small></td><td>'+esc(o.lop||'')+'</td><td class="n">'+o.streak+'</td><td class="n">'+o.ndays+'</td><td class="n">'+o.week.pts+' <small style="color:#8a8f99">('+o.week.days+'/7)</small></td><td class="n">'+o.cards+(o.cardsDue?' <small style="color:#8a8f99">('+o.cardsDue+' cần ôn)</small>':'')+'</td><td class="n">'+o.toeic.mini+'</td><td class="n">'+(o.toeic.best||'–')+'</td><td class="n">'+(o.ielts.bestL||'–')+' / '+(o.ielts.bestR||'–')+'</td><td>'+(o.unfinished.length?o.unfinished.slice(0,2).map(function(u){ return esc(u.label)+'<br><small style="color:#8a8f99">'+esc(u.sub)+'</small>'; }).join('<br>'):'–')+'</td><td>'+(o.at?ago(o.at):'–')+'</td></tr>';
+        return '<tr><td><a href="ho-so.html?uid='+encodeURIComponent(o.uid)+'" target="_blank" style="color:inherit" title="Xem hồ sơ của bạn này"><b>'+esc(o.name||o.gname||'(chưa có tên)')+'</b> ↗</a><br><small style="color:#8a8f99">'+esc(o.email)+'</small></td><td>'+esc(o.lop||'')+'</td><td class="n">'+o.streak+'</td><td class="n">'+o.ndays+'</td><td class="n">'+o.week.pts+' <small style="color:#8a8f99">('+o.week.days+'/7)</small></td><td class="n">'+o.cards+(o.cardsDue?' <small style="color:#8a8f99">('+o.cardsDue+' cần ôn)</small>':'')+'</td><td class="n">'+o.toeic.mini+'</td><td class="n">'+(o.toeic.best||'–')+'</td><td class="n">'+(o.ielts.bestL||'–')+' / '+(o.ielts.bestR||'–')+'</td><td>'+(o.unfinished.length?o.unfinished.slice(0,2).map(function(u){ return esc(u.label)+'<br><small style="color:#8a8f99">'+esc(u.sub)+'</small>'; }).join('<br>'):'–')+'</td><td>'+(o.at?ago(o.at):'–')+'</td></tr>';
       }).join(''):'';
     }).catch(function(e){ $('pgHint').textContent='Không đọc được tiến độ ('+((e&&e.code)||'lỗi')+').'; });
   }
@@ -205,6 +205,6 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 })();
 </script>
 <script src="progress.js?v=3"></script>
-<script src="acc.js?v=6"></script>
+<script src="acc.js?v=7"></script>
 </body>
 </html>

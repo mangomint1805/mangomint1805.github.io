@@ -61,11 +61,26 @@ var GSVG='<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><pa
 var INAPP=/FBAN|FBAV|FB_IAB|Messenger|Instagram|Zalo|Line\/|MicroMessenger|TikTok|musical_ly/i.test(navigator.userAgent);
 function mLogin(){ if(window.MACC) window.MACC.quick(); }
 
+function eh(t){ var x=2166136261; for(var i=0;i<t.length;i++){ x^=t.charCodeAt(i); x=Math.imul(x,16777619); } return (x>>>0).toString(36); }
+var TEACHER='979n45', VUID=new URLSearchParams(location.search).get('uid'), VIEW=null, vBusy=false;
+function loadView(){
+  if(vBusy||!window.MACC) return; vBusy=true; var app=document.getElementById('app');
+  MACC.ready().then(function(){ var u=MACC.user();
+    if(!u||eh(String(u.email||'').toLowerCase())!==TEACHER){ vBusy=false; app.innerHTML='<div class="card"><p>Trang này chỉ thầy xem được. Đăng nhập bằng tài khoản giáo viên rồi tải lại trang.</p>'+(u?'':'<button class="btn pri" onclick="mLogin()">Đăng nhập bằng Google</button>')+'</div>'; return; }
+    return MACC.fs().then(function(x){ return x.F.getDoc(x.F.doc(x.db,'users',VUID)); }).then(function(sn){
+      if(!sn.exists()){ app.innerHTML='<div class="card"><p>Không tìm thấy học sinh này.</p></div>'; return; }
+      var v=sn.data(); VIEW={uid:VUID,d:v.d||{},name:v.name||'',email:String(v.email||'').toLowerCase(),photo:v.photo||''}; render();
+    });
+  }).catch(function(e){ vBusy=false; app.innerHTML='<div class="card"><p>Không tải được hồ sơ ('+((e&&e.code)||'lỗi')+').</p></div>'; });
+}
 function render(){
-  var P=MPROG, o=P.summary(), a=o.acc, esc=P.esc, app=document.getElementById('app'), h='';
+  var P=MPROG, app=document.getElementById('app'), esc=P.esc, h='';
+  if(VUID&&!VIEW){ app.innerHTML='<div class="card"><p class="hint">Đang tải hồ sơ học sinh…</p></div>'; loadView(); return; }
+  var o=VIEW?P.summaryFrom(VIEW.d):P.summary(), a=o.acc;
+  if(VIEW){ a=o.acc={name:VIEW.name,email:VIEW.email,photo:VIEW.photo}; o.name=o.name||VIEW.name; h+='<div class="card" style="background:#fff6dd;border-color:#f0d996">👀 Thầy đang xem hồ sơ của <b>'+esc(o.name||VIEW.email)+'</b> (chỉ xem). <a href="gv.html">← Bảng theo dõi lớp</a></div>'; }
   h+='<div class="card top">'+(a&&a.photo?'<img class="av" src="'+esc(a.photo)+'" alt="" referrerpolicy="no-referrer">':'<span class="av">'+esc((o.name||'?').charAt(0).toUpperCase())+'</span>')+
     '<div class="who"><b>'+esc(o.name||'Bạn học')+'</b><small>'+(a?esc(a.email)+' · tiến độ tự đồng bộ ☁':'Chưa đăng nhập · tiến độ chỉ lưu trên máy này')+'</small></div>'+
-    (a?'<a class="btn" href="xep-hang.html">🏆 Xếp hạng tuần</a>':'<button class="btn pri" onclick="mLogin()">'+GSVG+(INAPP?'Mở bằng trình duyệt để đăng nhập':'Đăng nhập bằng Google')+'</button>')+'</div>';
+    (VIEW?'':a?'<a class="btn" href="xep-hang.html">🏆 Xếp hạng tuần</a>':'<button class="btn pri" onclick="mLogin()">'+GSVG+(INAPP?'Mở bằng trình duyệt để đăng nhập':'Đăng nhập bằng Google')+'</button>')+'</div>';
   h+='<div class="card"><div class="tiles">'+
     [['🔥 '+o.streak,'ngày liên tục'],[o.ndays,'ngày đã học'],[o.week.pts,'điểm tuần này ('+o.week.days+' ngày)'],[o.cards,'từ trong flashcard'+(o.cardsDue?' · '+o.cardsDue+' cần ôn':'')],
      [o.toeic.best?'~'+o.toeic.best:'–','TOEIC cao nhất (Full test)'],[o.toeic.mini,'ngày làm đề mini'],[(o.ielts.bestL||'–')+' / '+(o.ielts.bestR||'–'),'IELTS band cao nhất L / R'],[o.ielts.ws,'bài Writing đã gửi'],
@@ -82,11 +97,12 @@ function render(){
   h+='<div class="card" id="fbCard"><h3>💬 Nhận xét của thầy</h3><div class="list" id="fbList">'+(a?'<p class="hint">Đang tải…</p>':'<p class="hint">Đăng nhập Google để xem nhận xét của thầy cho bài Writing và bài nói bạn đã gửi.</p>')+'</div></div>';
   app.innerHTML=h;
   var hm=app.querySelector('.mheat'); if(hm) hm.scrollLeft=hm.scrollWidth;
+  if(VIEW) [].forEach.call(app.querySelectorAll('.list a'),function(x){ x.removeAttribute('href'); });
   if(a&&FBL) drawFb(); else if(a) loadFb();
 }
 var FBL=null, fbUid='';
 function loadFb(){
-  if(!window.MACC) return; var u=MACC.user(); if(!u||fbUid===u.uid) return; fbUid=u.uid;
+  if(!window.MACC) return; var u=MACC.user(); if(!u) return; if(VIEW) u={uid:VIEW.uid,email:VIEW.email}; if(fbUid===u.uid) return; fbUid=u.uid;
   MACC.fs().then(function(x){ var F=x.F; return Promise.all([
     F.getDocs(F.query(F.collection(x.db,'fb'),F.where('email','==',(u.email||'').toLowerCase()))).catch(function(){ return null; }),
     F.getDocs(F.query(F.collection(x.db,'rec'),F.where('uid','==',u.uid))).catch(function(){ return null; }) ]).then(function(r){
@@ -94,7 +110,7 @@ function loadFb(){
       if(r[0]) r[0].forEach(function(d){ var v=d.data(); L.push({kind:'ws',title:(v.test||'')+' · '+(v.task||''),text:v.text,band:v.band,at:v.at&&v.at.toDate?v.at.toDate():new Date(0)}); });
       if(r[1]) r[1].forEach(function(d){ var v=d.data(); L.push({kind:'sp',id:d.id,mime:v.mime,title:(v.test||'')+' · '+(v.part||''),q:v.q,text:v.fb,band:v.band,at:v.fbAt&&v.fbAt.toDate?v.fbAt.toDate():(v.at&&v.at.toDate?v.at.toDate():new Date(0)),sent:v.at&&v.at.toDate?v.at.toDate():null}); });
       FBL=L.sort(function(a,b){ return b.at-a.at; }); window._FSX=x; drawFb();
-      try{ localStorage.setItem('mt.fbseen',String(Date.now())); }catch(e){}
+      if(!VIEW) try{ localStorage.setItem('mt.fbseen',String(Date.now())); }catch(e){}
     }); });
 }
 function drawFb(){
@@ -108,6 +124,6 @@ function drawFb(){
 window.MACCPAINT=render; window.afterAcc=function(){ MACC.ready().then(function(){ setTimeout(render,300); }); }; render();
 
 </script>
-<script src="acc.js?v=6" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
+<script src="acc.js?v=7" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
 </body>
 </html>
