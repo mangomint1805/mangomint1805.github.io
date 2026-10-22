@@ -50,8 +50,8 @@
     o.unfinished = U;
     // bài nộp gần đây
     var R = [];
-    th.forEach(function (r) { if (r && r.at) R.push({ site: 'toeic', at: +new Date(r.at), label: (r.test > 10 ? 'ETS 2024 · Test ' + (r.test - 10) : 'ETS 2026 · Test ' + r.test) + ' · ' + (r.name || ''), res: r.got + '/' + r.total + (r.lcS || r.rcS ? ' · ~' + ((r.lcS || 0) + (r.rcS || 0)) : ''), href: r.ans && r.mode ? 'toeic/test.html?t=' + r.test + '&m=' + r.mode + '&xem=' + r.at : '' }); });
-    BOOKS.forEach(function (b) { J('cam' + b + '.hist', []).forEach(function (r) { if (r && r.t) R.push({ site: 'ielts', at: +r.t, label: BN(b).replace('Cambridge IELTS', 'Cambridge') + ' · Test ' + r.test + ' · ' + (r.sec === 'L' ? 'Listening' : r.sec === 'R' ? 'Reading' : (r.sec || '')), res: r.got + '/' + r.total + (r.band ? ' · band ' + r.band : ''), href: r.ans ? 'cam/' + BD(b) + '/test-' + r.test + '.html?xem=' + r.t : '' }); }); });
+    th.forEach(function (r) { if (r && r.at) R.push({ site: 'toeic', at: +new Date(r.at), label: (r.test > 10 ? 'ETS 2024 · Test ' + (r.test - 10) : 'ETS 2026 · Test ' + r.test) + ' · ' + (r.name || ''), res: r.got + '/' + r.total + (r.lcS || r.rcS ? ' · ~' + ((r.lcS || 0) + (r.rcS || 0)) : ''), href: r.ans && r.mode ? 'toeic/test.html?t=' + r.test + '&m=' + r.mode + '&xem=' + r.at : '', src: 'ets26.hist', rk: String(r.at) }); });
+    BOOKS.forEach(function (b) { J('cam' + b + '.hist', []).forEach(function (r) { if (r && r.t) R.push({ site: 'ielts', at: +r.t, label: BN(b).replace('Cambridge IELTS', 'Cambridge') + ' · Test ' + r.test + ' · ' + (r.sec === 'L' ? 'Listening' : r.sec === 'R' ? 'Reading' : (r.sec || '')), res: r.got + '/' + r.total + (r.band ? ' · band ' + r.band : ''), href: r.ans ? 'cam/' + BD(b) + '/test-' + r.test + '.html?xem=' + r.t : '', src: 'cam' + b + '.hist', rk: String(r.t) }); }); });
     o.recent = R.sort(function (a, b) { return b.at - a.at; }).slice(0, 8);
     // điểm tuần (giống bảng xếp hạng)
     var dd = new Date(), mon = new Date(dd.getFullYear(), dd.getMonth(), dd.getDate() - (dd.getDay() + 6) % 7), wp = 0, wd = 0;

@@ -88,7 +88,7 @@ function render(){
   h+='<div class="card"><h3>📅 Lịch học 20 tuần gần đây</h3>'+P.heat(o.days,o.act,20)+'<div class="legend">Ít <i style="background:#eee7da"></i><i style="background:#f2d08f"></i><i style="background:#d9a248"></i><i style="background:#a8691a"></i> Nhiều</div></div>';
   h+='<div class="two">';
   h+='<div class="card"><h3>▶ Bài đang làm dở</h3><div class="list">'+(o.unfinished.length?o.unfinished.map(function(u){ return '<a href="'+esc(u.href)+'"><span><span class="tag '+u.site+'">'+(u.site==='toeic'?'TOEIC':'IELTS')+'</span><b>'+esc(u.label)+'</b><br><small>'+esc(u.sub)+'</small></span><span class="r">Làm tiếp →</span></a>'; }).join(''):'<p class="hint">Không có bài nào làm dở 👍</p>')+'</div></div>';
-  h+='<div class="card"><h3>🕘 Bài nộp gần đây</h3><div class="list">'+(o.recent.length?o.recent.map(function(r){ var tg=r.href?'a href="'+esc(r.href)+'"':'div'; return '<'+tg+'><span><span class="tag '+r.site+'">'+(r.site==='toeic'?'TOEIC':'IELTS')+'</span>'+esc(r.label)+'<br><small>'+new Date(r.at).toLocaleDateString('vi-VN')+(r.href?' · 👀 bấm để xem lại bài':'')+'</small></span><span class="r">'+esc(r.res)+'</span></'+(r.href?'a':'div')+'>'; }).join(''):'<p class="hint">Chưa nộp bài nào.</p>')+'</div></div>';
+  h+='<div class="card"><h3>🕘 Bài nộp gần đây</h3><div class="list">'+(o.recent.length?o.recent.map(function(r){ var tg=r.href?'a href="'+esc(r.href)+'"'+(VIEW?' data-src="'+esc(r.src)+'" data-rk="'+esc(r.rk)+'"':''):'div'; return '<'+tg+'><span><span class="tag '+r.site+'">'+(r.site==='toeic'?'TOEIC':'IELTS')+'</span>'+esc(r.label)+'<br><small>'+new Date(r.at).toLocaleDateString('vi-VN')+(r.href?(VIEW?' · 👀 bấm để xem bài làm chi tiết':' · 👀 bấm để xem lại bài'):'')+'</small></span><span class="r">'+esc(r.res)+'</span></'+(r.href?'a':'div')+'>'; }).join(''):'<p class="hint">Chưa nộp bài nào.</p>')+'</div></div>';
   h+='</div>';
   var pl=[]; if(o.place.toeic) pl.push(['toeic','TOEIC',o.place.toeic.lvl,o.place.toeic.got+'/'+o.place.toeic.total,'toeic/xep-lop.html']); if(o.place.ielts) pl.push(['ielts','IELTS','band '+o.place.ielts.band,o.place.ielts.got+'/'+o.place.ielts.total,'cam/xep-lop.html']);
   h+='<div class="two"><div class="card"><h3>🧭 Kiểm tra xếp lớp</h3><div class="list">'+(pl.length?pl.map(function(p){ return '<a href="'+p[4]+'"><span><span class="tag '+p[0]+'">'+p[1]+'</span>'+esc(p[2])+'</span><span class="r">'+p[3]+'</span></a>'; }).join(''):'')+
@@ -97,7 +97,12 @@ function render(){
   h+='<div class="card" id="fbCard"><h3>💬 Nhận xét của thầy</h3><div class="list" id="fbList">'+(a?'<p class="hint">Đang tải…</p>':'<p class="hint">Đăng nhập Google để xem nhận xét của thầy cho bài Writing và bài nói bạn đã gửi.</p>')+'</div></div>';
   app.innerHTML=h;
   var hm=app.querySelector('.mheat'); if(hm) hm.scrollLeft=hm.scrollWidth;
-  if(VIEW) [].forEach.call(app.querySelectorAll('.list a'),function(x){ x.removeAttribute('href'); });
+  if(VIEW) [].forEach.call(app.querySelectorAll('.list a'),function(x){
+    if(!x.dataset.src){ x.removeAttribute('href'); return; }
+    x.onclick=function(e){ e.preventDefault(); var L=[]; try{ L=JSON.parse(VIEW.d[x.dataset.src]||'[]')||[]; }catch(er){}
+      var key=x.dataset.src==='ets26.hist'?'at':'t', rec=L.filter(function(r){ return r&&String(r[key])===x.dataset.rk; });
+      try{ sessionStorage.setItem('mt.peek',JSON.stringify(rec)); }catch(er){}
+      location.href=x.getAttribute('href')+'&peek=1'; }; });
   if(a&&FBL) drawFb(); else if(a) loadFb();
 }
 var FBL=null, fbUid='';
