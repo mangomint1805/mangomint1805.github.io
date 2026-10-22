@@ -144,13 +144,14 @@
   var EL = null;
   function redraw() { if (EL && document.body.contains(EL)) render(EL); if (window.MACCPAINT) try { window.MACCPAINT(); } catch (e) {} }
   function fmt(t) { if (!t) return ''; var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  function isGV(e) { e = String(e || '').toLowerCase(); var x = 2166136261; for (var i = 0; i < e.length; i++) { x ^= e.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36) === '979n45'; }
   function render(el) {
     EL = el; var a = J('mt.acc', null), last = J('mt.sync.last', {});
     if (a) {
       el.innerHTML = '<div class="ma-u">' + (a.photo ? '<img src="' + esc(a.photo) + '" alt="" referrerpolicy="no-referrer">' : '<span class="ma-av">' + esc((a.name || a.email || '?').charAt(0)) + '</span>') +
         '<span><b>' + esc(a.name || 'Tài khoản Google') + '</b><small>' + esc(a.email) + '</small></span></div>' +
         '<small class="ma-st">' + (lastErr ? '⚠ Chưa đồng bộ được (' + esc(lastErr) + ')' : last.at ? '☁ Đã đồng bộ lúc ' + fmt(last.at) : '☁ Đang đồng bộ…') + '</small>' +
-        '<div class="ma-l"><a href="/ho-so.html">👤 Hồ sơ của tôi</a><a href="/xep-hang.html">🏆 Xếp hạng tuần</a></div>' +
+        '<div class="ma-l"><a href="/ho-so.html">👤 Hồ sơ của tôi</a><a href="/xep-hang.html">🏆 Xếp hạng tuần</a>' + (isGV(a.email) ? '<a href="/gv.html">🧑‍🏫 Bảng theo dõi lớp</a>' : '') + '</div>' +
         '<div class="ma-b"><button type="button" data-a="sync">Đồng bộ ngay</button><button type="button" data-a="out">Đăng xuất</button></div>';
     } else if (inApp()) {
       var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent), ext = extUrl();
