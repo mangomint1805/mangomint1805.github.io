@@ -97,7 +97,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   function prep(){
     D.rows=D.results.filter(function(r){ return r[5]!=='Góp ý' && r[5]!=='Writing' && String(r[4]).indexOf('Góp ý')!==0; }).map(function(r){
       var b=String(r[9]||''), m=b.match(/TOEIC ~(\d+)/), sc=m&&/\(LC/.test(b)?+m[1]:0, band=!/TOEIC/.test(b)&&b!==''&&!isNaN(+b)?+b:null;
-      return { t:new Date(r[0]), name:String(r[1]||'').trim(), lop:String(r[2]||'').trim(), test:String(r[3]||''), part:String(r[4]||''), mode:String(r[5]||''), got:+r[6]||0, total:+r[7]||0, pct:r[8]===''?null:+r[8], toeic:sc, band:band, sec:/Listening/.test(r[4])?'L':/Reading/.test(r[4])?'R':'', wrong:String(r[11]||''), site:site(String(r[3]||'')), place:String(r[5]||'')==='Xếp lớp'?b:'', email:String(r[14]||'').trim().toLowerCase() };
+      return { t:new Date(r[0]), name:String(r[1]||'').trim(), lop:String(r[2]||'').trim(), test:String(r[3]||''), part:String(r[4]||''), mode:String(r[5]||''), got:+r[6]||0, total:+r[7]||0, pct:r[8]===''?null:+r[8], toeic:sc, band:band, sec:/Listening/.test(r[4])?'L':/Reading/.test(r[4])?'R':'', wrong:String(r[11]||''), site:site(String(r[3]||'')), place:String(r[5]||'')==='Xếp lớp'?b:'', email:String(r[14]||'').trim().toLowerCase(), ansRaw:String(r[15]||''), minutes:r[10]===''?'':r[10], bandRaw:String(r[9]||'') };
     });
     var lops={}; D.rows.forEach(function(r){ if(r.lop) lops[r.lop]=1; });
     $('fLop').innerHTML='<option value="">Tất cả lớp</option>'+Object.keys(lops).sort().map(function(l){ return '<option>'+esc(l)+'</option>'; }).join('');
@@ -126,7 +126,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
       if(open[s.k]){
         var wc={}; s.all.forEach(function(r){ if(r.site==='T'&&r.mode!=='Xếp lớp') r.wrong.split(/,\s*/).forEach(function(w){ if(w) wc[r.test.replace('ETS 2026 · ','')+' câu '+w]=(wc[r.test.replace('ETS 2026 · ','')+' câu '+w]||0)+1; }); });
         var rec=s.all.slice().sort(function(a,b){return b.t-a.t;}).slice(0,12);
-        h+='<tr class="detail"><td colspan="8"><b>Bài gần đây</b>'+(s.email?' <small style="color:#8a8f99">— bấm vào một bài để xem từng câu</small>':'')+'<ul>'+rec.map(function(r){ var ri=RECS.push(r)-1; return '<li'+(r.email?' class="ri" data-ri="'+ri+'" style="cursor:pointer;color:#6b4410;text-decoration:underline dotted"':'')+'>'+r.t.toLocaleDateString('vi-VN')+' · '+esc(r.test)+' · '+esc(r.part)+' · '+esc(r.mode)+' · '+r.got+'/'+r.total+(r.toeic?' · TOEIC ~'+r.toeic:'')+(r.band!=null?' · band '+r.band:'')+(r.email?' 👀':'')+'<small class="rh" style="color:#8a8f99"></small></li>'; }).join('')+'</ul>'+(function(){ var top=Object.keys(wc).filter(function(k){return wc[k]>=2;}).sort(function(a,b){return wc[b]-wc[a];}).slice(0,10); return top.length?'<b>Câu sai nhiều lần</b> <small class="hint">(sai từ 2 lần, đáng ôn lại)</small><ul>'+top.map(function(k){return '<li>'+esc(k)+' · sai '+wc[k]+' lần</li>';}).join('')+'</ul>':''; })()+'</td></tr>';
+        h+='<tr class="detail"><td colspan="8"><b>Bài gần đây</b>'+(s.email?' <small style="color:#8a8f99">— bấm vào một bài để xem từng câu</small>':'')+'<ul>'+rec.map(function(r){ var ri=RECS.push(r)-1; return '<li'+(r.email||r.ansRaw?' class="ri" data-ri="'+ri+'" style="cursor:pointer;color:#6b4410;text-decoration:underline dotted"':'')+'>'+r.t.toLocaleDateString('vi-VN')+' · '+esc(r.test)+' · '+esc(r.part)+' · '+esc(r.mode)+' · '+r.got+'/'+r.total+(r.toeic?' · TOEIC ~'+r.toeic:'')+(r.band!=null?' · band '+r.band:'')+(r.email||r.ansRaw?' 👀':'')+'<small class="rh" style="color:#8a8f99"></small></li>'; }).join('')+'</ul>'+(function(){ var top=Object.keys(wc).filter(function(k){return wc[k]>=2;}).sort(function(a,b){return wc[b]-wc[a];}).slice(0,10); return top.length?'<b>Câu sai nhiều lần</b> <small class="hint">(sai từ 2 lần, đáng ôn lại)</small><ul>'+top.map(function(k){return '<li>'+esc(k)+' · sai '+wc[k]+' lần</li>';}).join('')+'</ul>':''; })()+'</td></tr>';
       }
     });
     $('tbl').innerHTML=h||'<tr><td>Chưa có dữ liệu.</td></tr>';
@@ -166,8 +166,14 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   }
   function openRec(li){
     var r=RECS[+li.dataset.ri]; if(!r) return;
-    function go(){ var f=findRec(r); if(!f){ li.querySelector('.rh').textContent=' — bài này không có chi tiết (bạn chưa đăng nhập Google, hoặc nộp trước 21/10)'; return; }
-      try{ sessionStorage.setItem('mt.peek',JSON.stringify([f.rec])); }catch(e){} window.open(f.href,'_blank'); }
+    function show(data){
+      var K={data:data,name:r.name,lop:r.lop,email:r.email,test:r.test,part:r.part,mode:r.mode,when:+r.t,got:r.got,total:r.total,minutes:r.minutes||'',score:r.bandRaw.replace(/^TOEIC ~/,'').replace(/\s*\(.*$/,'')};
+      try{ sessionStorage.setItem('mt.kq',JSON.stringify(K)); }catch(e){} window.open('ket-qua.html','_blank'); }
+    if(r.ansRaw){ try{ show(JSON.parse(r.ansRaw)); return; }catch(e){} }
+    function go(){ var f=findRec(r); if(!f){ li.querySelector('.rh').textContent=' — bài này không có chi tiết (nộp trước khi web lưu bài làm, và bạn này chưa đăng nhập Google)'; return; }
+      var x=f.rec, m=/\/((?:c|v)\d+)\/test-/.exec(f.href);
+      show(f.href.indexOf('toeic/')===0?{site:'T',t:x.test,m:x.mode,at:x.at,a:x.ans}:{site:'I',b:m?m[1]:'',t:x.test,s:x.sec,p:x.part,at:x.t,a:x.ans,w:x.wrong}); }
+    if(!r.email){ li.querySelector('.rh').textContent=' — bài này không có chi tiết'; return; }
     if(USERS) go(); else if(FSX){ li.querySelector('.rh').textContent=' — đang tìm…'; FSX.F.getDocs(FSX.F.collection(FSX.db,'users')).then(function(qs){ USERS={}; qs.forEach(function(d){ var x=d.data(); if(x.email) USERS[String(x.email).toLowerCase()]={uid:d.id,d:x.d||{}}; }); li.querySelector('.rh').textContent=''; go(); }).catch(function(){ li.querySelector('.rh').textContent=' — không đọc được dữ liệu học sinh'; }); }
     else li.querySelector('.rh').textContent=' — đăng nhập Google tài khoản giáo viên để xem chi tiết';
   }
