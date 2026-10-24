@@ -1,0 +1,48 @@
+// Bản ĐỀ XUẤT luật Firestore cho project minto-english — soạn từ cách code đang đọc/ghi dữ liệu.
+// Chưa áp dụng. So với bản đang dùng (Firebase Console → Firestore → Rules) trước khi Publish.
+// Thay EMAIL_GIAO_VIEN bằng email Google của thầy (viết thường).
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function me(uid) { return signedIn() && request.auth.uid == uid; }
+    function gv() { return signedIn() && request.auth.token.email == 'EMAIL_GIAO_VIEN' && request.auth.token.email_verified; }
+
+    // Tiến độ đồng bộ của từng học viên: chỉ chính chủ đọc/ghi, thầy đọc được.
+    match /users/{uid} {
+      allow read: if me(uid) || gv();
+      allow write: if me(uid);
+    }
+
+    // Bảng xếp hạng tuần: ai đăng nhập cũng xem được, chỉ sửa được dòng của mình.
+    match /board/{uid} {
+      allow read: if signedIn();
+      allow delete: if me(uid);
+      allow create, update: if me(uid)
+        && request.resource.data.pts is number && request.resource.data.pts >= 0 && request.resource.data.pts < 100000
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40;
+    }
+
+    // Bài nói ghi âm (rec = thông tin, recdata = file): học viên tạo bài của mình, thầy xem và nhận xét.
+    match /rec/{id} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow read: if gv() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow update: if gv();
+    }
+    match /recdata/{id} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow read: if gv() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // Nhận xét bài viết của thầy: học viên chỉ đọc được nhận xét gửi đúng email mình.
+    match /fb/{id} {
+      allow read: if gv() || (signedIn() && resource.data.email == request.auth.token.email);
+      allow write: if gv();
+    }
+
+    // Mã giáo viên: chỉ thầy đọc/ghi.
+    match /config/{doc} {
+      allow read, write: if gv();
+    }
+  }
+}
