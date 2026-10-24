@@ -44,7 +44,7 @@ th,td{padding:8px 10px;border-bottom:1px solid #efeae0;text-align:left;vertical-
 </head>
 <body>
 <div class="wrap">
-  <nav class="top"><a href="gv.html">← Bảng theo dõi lớp</a><a href="./">🏠 Trang chủ</a></nav>
+  <nav class="top" id="topnav"><a href="gv.html">← Bảng theo dõi lớp</a><a href="./">🏠 Trang chủ</a></nav>
   <div id="app"><p class="hint">Đang tải kết quả…</p></div>
 </div>
 <script>
@@ -54,8 +54,9 @@ th,td{padding:8px 10px;border-bottom:1px solid #efeae0;text-align:left;vertical-
   function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   function fail(m){ app.innerHTML='<div class="err">'+m+'</div>'; }
   var K=null; try{ K=JSON.parse(sessionStorage.getItem('mt.kq')); }catch(e){}
-  if(!K||!K.data){ fail('Không có dữ liệu bài làm. Mở trang này từ <a href="gv.html">Bảng theo dõi lớp</a> (bấm vào một bài trong "Bài gần đây").'); return; }
+  if(!K||!K.data){ fail('Không có dữ liệu bài làm. Mở trang này từ nút "📊 Phân tích chi tiết" sau khi nộp bài, hoặc từ Bảng theo dõi lớp.'); return; }
   var D=K.data, A=D.a||{};
+  if(K.self){ document.getElementById('topnav').innerHTML='<a href="ho-so.html">👤 Hồ sơ của tôi</a><a href="toeic/">TOEIC</a><a href="cam/">IELTS</a><a href="./">🏠 Trang chủ</a>'; document.title='Phân tích bài làm · Minto English'; }
   function load(src){ return new Promise(function(ok,no){ var s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=function(){ no(new Error(src)); }; document.head.appendChild(s); }); }
 
   // ---------- TOEIC ----------
@@ -127,7 +128,7 @@ th,td{padding:8px 10px;border-bottom:1px solid #efeae0;text-align:left;vertical-
     h+='<h2>Phân tích chi tiết</h2><div class="tabs" id="tabs">'+parts.map(function(p,i){ return '<button type="button" data-p="'+esc(p)+'" aria-pressed="'+(i===0)+'">'+esc(p)+'</button>'; }).join('')+(parts.length>1?'<button type="button" data-p="*" aria-pressed="false">Tổng quát</button>':'')+'</div><div class="tw" id="ana"></div>'+
       '<div class="legend"><span><span class="qn ok">1</span> đúng</span><span><span class="qn bad">2</span> sai</span><span><span class="qn skip">3</span> bỏ qua</span><span>· bấm số câu để xuống phần đáp án</span></div>';
     // đáp án
-    h+='<h2>Đáp án</h2><p class="hint">Mỗi dòng: <b style="color:var(--ok)">đáp án đúng</b> : câu trả lời của học sinh. Bấm "Chi tiết" để mở đề, xem câu hỏi, lời thoại / bài đọc và giải thích.</p><div class="card"><div class="parts">';
+    h+='<h2>Đáp án</h2><p class="hint">Mỗi dòng: <b style="color:var(--ok)">đáp án đúng</b> : '+(K.self?'câu bạn đã chọn':'câu trả lời của học sinh')+'. Bấm "Chi tiết" để mở đề, xem câu hỏi, lời thoại / bài đọc và giải thích.</p><div class="card"><div class="parts">';
     var cur='';
     Q.forEach(function(q,i){
       if(q.part!==cur){ cur=q.part; h+='<div class="ph">'+esc(cur)+'</div>'; }
