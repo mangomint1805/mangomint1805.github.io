@@ -16,14 +16,10 @@ Trang chủ và các trang dùng chung cho mọi web học của Minto English t
 | `progress.js` | tổng hợp tiến độ từ web TOEIC và IELTS |
 | `firestore.rules` | **bản đề xuất** luật bảo mật Firestore (xem bên dưới) |
 
-## Luật bảo mật Firestore
+## Luật bảo mật Firebase
 
 Ai được đọc/ghi dữ liệu nào trên Firebase do *Rules* trong Firebase Console quyết định, không phải code trong repo này.
-File `firestore.rules` là bản đề xuất, soạn theo cách các trang đang đọc/ghi dữ liệu:
 
-- học viên chỉ đọc/ghi tiến độ, bài nói và nhận xét **của chính mình**;
-- bảng xếp hạng: ai đăng nhập cũng xem được, chỉ sửa được dòng của mình;
-- mã giáo viên (`config/gv`) và dữ liệu cả lớp: **chỉ thầy** đọc được.
-
-Áp dụng: Firebase Console → Firestore Database → Rules → so với bản đang dùng → thay `EMAIL_GIAO_VIEN` bằng email Google của thầy → Publish.
-Sau đó thử lại: đăng nhập bằng tài khoản học viên (đồng bộ tiến độ, bảng xếp hạng, ghi âm Speaking) và tài khoản thầy (`gv.html`).
+Kiểm tra ngày 25/10/2026:
+- **Firestore:** luật đang chạy (áp dụng 21/10) đã an toàn: học viên chỉ đọc/ghi dữ liệu của mình, mã giáo viên (`config/gv`) và dữ liệu cả lớp chỉ thầy đọc được. File `firestore.rules` trong repo chỉ là bản tham khảo cũ, **không Publish đè lên**.
+- **Realtime Database:** `who/` và `log/` (có email học viên) chỉ thầy đọc được; `online/` đọc công khai (chỉ đếm số người). Mỗi bản ghi chỉ nhận các trường đã liệt kê (`"$other": {".validate": false}`); đã thêm trường `l` (mã lớp, web Tóm tắt) ngày 25/10. Muốn web gửi thêm trường mới thì phải thêm vào luật trước, nếu không Firebase từ chối cả lần ghi.

@@ -1,6 +1,6 @@
-// Bản ĐỀ XUẤT luật Firestore cho project minto-english — soạn từ cách code đang đọc/ghi dữ liệu.
-// Chưa áp dụng. So với bản đang dùng (Firebase Console → Firestore → Rules) trước khi Publish.
-// Thay EMAIL_GIAO_VIEN bằng email Google của thầy (viết thường).
+// ⚠️ CHỈ ĐỂ THAM KHẢO — KHÔNG Publish file này.
+// Luật đang chạy trên Firebase (áp dụng 21/10/2026) đã được kiểm tra ngày 25/10/2026: an toàn và đầy đủ hơn bản này
+// (có quyền xoá bài nói cho thầy/chính chủ, giới hạn file ghi âm < 1MB). Publish file này đè lên sẽ làm mất các phần đó.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
