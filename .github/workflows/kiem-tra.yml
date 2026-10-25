@@ -1,0 +1,24 @@
+# Tự kiểm tra sau mỗi lần đẩy code: lỗi JavaScript, file bị thiếu, lỗi cú pháp .js.
+# Xem kết quả ở tab Actions trên GitHub (dấu ✓ xanh = ổn, ✗ đỏ = có lỗi, bấm vào để xem trang nào).
+name: Kiểm tra trang
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cài trình duyệt
+        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: Mở từng trang và kiểm tra
+        run: node .github/scripts/check-pages.js
+        env:
+          PREFIX: ""
+          ROOT: "."
+          SKIP: "^/(cam|toeic|summary-new|summary-old)/"
