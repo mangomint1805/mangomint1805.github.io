@@ -196,6 +196,19 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     <p class="note" id="tkstuNote"></p>
     <div class="tw"><table class="t stu"><thead id="tkstuH"></thead><tbody id="tkstuB"></tbody></table></div>
 
+    <div class="row"><h2>📋 Đối chiếu danh sách lớp</h2><button type="button" class="btn" id="tkrosEdit">✏️ Dán danh sách từ ERP</button></div>
+    <div class="card">
+      <div class="flt"><select id="tkrosCls" aria-label="Lớp cần đối chiếu"></select><span class="note" id="tkrosSum" style="margin:0"></span></div>
+      <p class="note">Tính theo web và khoảng thời gian đang chọn ở trên (đổi sang 7 ngày / 30 ngày để xem rộng hơn). Chỉ nhận ra các bạn đã đăng nhập Google.</p>
+      <div id="tkrosEditor" class="hide" style="margin-top:12px">
+        <p class="note">Mở trang lớp trên <b>erp.ebomb.edu.vn/teacher</b>, bôi đen cả bảng học viên, copy rồi dán vào ô dưới. Dòng đầu ghi <b>mã lớp</b> (VD: <code>TOPRE115276</code>); dán nhiều lớp thì mỗi lớp bắt đầu bằng một dòng có mã lớp. Dán lại là thay danh sách của lớp đó. Danh sách chỉ lưu trên máy này và trong Firebase (chỉ thầy đọc được), không đưa lên web công khai.</p>
+        <textarea id="tkrosTxt" rows="10" style="width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px" placeholder="TOPRE115276&#10;1	Nguyễn Văn A&#10;2	Trần Thị B&#10;…"></textarea>
+        <div class="flt" style="margin-top:8px"><button type="button" class="btn pri" id="tkrosSave">Lưu danh sách</button><button type="button" class="btn" id="tkrosCancel">Huỷ</button><span class="note" id="tkrosMsg" style="margin:0"></span></div>
+      </div>
+    </div>
+    <div class="tw" style="margin-top:12px"><table class="t ros"><thead><tr><th>#</th><th>Học viên</th><th>Tình trạng</th><th>Số lượt</th><th class="c-last">Lần cuối</th><th class="c-web">Tài khoản Google</th></tr></thead><tbody id="tkrosB"></tbody></table></div>
+    <div id="tkrosUn"></div>
+
     <div class="row"><h2>Chi tiết</h2><button type="button" class="btn" id="tkcsv">⬇ Xuất CSV</button></div>
     <div class="tw"><table class="t hist"><thead><tr><th>Thời gian</th><th class="c-web">Web</th><th>Trang</th><th>Học viên</th><th class="c-tab">Tab</th></tr></thead><tbody id="tkhistB"></tbody></table></div>
     <div class="more"><button type="button" class="btn hide" id="tkmoreB">Xem thêm</button></div>
@@ -459,6 +472,7 @@ function stop() { subs.splice(0).forEach(f => { try { f(); } catch (e) {} }); cl
 
 // ---------- đang online ----------
 function start() {
+  loadRosterRemote();
   subs.push(D.onValue(D.ref(db, '.info/serverTimeOffset'), s => { const v = s.val(); if (typeof v === 'number') off = v; }));
   SITES.forEach(s => {
     subs.push(D.onValue(D.ref(db, 'online/' + s), sn => { live.online[s] = sn.val() || {}; paintLive(); }, () => {}));
@@ -515,7 +529,7 @@ function paint() {
   $('sViews').textContent = L.length;
   $('sStu').textContent = new Set(signed.map(r => r.e)).size;
   $('sGuest').textContent = L.length - signed.length;
-  chart(L); students(signed);
+  chart(L); students(signed); renderRoster();
   const H = L.slice(0, shown);
   $('histB').innerHTML = H.length ? H.map(r => '<tr><td class="nw">' + fmt(r.t) + '</td><td class="c-web">' + esc(NAME[r.s]) + '</td><td>' + esc(title(r.u, r.s)) + '<small>' + esc(r.u) + '</small></td><td>' + (r.e ? esc(r.n || r.e) + (isSum() ? lopBadge(lopOf(r)) : '') + (r.n ? '<small>' + esc(r.e) + '</small>' : '') : '<span class="guest">Khách</span>') + '</td><td class="c-tab"><code>' + esc(r.i.slice(0, 6)) + '</code></td></tr>').join('') : '<tr><td colspan="5">Chưa có lượt xem nào trong khoảng này.</td></tr>';
   $('moreB').classList.toggle('hide', L.length <= shown);
@@ -581,6 +595,99 @@ async function loadClasses() {
   lopOptions(); if (rows.length) paint();
 }
 
+// ---------- đối chiếu danh sách lớp (dán từ ERP; chỉ lưu trên máy thầy + Firebase config/roster, không đưa lên GitHub) ----------
+const RKEY = 'gv.roster';
+let ROS = { cls: {}, link: {}, t: 0 }; // cls: {mã lớp: {t: tiêu đề, s: [{n, a: [tên khác], e}]}}, link: {email: 'MÃ|vị trí' hoặc '-'}
+try { const v = JSON.parse(localStorage.getItem(RKEY) || 'null'); if (v && v.cls) ROS = Object.assign(ROS, v); } catch (e) {}
+const nm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+function parseRoster(txt) {
+  const out = {}; let cur = null, skip = false;
+  txt.split(/\r?\n/).forEach(line => {
+    const raw = line.trim(); if (!raw) return;
+    const code = raw.match(/\b([A-Z]{2,6}\d{5,6})\b/);
+    if (code && !/^\|?\s*\d+\s*(\||\t)/.test(raw)) { cur = code[1]; skip = false; out[cur] = out[cur] || { t: raw.replace(/^#+\s*/, '').slice(0, 120), s: [] }; return; }
+    if (/(nghỉ|bảo lưu)/i.test(raw) && !/[|\t]/.test(raw)) { skip = true; return; } // dòng "Đã nghỉ/bảo lưu: …"
+    if (!cur || skip) return;
+    if (/(^|[\s|\t])(stt|#)([\s|\t]|$)|họ (và )?tên|mã hv|mã học viên/i.test(raw) && !/[|\t]\s*\d+\s*[|\t]/.test(raw)) return; // dòng tiêu đề bảng
+    const cells = (raw.includes('|') ? raw.split('|') : raw.split(/\t| {2,}/)).map(c => c.trim()).filter(Boolean);
+    const name = cells.find(c => /\p{L}/u.test(c) && !/[\d@:`]/.test(c) && c.split(/\s+/).length >= 2 && c.split(/\s+/).length <= 9 && !/^(họ|ho)( và| va)? tên|student|ghi chú|stt|lớp/i.test(c));
+    if (!name) return;
+    const em = (cells.find(c => /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(c)) || '').toLowerCase();
+    const m = name.match(/^(.*?)\s*\((.*?)\)\s*$/), n = (m ? m[1] : name).trim();
+    if (!out[cur].s.some(x => nm(x.n) === nm(n))) out[cur].s.push({ n, a: m ? [m[2].trim()] : [], e: em });
+  });
+  Object.keys(out).forEach(k => { if (!out[k].s.length) delete out[k]; });
+  return out;
+}
+function saveRoster(remote) {
+  ROS.t = Date.now();
+  try { localStorage.setItem(RKEY, JSON.stringify(ROS)); } catch (e) {}
+  if (!remote || !window.MACC || !MACC.fs) return Promise.resolve(false);
+  return MACC.fs().then(x => x.F.setDoc(x.F.doc(x.db, 'config', 'roster'), { v: JSON.stringify(ROS), t: ROS.t })).then(() => true, () => false);
+}
+function loadRosterRemote() {
+  if (!window.MACC || !MACC.fs) return;
+  MACC.fs().then(x => x.F.getDoc(x.F.doc(x.db, 'config', 'roster'))).then(sn => {
+    if (!sn || !sn.exists()) return; const d = sn.data() || {};
+    if ((d.t || 0) > (ROS.t || 0)) { try { const v = JSON.parse(d.v); if (v && v.cls) { ROS = Object.assign({ cls: {}, link: {}, t: 0 }, v); try { localStorage.setItem(RKEY, JSON.stringify(ROS)); } catch (e) {} rosOptions(); renderRoster(); } } catch (e) {} }
+  }).catch(() => {});
+}
+function rosOptions() {
+  const f = $('rosCls'), codes = Object.keys(ROS.cls).sort();
+  let want = f.value; if (!want) try { want = localStorage.getItem('gv.rosCls') || ''; } catch (e) {}
+  f.innerHTML = codes.length ? codes.map(c => '<option value="' + esc(c) + '">' + esc(c) + ' · ' + ROS.cls[c].s.length + ' bạn</option>').join('') : '<option value="">Chưa có danh sách — bấm “Dán danh sách từ ERP”</option>';
+  if (codes.includes(want)) f.value = want;
+}
+// tìm học viên trong lớp ứng với một tài khoản Google: ghép tay > email trên ERP > trùng họ tên > trùng tên + họ đệm
+function matchIdx(v, code, S) {
+  const L = ROS.link[v.e];
+  if (L) { if (L === '-') return -1; const [c, i] = L.split('|'); return c === code && S[+i] ? +i : -1; }
+  let hit = S.findIndex(s => s.e && s.e === v.e); if (hit >= 0) return hit;
+  const d = nm(v.n); if (!d) return -1;
+  const eq = S.map((s, i) => [s.n].concat(s.a || []).some(x => nm(x) === d) ? i : -1).filter(i => i >= 0);
+  if (eq.length === 1) return eq[0];
+  const dt = d.split(' '); if (dt.length < 2) return -1;
+  const part = S.map((s, i) => [s.n].concat(s.a || []).some(x => { const st = nm(x).split(' '); return dt.includes(st[st.length - 1]) && dt.every(w => st.includes(w)); }) ? i : -1).filter(i => i >= 0);
+  return part.length === 1 ? part[0] : -1;
+}
+function renderRoster() {
+  const code = $('rosCls').value, C = ROS.cls[code];
+  if (!C) { $('rosB').innerHTML = '<tr><td colspan="6">Chưa có danh sách lớp. Bấm “✏️ Dán danh sách từ ERP” để thêm.</td></tr>'; $('rosSum').textContent = ''; $('rosUn').innerHTML = ''; return; }
+  const S = C.s, vis = new Map();
+  filtered().forEach(r => { if (!r.e) return; let x = vis.get(r.e); if (!x) vis.set(r.e, x = { e: r.e, n: '', c: 0, last: 0, w: {} }); x.c++; if (r.t > x.last) { x.last = r.t; x.n = r.n || x.n; } else if (!x.n) x.n = r.n; x.w[r.s] = 1; });
+  const got = S.map(() => []), un = [];
+  vis.forEach(v => { const i = matchIdx(v, code, S); if (i >= 0) got[i].push(v); else if (!ROS.link[v.e] && (!EL.get(v.e) || EL.get(v.e) === code)) un.push(v); });
+  const done = got.filter(g => g.length).length;
+  $('rosSum').textContent = done + '/' + S.length + ' bạn đã vào · ' + (S.length - done) + ' bạn chưa vào';
+  const order = S.map((s, i) => i).sort((a, b) => (got[a].length ? 1 : 0) - (got[b].length ? 1 : 0) || a - b); // chưa vào lên trước
+  $('rosB').innerHTML = order.map(i => {
+    const s = S[i], g = got[i], c = g.reduce((a, v) => a + v.c, 0), last = Math.max(0, ...g.map(v => v.last));
+    return '<tr><td class="nw">' + (i + 1) + '</td><td>' + esc(s.n) + (s.a && s.a.length ? '<small>' + esc(s.a.join(', ')) + '</small>' : '') + '</td><td class="nw">' +
+      (g.length ? '<span class="lop" style="background:#e1f4ec;color:#1f8f6c">Đã vào</span>' : '<span class="lop" style="background:#fbe6e2;color:#c14636">Chưa vào</span>') + '</td><td class="nw">' + (c || '') + '</td><td class="nw c-last">' + (last ? fmt(last) : '') + '</td><td class="c-web">' +
+      g.map(v => esc(v.n || v.e) + '<small>' + esc(v.e) + ' · ' + Object.keys(v.w).map(k => esc(NAME[k])).join(', ') + (ROS.link[v.e] ? ' · <a href="#" data-unlink="' + esc(v.e) + '">bỏ ghép</a>' : '') + '</small>').join('') + '</td></tr>';
+  }).join('');
+  $('rosUn').innerHTML = un.length ? '<h2 style="font-size:18px;margin:18px 0 6px">Tài khoản chưa ghép được với ai trong lớp ' + esc(code) + '</h2><p class="note">Tên Google khác tên trên ERP (hoặc trùng tên). Chọn đúng học viên để ghép; chọn “Không thuộc lớp này” để ẩn.</p><div class="tw"><table class="t"><tbody>' +
+    un.sort((a, b) => b.last - a.last).map(v => '<tr><td>' + esc(v.n || v.e) + '<small>' + esc(v.e) + '</small></td><td class="nw">' + v.c + ' lượt · ' + fmt(v.last) + '</td><td><select data-link="' + esc(v.e) + '"><option value="">Ghép với…</option>' +
+      S.map((s, i) => '<option value="' + i + '">' + esc(s.n) + '</option>').join('') + '<option value="-">Không thuộc lớp này</option></select></td></tr>').join('') + '</tbody></table></div>' : '';
+}
+function rosterCtl() {
+  $('rosEdit').onclick = () => { $('rosEditor').classList.toggle('hide'); $('rosMsg').textContent = ''; if (!$('rosEditor').classList.contains('hide')) $('rosTxt').focus(); };
+  $('rosCancel').onclick = () => { $('rosEditor').classList.add('hide'); };
+  $('rosSave').onclick = async () => {
+    const P = parseRoster($('rosTxt').value), codes = Object.keys(P);
+    if (!codes.length) { $('rosMsg').textContent = 'Chưa đọc được danh sách: cần một dòng có mã lớp (VD: TOPRE115276) rồi tới các dòng tên học viên.'; return; }
+    codes.forEach(c => { ROS.cls[c] = P[c]; Object.keys(ROS.link).forEach(e => { if (ROS.link[e].split('|')[0] === c) delete ROS.link[e]; }); });
+    $('rosMsg').textContent = 'Đang lưu…';
+    const ok = await saveRoster(true);
+    $('rosMsg').textContent = 'Đã lưu ' + codes.map(c => c + ' (' + P[c].s.length + ' bạn)').join(', ') + (ok ? '.' : ' — chỉ lưu trên máy này (Firebase chưa cho lưu).');
+    $('rosTxt').value = ''; rosOptions(); $('rosCls').value = codes[0]; try { localStorage.setItem('gv.rosCls', codes[0]); } catch (e) {} renderRoster();
+  };
+  $('rosCls').onchange = () => { try { localStorage.setItem('gv.rosCls', $('rosCls').value); } catch (e) {} renderRoster(); };
+  $('rosUn').onchange = e => { const s = e.target.closest('select[data-link]'); if (!s || s.value === '') return; ROS.link[s.dataset.link] = s.value === '-' ? '-' : $('rosCls').value + '|' + s.value; saveRoster(true); renderRoster(); };
+  $('rosB').onclick = e => { const a = e.target.closest('a[data-unlink]'); if (!a) return; e.preventDefault(); delete ROS.link[a.dataset.unlink]; saveRoster(true); renderRoster(); };
+  rosOptions(); renderRoster();
+}
+
 // ---------- CSV ----------
 function csv() {
   const L = filtered(), q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
@@ -624,7 +731,7 @@ $('reload').onclick = loadHist;
 $('csv').onclick = csv;
 $('clean').onclick = clean;
 let rT = 0; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { if (rows.length || !$('app').classList.contains('hide')) chart(filtered()); }, 200); });
-setTab(tab); loadClasses();
+rosterCtl(); setTab(tab); loadClasses();
 boot();
 </script>
 
