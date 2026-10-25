@@ -208,6 +208,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     </div>
     <div class="tw" style="margin-top:12px"><table class="t ros"><thead><tr><th>#</th><th>Học viên</th><th>Tình trạng</th><th>Số lượt</th><th class="c-last">Lần cuối</th><th class="c-web">Tài khoản Google</th></tr></thead><tbody id="tkrosB"></tbody></table></div>
     <div id="tkrosUn"></div>
+    <div id="tkrosOut"></div>
 
     <div class="row"><h2>Chi tiết</h2><button type="button" class="btn" id="tkcsv">⬇ Xuất CSV</button></div>
     <div class="tw"><table class="t hist"><thead><tr><th>Thời gian</th><th class="c-web">Web</th><th>Trang</th><th>Học viên</th><th class="c-tab">Tab</th></tr></thead><tbody id="tkhistB"></tbody></table></div>
@@ -256,6 +257,16 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     $('fLop').innerHTML='<option value="">Tất cả lớp</option>'+Object.keys(lops).sort().map(function(l){ return '<option>'+esc(l)+'</option>'; }).join('');
   }
   function key(n){ return n.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/\s+/g,' '); }
+  // Có trong danh sách ERP không (danh sách lớp dán/lấy từ ERP ở tab Truy cập web, lưu ở gv.roster). Không có vẫn vào web bình thường, chỉ ghi chú cho thầy thấy.
+  function erpHas(email,name){
+    var R=null; try{ R=JSON.parse(localStorage.getItem('gv.roster')||'null'); }catch(e){}
+    if(!R||!R.cls||!Object.keys(R.cls).length||!email) return true;
+    var L=R.link&&R.link[email]; if(L&&L!=='-') return true;
+    var n=key(String(name||'')).replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim(), hit=false;
+    Object.keys(R.cls).forEach(function(c){ (R.cls[c].s||[]).forEach(function(x){ if(x.e&&x.e===email) hit=true; else if(n&&[x.n].concat(x.a||[]).some(function(y){ return key(String(y)).replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim()===n; })) hit=true; }); });
+    return hit;
+  }
+  window.GVRERENDER=function(){ if(D&&D.rows) render(); };
   function ago(d){ var x=Math.floor((Date.now()-d)/864e5); return x<=0?'hôm nay':x===1?'hôm qua':x+' ngày trước'; }
   function pc(v){ return v==null?'–':Math.round(v)+'%'; }
   function cls(v){ return v==null?'dim':v>=70?'ok':v>=50?'mid':'bad'; }
@@ -274,7 +285,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     var H=[['name','Họ tên'],['lop','Lớp'],['n','Bài nộp'],['avg','% đúng TB'],['last','Lần cuối'],['toeic','TOEIC cao nhất'],['bandL','Band L / R'],['place','Xếp lớp']];
     var h='<tr>'+H.map(function(c){ return '<th data-k="'+c[0]+'">'+c[1]+(sortK===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>'; }).join('')+'</tr>';
     list.forEach(function(s){
-      h+='<tr class="stu" data-k="'+esc(s.k)+'"><td><b>'+esc(s.name||'(chưa nhập tên)')+'</b>'+(s.email?'<br><small style="color:#8a8f99">'+esc(s.email)+'</small>':'')+'</td><td>'+esc(s.lop||'–')+'</td><td class="n">'+s.n+'</td><td><span class="tag '+cls(s.avg)+'">'+pc(s.avg)+'</span><div class="bar"><i style="width:'+(s.avg||0)+'%;background:'+(s.avg>=70?'#1f8f6c':s.avg>=50?'#d9a63c':'#c14636')+'"></i></div></td>'+
+      h+='<tr class="stu" data-k="'+esc(s.k)+'"><td><b>'+esc(s.name||'(chưa nhập tên)')+'</b>'+(s.email?'<br><small style="color:#8a8f99">'+esc(s.email)+'</small>'+(erpHas(s.email,s.name)?'':' <span class="tag bad" title="Đăng nhập bằng email không có trong danh sách lớp trên ERP. Bạn vẫn vào web bình thường.">Không có trong ERP</span>'):'')+'</td><td>'+esc(s.lop||'–')+'</td><td class="n">'+s.n+'</td><td><span class="tag '+cls(s.avg)+'">'+pc(s.avg)+'</span><div class="bar"><i style="width:'+(s.avg||0)+'%;background:'+(s.avg>=70?'#1f8f6c':s.avg>=50?'#d9a63c':'#c14636')+'"></i></div></td>'+
         '<td>'+ago(s.last)+(s.idle>7?' <span class="tag bad">nghỉ '+s.idle+' ngày</span>':'')+'</td><td class="n">'+(s.toeic||'–')+'</td><td class="n">'+(s.bandL||'–')+' / '+(s.bandR||'–')+'</td><td>'+(s.place?'<span class="tag mid">'+esc(s.place)+'</span>':'–')+'</td></tr>';
       if(open[s.k]){
         var wc={}; s.all.forEach(function(r){ if(r.site==='T'&&r.mode!=='Xếp lớp') r.wrong.split(/,\s*/).forEach(function(w){ if(w) wc[r.test.replace('ETS 2026 · ','')+' câu '+w]=(wc[r.test.replace('ETS 2026 · ','')+' câu '+w]||0)+1; }); });
@@ -660,6 +671,7 @@ function matchIdx(v, code, S) {
   return part.length === 1 ? part[0] : -1;
 }
 function renderRoster() {
+  renderOutside(); if (window.GVRERENDER) window.GVRERENDER();
   const code = $('rosCls').value, C = ROS.cls[code];
   if (!C) { $('rosB').innerHTML = '<tr><td colspan="6">Chưa có danh sách lớp. Bấm “✏️ Dán danh sách từ ERP” để thêm.</td></tr>'; $('rosSum').textContent = ''; $('rosUn').innerHTML = ''; return; }
   const S = C.s, vis = new Map();
@@ -678,6 +690,23 @@ function renderRoster() {
   $('rosUn').innerHTML = un.length ? '<h2 style="font-size:18px;margin:18px 0 6px">Tài khoản chưa ghép được với ai trong lớp ' + esc(code) + '</h2><p class="note">Tên Google khác tên trên ERP (hoặc trùng tên). Chọn đúng học viên để ghép; chọn “Không thuộc lớp này” để ẩn.</p><div class="tw"><table class="t"><tbody>' +
     un.sort((a, b) => b.last - a.last).map(v => '<tr><td>' + esc(v.n || v.e) + '<small>' + esc(v.e) + '</small></td><td class="nw">' + v.c + ' lượt · ' + fmt(v.last) + '</td><td><select data-link="' + esc(v.e) + '"><option value="">Ghép với…</option>' +
       S.map((s, i) => '<option value="' + i + '">' + esc(s.n) + '</option>').join('') + '<option value="-">Không thuộc lớp này</option></select></td></tr>').join('') + '</tbody></table></div>' : '';
+}
+// tài khoản Google đã đăng nhập nhưng không khớp ai trong mọi danh sách ERP (vẫn được vào web, chỉ ghi chú cho thầy)
+function inAnyRoster(v) {
+  const L = ROS.link[v.e]; if (L && L !== '-') return true;
+  return Object.keys(ROS.cls).some(c => matchIdx(Object.assign({}, v), c, ROS.cls[c].s) >= 0);
+}
+function renderOutside() {
+  const box = $('rosOut'); if (!box) return;
+  if (!Object.keys(ROS.cls).length) { box.innerHTML = ''; return; }
+  const me = (window.MACC && MACC.user && MACC.user() && MACC.user().email || '').toLowerCase(), vis = new Map();
+  filtered().forEach(r => { if (!r.e || r.e === me) return; let x = vis.get(r.e); if (!x) vis.set(r.e, x = { e: r.e, n: '', c: 0, last: 0, w: {} }); x.c++; if (r.t > x.last) { x.last = r.t; x.n = r.n || x.n; } else if (!x.n) x.n = r.n; x.w[r.s] = 1; });
+  const L = [...vis.values()].filter(v => { const k = ROS.link[v.e]; return k !== '-' ? !inAnyRoster(v) : true; }).sort((a, b) => b.last - a.last);
+  box.innerHTML = '<h2 style="font-size:18px;margin:22px 0 6px">🔎 Đăng nhập nhưng không có trong danh sách ERP (' + L.length + ')</h2>' +
+    '<p class="note">Email và tên Google không khớp ai trong ' + Object.keys(ROS.cls).length + ' lớp trên ERP (trong khoảng thời gian đang chọn). Các bạn này <b>vẫn vào web bình thường</b>, danh sách chỉ để thầy biết. Nếu là học viên của lớp, ghép ở mục "chưa ghép được" phía trên.</p>' +
+    (L.length ? '<div class="tw"><table class="t"><thead><tr><th>Tài khoản</th><th>Lớp đã nhập trên web</th><th>Số lượt</th><th class="c-last">Lần cuối</th><th class="c-web">Web</th></tr></thead><tbody>' +
+      L.map(v => '<tr><td>' + esc(v.n || v.e) + '<small>' + esc(v.e) + (ROS.link[v.e] === '-' ? ' · thầy đã đánh dấu "không thuộc lớp"' : '') + '</small></td><td class="nw">' + esc(EL.get(v.e) || '–') + '</td><td class="nw">' + v.c + '</td><td class="nw c-last">' + fmt(v.last) + '</td><td class="c-web">' + Object.keys(v.w).map(k => esc(NAME[k])).join(', ') + '</td></tr>').join('') +
+      '</tbody></table></div>' : '<p class="note">Không có ai: mọi tài khoản đăng nhập đều có trong danh sách ERP. 👍</p>');
 }
 function rosterCtl() {
   $('rosEdit').onclick = () => { $('rosEditor').classList.toggle('hide'); $('rosMsg').textContent = ''; if (!$('rosEditor').classList.contains('hide')) $('rosTxt').focus(); };
