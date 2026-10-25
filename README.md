@@ -10,7 +10,7 @@ Trang chủ và các trang dùng chung cho mọi web học của Minto English t
 | `ho-so.html` | hồ sơ của học viên: tiến độ, nhận xét của thầy |
 | `ket-qua.html` | kết quả bài làm |
 | `xep-hang.html` | bảng xếp hạng tuần |
-| `gv.html` | bảng theo dõi lớp cho giáo viên (cần mã giáo viên) |
+| `gv.html` | bảng theo dõi lớp cho giáo viên, 2 tab: **Kết quả & bài làm** (kết quả từ Google Sheet, tiến độ, góp ý, bài nói, bài viết; cần mã giáo viên) và **Truy cập web** (`gv.html#truy-cap`: ai đang online, lịch sử xem trang, chia TOEIC / IELTS / Tóm tắt lớp Ms.Hoa, lọc theo lớp). Trước đây phần Truy cập web nằm ở `summary-new/thong-ke-gv.html` (link cũ tự chuyển về). |
 | `chinh-sach.html` | chính sách quyền riêng tư |
 | `acc.js` | đăng nhập Google + đồng bộ tiến độ qua Firebase (project `minto-english`) |
 | `progress.js` | tổng hợp tiến độ từ web TOEIC và IELTS |

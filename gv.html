@@ -33,12 +33,88 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 .hint{color:var(--dim);font-size:13px;margin:6px 0 0}
 .fb{display:grid;gap:8px}.fb .card{padding:10px 14px}.fb small{color:var(--dim)}
 @media (max-width:700px){th:nth-child(n+6),td:nth-child(n+6){display:none}}
+
+/* ===== Tab Truy cập web (trước là summary-new/thong-ke-gv.html) ===== */
+#vTraffic{--amber:var(--brand);--amber-ink:var(--brand-ink);--amber-soft:var(--brand-soft);--teal:var(--ok)}
+#vTraffic h2{font-family:'Lora','Times New Roman',serif;font-weight:600;font-size:22px;margin:30px 0 10px;}
+#vTraffic .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+#vTraffic .btn{font:inherit;font-size:14.5px;font-weight:600;border:1.5px solid var(--amber);background:var(--card);color:var(--amber-ink);border-radius:10px;padding:8px 14px;cursor:pointer;}
+#vTraffic .btn.pri{background:var(--amber);color:#fff;}
+#vTraffic .btn.g{display:inline-flex;align-items:center;gap:9px;border-color:#dadce0;color:#3c4043;background:#fff;padding:11px 18px;font-size:15.5px;}
+#vTraffic .btn:disabled{opacity:.55;cursor:wait;}
+#vTraffic .btn.warn{border-color:#c9a3a3;color:#8a2c2c;}
+#vTraffic #msg{min-height:22px;margin:10px 0 0;font-weight:600;color:#9b2c2c;}
+#vTraffic .hide{display:none!important;}
+#vTraffic /* live */
+.live{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+#vTraffic .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;}
+#vTraffic .tabs button{font:inherit;font-size:15px;font-weight:700;border:1.5px solid var(--line);background:var(--card);color:var(--dim);border-radius:12px;padding:10px 16px;cursor:pointer;}
+#vTraffic .tabs button.on{border-color:var(--amber);background:var(--amber-soft);color:var(--amber-ink);}
+#vTraffic .tabs button small{display:block;font-size:12px;font-weight:500;}
+#vTraffic .lop{display:inline-block;font-size:12px;font-weight:600;background:var(--amber-soft);color:var(--amber-ink);border-radius:6px;padding:1px 6px;margin-left:4px;white-space:nowrap;}
+#vTraffic .lc h3{margin:0;font-size:14px;font-weight:600;color:var(--dim);}
+#vTraffic .lc .n{font-size:34px;font-weight:700;line-height:1.1;margin:4px 0 2px;font-variant-numeric:tabular-nums;color:var(--teal);}
+#vTraffic .lc .n small{font-size:13px;font-weight:600;color:var(--dim);margin-left:4px;}
+#vTraffic .lc ul{list-style:none;margin:8px 0 0;padding:0;font-size:13.5px;line-height:1.35;}
+#vTraffic .lc li{padding:6px 0;border-top:1px dashed var(--line);overflow-wrap:anywhere;}
+#vTraffic .lc li b{display:block;}
+#vTraffic .lc li span{color:var(--dim);font-size:12.5px;}
+#vTraffic .lc .anon{color:var(--dim);font-size:13px;margin-top:6px;}
+#vTraffic .dotl{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:6px;vertical-align:1px;}
+#vTraffic /* filters */
+.flt{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;}
+#vTraffic .flt select,#vTraffic .flt input[type=search]{font:inherit;font-size:14.5px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);}
+#vTraffic .flt input[type=search]{flex:1;min-width:180px;}
+#vTraffic .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;}
+#vTraffic .seg button{font:inherit;font-size:14px;font-weight:600;border:0;background:var(--card);color:var(--dim);padding:8px 12px;cursor:pointer;}
+#vTraffic .seg button+button{border-left:1.5px solid var(--line);}
+#vTraffic .seg button.on{background:var(--amber-soft);color:var(--amber-ink);}
+#vTraffic .chk{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;cursor:pointer;}
+#vTraffic .chk input{width:17px;height:17px;accent-color:var(--amber);}
+#vTraffic .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px;}
+#vTraffic .stat .v{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;}
+#vTraffic .stat .l{color:var(--dim);font-size:13.5px;}
+#vTraffic /* chart */
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding:8px 0 0;border-bottom:1px solid var(--line);}
+#vTraffic .chart .b{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;}
+#vTraffic .chart .b i{display:block;width:100%;max-width:34px;background:var(--amber);border-radius:4px 4px 0 0;min-height:1px;}
+#vTraffic .chart .b.z i{background:var(--line);}
+#vTraffic .chart .b em{font-style:normal;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums;margin-bottom:2px;}
+#vTraffic .chart-x{display:flex;gap:3px;margin-top:4px;}
+#vTraffic .chart-x span{flex:1;min-width:0;text-align:center;font-size:10.5px;color:var(--dim);white-space:nowrap;overflow:hidden;}
+#vTraffic /* tables */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px;background:var(--card);}
+#vTraffic table.t{border-collapse:collapse;width:100%;font-size:14px;}
+#vTraffic table.t th,#vTraffic table.t td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+#vTraffic table.t th{font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim);background:#f6f2ea;white-space:nowrap;}
+#vTraffic table.t tr:last-child td{border-bottom:0;}
+#vTraffic table.t td.nw{white-space:nowrap;font-variant-numeric:tabular-nums;}
+#vTraffic table.t td small{display:block;color:var(--dim);font-size:12.5px;overflow-wrap:anywhere;}
+#vTraffic table.t .guest{color:var(--dim);}
+#vTraffic table.t code{font-size:12px;color:var(--dim);}
+#vTraffic .more{margin-top:10px;text-align:center;}
+#vTraffic .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:30px 0 10px;}
+#vTraffic .row h2{margin:0;}
+#vTraffic .note{color:var(--dim);font-size:13.5px;margin:6px 0 0;}
+@media (max-width:480px){#vTraffic .card{padding:14px;}
+#vTraffic .lc .n{font-size:28px;}
+#vTraffic .stats{gap:8px;}
+#vTraffic .stat .v{font-size:22px;}
+#vTraffic .stat .l{font-size:12px;}
+#vTraffic table.t{font-size:13px;}
+#vTraffic table.t th,#vTraffic table.t td{padding:7px 8px;}
+#vTraffic .hist .c-tab,#vTraffic .hist .c-web{display:none;}
+#vTraffic .stu .c-web,#vTraffic .stu .c-last{display:none;}}
+#vTraffic label.chk{flex-direction:row;color:var(--ink);font-size:14.5px;font-weight:500}#vTraffic input[type=checkbox]{min-width:0}
+.vtabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}.vtabs button{background:var(--card);color:var(--dim);border:1.5px solid var(--line);font-size:15px;padding:10px 16px;border-radius:12px}.vtabs button.on{background:var(--brand-soft);color:var(--brand-ink);border-color:var(--brand)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg><div><b>Bảng theo dõi lớp</b><small>Chỉ dành cho thầy · dữ liệu lấy trực tiếp từ Google Sheet kết quả</small></div><nav class="gvnav"><a href="./">🏠 Trang chủ</a><a href="toeic/">TOEIC</a><a href="cam/">IELTS</a></nav></header>
 
+<div class="vtabs" id="vtabs" role="tablist" aria-label="Chọn phần"><button type="button" role="tab" data-v="vResults" class="on" aria-selected="true">📋 Kết quả &amp; bài làm</button><button type="button" role="tab" data-v="vTraffic" aria-selected="false">📈 Truy cập web</button></div>
+<div id="vResults">
 <div class="card" id="setup">
   <div class="row" id="gRow" style="margin-bottom:12px"><button id="gLogin" type="button" style="background:#fff;color:#3c4043;border:1.5px solid #dadce0;display:inline-flex;gap:8px;align-items:center"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Đăng nhập bằng tài khoản Google của thầy</button><span class="hint" id="gStat" style="margin:0"></span></div>
   <div class="row">
@@ -74,6 +150,63 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   <p class="hint">Bấm vào một bài để đọc và viết nhận xét. Học sinh đã đăng nhập Google sẽ thấy nhận xét trong trang Hồ sơ của mình.</p>
   <div class="tw"><table id="ws"></table></div>
 </div>
+</div><!-- /vResults -->
+
+<div id="vTraffic" hidden>
+  <section class="card" id="tkgate">
+    <p id="tkgateTxt">Đăng nhập Google bằng tài khoản của thầy (nút ở tab Kết quả &amp; bài làm, hoặc nút dưới đây) để xem ai đang học và lịch sử xem trang.</p>
+    <button type="button" class="btn g" id="tksignin" disabled><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>Đang tải…</span></button>
+    <div id="tkmsg" role="alert"></div>
+  </section>
+
+  <div id="tkapp" class="hide">
+
+    <div class="tabs" id="tktabs" role="tablist" aria-label="Chọn web">
+      <button type="button" role="tab" data-t="toeic">📘 TOEIC<small>Luyện đề ETS</small></button>
+      <button type="button" role="tab" data-t="ielts">📗 IELTS<small>Cambridge</small></button>
+      <button type="button" role="tab" data-t="summary">📒 Tóm tắt<small>lớp Ms.Hoa</small></button>
+    </div>
+
+    <h2><span class="dotl"></span>Đang online</h2>
+    <div class="live" id="tklive"></div>
+    <p class="note">Tính các tab có tín hiệu trong 3 phút gần nhất. Tên chỉ hiện với bạn đã đăng nhập Google.</p>
+
+    <div class="row"><h2>Lịch sử xem trang</h2><button type="button" class="btn" id="tkreload">↻ Tải lại</button></div>
+    <div class="card">
+      <div class="flt">
+        <select id="tkfSite" aria-label="Web"></select>
+        <select id="tkfLop" aria-label="Lớp"></select>
+        <div class="seg" id="tkfRange" role="group" aria-label="Khoảng thời gian">
+          <button type="button" data-d="1" class="on">Hôm nay</button><button type="button" data-d="7">7 ngày</button><button type="button" data-d="30">30 ngày</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="tkfSigned"> Chỉ bạn đã đăng nhập</label>
+        <input type="search" id="tkfQ" placeholder="Tìm email hoặc tên…" aria-label="Tìm email hoặc tên">
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="tksViews">–</div><div class="l">lượt xem</div></div>
+        <div class="stat"><div class="v" id="tksStu">–</div><div class="l">học viên đăng nhập</div></div>
+        <div class="stat"><div class="v" id="tksGuest">–</div><div class="l">lượt khách</div></div>
+      </div>
+    </div>
+
+    <h2 id="tkchartT">Lượt xem theo ngày</h2>
+    <div class="card"><div class="chart" id="tkchart" role="img"></div><div class="chart-x" id="tkchartX"></div></div>
+
+    <h2 id="tkstuT">Theo học viên</h2>
+    <p class="note" id="tkstuNote"></p>
+    <div class="tw"><table class="t stu"><thead id="tkstuH"></thead><tbody id="tkstuB"></tbody></table></div>
+
+    <div class="row"><h2>Chi tiết</h2><button type="button" class="btn" id="tkcsv">⬇ Xuất CSV</button></div>
+    <div class="tw"><table class="t hist"><thead><tr><th>Thời gian</th><th class="c-web">Web</th><th>Trang</th><th>Học viên</th><th class="c-tab">Tab</th></tr></thead><tbody id="tkhistB"></tbody></table></div>
+    <div class="more"><button type="button" class="btn hide" id="tkmoreB">Xem thêm</button></div>
+
+    <div class="row"><h2>Dọn dữ liệu</h2></div>
+    <div class="card">
+      <button type="button" class="btn warn" id="tkclean">Xoá lịch sử cũ hơn 60 ngày</button>
+      <p class="note" id="tkcleanMsg">Xoá các lượt xem cũ hơn 60 ngày ở cả 4 web (và các mục "đang online" bị kẹt).</p>
+    </div>
+  
+</div><!-- /vTraffic -->
 </div>
 <script>
 (function(){
@@ -231,5 +364,269 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 </script>
 <script src="progress.js?v=3"></script>
 <script src="acc.js?v=7"></script>
+<script>
+(function(){ // chuyển giữa 2 phần; #truy-cap mở thẳng phần Truy cập web (link cũ thong-ke-gv.html chuyển về đây)
+  var bs=[].slice.call(document.querySelectorAll('#vtabs button'));
+  function show(v){ bs.forEach(function(b){ var on=b.dataset.v===v; b.classList.toggle('on',on); b.setAttribute('aria-selected',on); document.getElementById(b.dataset.v).hidden=!on; });
+    try{ history.replaceState(null,'',v==='vTraffic'?'#truy-cap':location.pathname+location.search); }catch(e){} }
+  bs.forEach(function(b){ b.onclick=function(){ show(b.dataset.v); }; });
+  if(location.hash==='#truy-cap') show('vTraffic');
+})();
+</script>
+<script type="module">
+const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
+const DBURL = 'https://minto-english-default-rtdb.asia-southeast1.firebasedatabase.app';
+const CFG = { apiKey: 'AIzaSyA7LEweMPy4tSjjR_An_KZaGXSzGI2nQv4', authDomain: 'minto-english.firebaseapp.com', databaseURL: DBURL, projectId: 'minto-english', storageBucket: 'minto-english.firebasestorage.app', messagingSenderId: '160119750089', appId: '1:160119750089:web:aac59cf8b1f577c035bc18' };
+const TEACHER = '979n45';
+function eh(t) { t = String(t || '').toLowerCase(); let x = 2166136261; for (let i = 0; i < t.length; i++) { x ^= t.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
+const SITES = ['toeic', 'cam', 'summary-new', 'summary-old'];
+const NAME = { toeic: 'TOEIC ETS', cam: 'IELTS Cam', 'summary-new': 'TOEIC Pre (mới)', 'summary-old': 'TOEIC Pre (cũ)' };
+const TABS = { toeic: ['toeic'], ielts: ['cam'], summary: ['summary-new', 'summary-old'] };
+let tab = 'toeic'; try { tab = localStorage.getItem('tk.tab') || 'toeic'; } catch (e) {} if (!TABS[tab]) tab = 'toeic';
+const tabSites = () => TABS[tab], isSum = () => tab === 'summary';
+const curSites = () => $('fSite').value ? [$('fSite').value] : tabSites();
+const CLS = {};   // mã lớp -> tên lớp (đọc từ classes.js của 2 web Tóm tắt)
+let EL = new Map(); // email -> mã lớp gần nhất (bản ghi cũ chưa có lớp thì lấy theo bản ghi mới hơn của cùng bạn đó)
+const lopOf = r => r.l || (r.e && EL.get(r.e)) || '';
+const lopBadge = l => l ? '<span class="lop">' + esc(l) + '</span>' : '';
+const FRESH = 180000, DAY = 86400000, TZ = 7 * 3600000, PAGE = 200;
+const $ = id => document.getElementById('tk' + id);
+const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const p2 = n => String(n).padStart(2, '0');
+const msg = t => { $('msg').textContent = t || ''; };
+
+let A, Au, D, auth, db, off = 0, subs = [], tickT = 0;
+const live = { online: {}, who: {} };
+let rows = [], range = 1, shown = PAGE, loadSeq = 0;
+
+// ---------- thời gian GMT+7 ----------
+const now = () => Date.now() + off;
+const vn = t => new Date(t + TZ);
+const fmt = t => { const d = vn(t); return p2(d.getUTCDate()) + '/' + p2(d.getUTCMonth() + 1) + ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()); };
+const dayStart = t => Math.floor((t + TZ) / DAY) * DAY - TZ; // 0h GMT+7 của ngày chứa t
+const fromTs = () => dayStart(now()) - (range - 1) * DAY;
+
+// ---------- tên trang dễ đọc ----------
+function title(path, site) {
+  let p = String(path || '').split('?')[0].replace(/\/+$/, '');
+  const segs = p.split('/').filter(Boolean);
+  if (segs[0] === site) segs.shift();
+  let base = (segs[segs.length - 1] || '').replace(/\.html?$/i, '');
+  if (!base || base === 'index') return segs.length > 1 ? 'Trang chủ ' + segs[segs.length - 2] : 'Trang chủ';
+  let m;
+  const book = (p.match(/cam(?:bridge)?-?(\d{1,2})(?!\d)/i) || [])[1];
+  if ((m = base.match(/^(?:test|de)-?(\d+)$/i))) return (book ? 'Cam ' + book + ' · ' : '') + 'Đề ' + (+m[1]);
+  if ((m = base.match(/unit-?(\d+)/i))) return 'Unit ' + (+m[1]);
+  if ((m = base.match(/week(?:ly)?(?:-revision)?-?(\d+)/i))) return 'Weekly Revision ' + (+m[1]);
+  if ((m = base.match(/^mini(?:test)?-?(\d*)$/i))) return 'Minitest' + (m[1] ? ' ' + (+m[1]) : '');
+  if ((m = base.match(/^(?:mock|thi-thu)-?(\d*)$/i))) return 'Mock test' + (m[1] ? ' ' + (+m[1]) : '');
+  if (base === 'test') return 'Bài thi';
+  if ((m = base.match(/^revision-?(\d+)$/i))) return 'Weekly Revision ' + (+m[1]);
+  if (segs.includes('chuyen-de')) return 'Chuyên đề · ' + base.replace(/-/g, ' ');
+  if ((m = base.match(/progress-test-?(\d+)/i))) return 'Ôn tập Progress Test ' + (+m[1]);
+  const nice = { 'ho-so': 'Hồ sơ', 'xep-hang': 'Xếp hạng tuần', 'cap-nhat': 'Cập nhật', 'flashcard': 'Flashcard', 'flashcards': 'Flashcard' };
+  return nice[base] || path;
+}
+
+// ---------- đăng nhập ----------
+async function boot() {
+  try {
+    [A, Au, D] = await Promise.all([import(SDK + 'firebase-app.js'), import(SDK + 'firebase-auth.js'), import(SDK + 'firebase-database.js')]);
+  } catch (e) { $('signin').querySelector('span').textContent = 'Không tải được'; msg('Không tải được dịch vụ Google. Kiểm tra mạng rồi tải lại trang.'); return; }
+  for (let i = 0; i < 50 && !window.MACC; i++) await new Promise(r => setTimeout(r, 100));
+  if (window.MACC && MACC.load) { try { await MACC.load(); } catch (e) {} }
+  const app = A.getApps().find(a => a.name === '[DEFAULT]') || A.initializeApp(CFG);
+  auth = Au.getAuth(app); db = D.getDatabase(app, DBURL);
+  const b = $('signin'); b.disabled = false; b.querySelector('span').textContent = 'Đăng nhập Google';
+  b.onclick = () => {
+    if (window.MACC && MACC.quick) { MACC.quick(); return; }
+    msg(''); const pr = new Au.GoogleAuthProvider(); pr.setCustomParameters({ prompt: 'select_account' });
+    Au.signInWithPopup(auth, pr).catch(e => { const c = e && e.code || ''; if (c !== 'auth/popup-closed-by-user' && c !== 'auth/cancelled-popup-request') msg('Chưa đăng nhập được: ' + (c || 'lỗi') + '.'); });
+  };
+  Au.onAuthStateChanged(auth, u => {
+    stop();
+    if (!u) { $('app').classList.add('hide'); $('gate').classList.remove('hide'); return; }
+    if (eh(u.email) !== TEACHER || !u.emailVerified) {
+      msg(''); $('gateTxt').textContent = 'Tài khoản ' + (u.email || '') + ' không xem được phần này. Hãy đăng nhập bằng tài khoản của thầy.';
+      $('app').classList.add('hide'); $('gate').classList.remove('hide'); return;
+    }
+    msg(''); $('gate').classList.add('hide'); $('app').classList.remove('hide');
+    start();
+  });
+}
+
+function stop() { subs.splice(0).forEach(f => { try { f(); } catch (e) {} }); clearInterval(tickT); }
+
+// ---------- đang online ----------
+function start() {
+  subs.push(D.onValue(D.ref(db, '.info/serverTimeOffset'), s => { const v = s.val(); if (typeof v === 'number') off = v; }));
+  SITES.forEach(s => {
+    subs.push(D.onValue(D.ref(db, 'online/' + s), sn => { live.online[s] = sn.val() || {}; paintLive(); }, () => {}));
+    subs.push(D.onValue(D.ref(db, 'who/' + s), sn => { live.who[s] = sn.val() || {}; paintLive(); }, () => {}));
+  });
+  tickT = setInterval(paintLive, 30000);
+  paintLive(); loadHist();
+}
+const KINDS = { home: 'trang chủ', test: 'đang làm bài', lesson: 'bài học' };
+function paintLive() {
+  const t = now(), fresh = v => v && typeof v.t === 'number' && v.t >= t - FRESH;
+  $('live').innerHTML = tabSites().map(s => {
+    const on = live.online[s] || {}, wh = live.who[s] || {};
+    const ids = Object.keys(on).filter(k => fresh(on[k]));
+    const signed = Object.keys(wh).filter(k => fresh(wh[k]) && (on[k] ? fresh(on[k]) : true));
+    const anon = ids.filter(k => !signed.includes(k)).length;
+    const li = signed.sort((a, b) => String(wh[a].n || wh[a].e).localeCompare(String(wh[b].n || wh[b].e), 'vi')).map(k => {
+      const w = wh[k], kind = on[k] && on[k].p;
+      return '<li><b>' + esc(w.n || w.e) + lopBadge(w.l) + '</b><span>' + esc(w.e) + '</span><br><span>' + esc(w.u ? title(w.u, s) : '') + (kind && KINDS[kind] ? ' · ' + KINDS[kind] : '') + '</span></li>';
+    }).join('');
+    const n = Math.max(ids.length, signed.length);
+    return '<div class="card lc"><h3>' + esc(NAME[s]) + '</h3><div class="n">' + n + '<small>đang học</small></div>' + (li ? '<ul>' + li + '</ul>' : '') + (anon ? '<div class="anon">' + anon + ' bạn chưa đăng nhập</div>' : '') + '</div>';
+  }).join('');
+}
+
+// ---------- lịch sử ----------
+async function loadHist() {
+  const seq = ++loadSeq, from = fromTs();
+  $('histB').innerHTML = '<tr><td colspan="5">Đang tải…</td></tr>';
+  const want = curSites();
+  try {
+    const parts = await Promise.all(want.map(s => D.get(D.query(D.ref(db, 'log/' + s), D.orderByChild('t'), D.startAt(from))).then(sn => {
+      const out = []; const v = sn.val() || {};
+      for (const k in v) { const x = v[k]; if (x && typeof x.t === 'number') out.push({ id: k, s, t: x.t, k: x.k || '', u: x.u || '', i: x.i || '', e: x.e || '', n: x.n || '', l: typeof x.l === 'string' ? x.l : '' }); }
+      return out;
+    })));
+    if (seq !== loadSeq) return;
+    rows = parts.flat().sort((a, b) => b.t - a.t);
+    EL = new Map(); rows.forEach(r => { if (r.e && r.l && !EL.has(r.e)) EL.set(r.e, r.l); });
+    lopOptions(); shown = PAGE; paint();
+  } catch (e) {
+    if (seq !== loadSeq) return;
+    $('histB').innerHTML = '<tr><td colspan="5">Không tải được lịch sử (' + esc(e && e.code || e && e.message || 'lỗi') + ').</td></tr>';
+  }
+}
+function filtered() {
+  const q = $('fQ').value.trim().toLowerCase(), only = $('fSigned').checked, site = $('fSite').value, from = fromTs(), lop = isSum() ? $('fLop').value : '';
+  const ok = tabSites();
+  return rows.filter(r => r.t >= from && ok.includes(r.s) && (!site || r.s === site) && (!only || r.e) && (!lop || (lop === '-' ? !lopOf(r) : lopOf(r) === lop)) && (!q || (r.e + ' ' + r.n + ' ' + lopOf(r)).toLowerCase().includes(q)));
+}
+function paint() {
+  const L = filtered();
+  const signed = L.filter(r => r.e);
+  $('sViews').textContent = L.length;
+  $('sStu').textContent = new Set(signed.map(r => r.e)).size;
+  $('sGuest').textContent = L.length - signed.length;
+  chart(L); students(signed);
+  const H = L.slice(0, shown);
+  $('histB').innerHTML = H.length ? H.map(r => '<tr><td class="nw">' + fmt(r.t) + '</td><td class="c-web">' + esc(NAME[r.s]) + '</td><td>' + esc(title(r.u, r.s)) + '<small>' + esc(r.u) + '</small></td><td>' + (r.e ? esc(r.n || r.e) + (isSum() ? lopBadge(lopOf(r)) : '') + (r.n ? '<small>' + esc(r.e) + '</small>' : '') : '<span class="guest">Khách</span>') + '</td><td class="c-tab"><code>' + esc(r.i.slice(0, 6)) + '</code></td></tr>').join('') : '<tr><td colspan="5">Chưa có lượt xem nào trong khoảng này.</td></tr>';
+  $('moreB').classList.toggle('hide', L.length <= shown);
+  $('moreB').textContent = 'Xem thêm (' + (L.length - shown) + ' dòng nữa)';
+}
+function chart(L) {
+  const hourly = range === 1, from = fromTs(), n = hourly ? 24 : range, step = hourly ? 3600000 : DAY;
+  const c = new Array(n).fill(0);
+  L.forEach(r => { const i = Math.floor((r.t - from) / step); if (i >= 0 && i < n) c[i]++; });
+  const max = Math.max(1, ...c), lbl = i => { const d = vn(from + i * step); return hourly ? d.getUTCHours() + 'h' : p2(d.getUTCDate()) + '/' + p2(d.getUTCMonth() + 1); };
+  const every = n > 14 ? Math.ceil(n / (innerWidth < 500 ? 6 : 10)) : (hourly ? (innerWidth < 500 ? 4 : 2) : 1);
+  $('chartT').textContent = hourly ? 'Lượt xem hôm nay theo giờ' : 'Lượt xem theo ngày';
+  $('chart').setAttribute('aria-label', (hourly ? 'Lượt xem theo giờ: ' : 'Lượt xem theo ngày: ') + c.map((v, i) => lbl(i) + ' ' + v).join(', '));
+  $('chart').innerHTML = c.map((v, i) => '<div class="b' + (v ? '' : ' z') + '" title="' + lbl(i) + ': ' + v + ' lượt">' + (v && (n <= 14 || v === max) ? '<em>' + v + '</em>' : '') + '<i style="height:' + (v ? Math.max(2, v / max * 100) : 0.7) + '%"></i></div>').join('');
+  $('chartX').innerHTML = c.map((v, i) => '<span>' + (i % every === 0 ? lbl(i) : '') + '</span>').join('');
+}
+function students(S) {
+  const m = new Map(), sum = isSum();
+  S.forEach(r => {
+    let x = m.get(r.e); if (!x) m.set(r.e, x = { e: r.e, n: '', c: 0, last: 0, lu: '', ls: '', w: {}, pg: new Set() });
+    x.c++; if (r.t > x.last) { x.last = r.t; x.n = r.n || x.n; x.lu = r.u; x.ls = r.s; } else if (!x.n) x.n = r.n;
+    x.w[r.s] = (x.w[r.s] || 0) + 1;
+    if (r.k !== 'home') x.pg.add(r.s + '|' + title(r.u, r.s));
+  });
+  const L = [...m.values()].sort((a, b) => sum ? ((EL.get(a.e) ? 0 : 1) - (EL.get(b.e) ? 0 : 1) || String(EL.get(a.e) || '').localeCompare(String(EL.get(b.e) || '')) || b.c - a.c || b.last - a.last) : (b.c - a.c || b.last - a.last));
+  $('stuT').textContent = sum ? 'Học viên lớp Ms.Hoa đã vào web' : 'Theo học viên';
+  $('stuNote').textContent = sum ? L.length + ' bạn đã đăng nhập và vào web trong khoảng này. Cột Lớp theo mã lớp bạn ấy nhập trên web (bắt đầu ghi từ 25/10/2026, trước đó hiện "chưa rõ").' : '';
+  $('stuH').innerHTML = '<tr><th>Học viên</th>' + (sum ? '<th>Lớp</th>' : '') + '<th>Số lượt</th>' + (sum ? '<th>Số bài đã xem</th>' : '') + '<th class="c-last">Lần cuối</th><th class="c-web">' + (sum ? 'Vừa xem' : 'Web hay dùng') + '</th></tr>';
+  const cols = sum ? 6 : 4;
+  $('stuB').innerHTML = L.length ? L.map(x => {
+    const top = Object.keys(x.w).sort((a, b) => x.w[b] - x.w[a]), l = EL.get(x.e) || '';
+    return '<tr><td>' + esc(x.n || x.e) + '<small>' + esc(x.e) + '</small></td>' +
+      (sum ? '<td class="nw">' + (l ? esc(l) + (CLS[l] ? '<small>' + esc(CLS[l]) + '</small>' : '') : '<span class="guest">chưa rõ</span>') + '</td>' : '') +
+      '<td class="nw">' + x.c + '</td>' + (sum ? '<td class="nw">' + x.pg.size + '</td>' : '') +
+      '<td class="nw c-last">' + fmt(x.last) + '</td><td class="c-web">' +
+      (sum ? esc(title(x.lu, x.ls)) + '<small>' + esc(NAME[x.ls]) + '</small>' : top.map(s => esc(NAME[s]) + ' (' + x.w[s] + ')').join(', ')) + '</td></tr>';
+  }).join('') : '<tr><td colspan="' + cols + '">Chưa có học viên đăng nhập nào trong khoảng này.</td></tr>';
+}
+
+// ---------- tab & bộ lọc ----------
+function lopOptions() {
+  const f = $('fLop'), cur = f.value, codes = new Set(Object.keys(CLS));
+  rows.forEach(r => { const l = lopOf(r); if (l) codes.add(l); });
+  f.innerHTML = '<option value="">Tất cả lớp</option>' + [...codes].sort().map(c => '<option value="' + esc(c) + '">' + esc(CLS[c] || c) + '</option>').join('') + '<option value="-">Chưa rõ lớp</option>';
+  if ([...f.options].some(o => o.value === cur)) f.value = cur;
+}
+function setTab(t) {
+  tab = t; try { localStorage.setItem('tk.tab', t); } catch (e) {}
+  [...$('tabs').children].forEach(b => { const on = b.dataset.t === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  const S = tabSites();
+  $('fSite').innerHTML = (S.length > 1 ? '<option value="">Cả ' + S.length + ' web</option>' : '') + S.map(s => '<option value="' + s + '">' + esc(NAME[s]) + '</option>').join('');
+  $('fSite').classList.toggle('hide', S.length < 2);
+  $('fLop').classList.toggle('hide', !isSum()); $('fLop').value = '';
+  paintLive(); if (!$('app').classList.contains('hide')) loadHist();
+}
+async function loadClasses() {
+  for (const src of ['summary-new/classes.js', 'summary-old/classes.js']) {
+    try {
+      const t = await (await fetch(src, { cache: 'no-cache' })).text();
+      for (const m of t.matchAll(/ma:\s*'([^']+)',\s*ten:\s*'([^']+)'/g)) CLS[m[1]] = m[2];
+    } catch (e) {}
+  }
+  lopOptions(); if (rows.length) paint();
+}
+
+// ---------- CSV ----------
+function csv() {
+  const L = filtered(), q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const lines = [['Thời gian (GMT+7)', 'Web', 'Trang', 'Đường dẫn', 'Loại', 'Email', 'Tên', 'Tab'].map(q).join(',')]
+    .concat(L.map(r => { const d = vn(r.t); return [d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1) + '-' + p2(d.getUTCDate()) + ' ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()), NAME[r.s], title(r.u, r.s), r.u, r.k, r.e, r.n, r.i].map(q).join(','); }));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'), d = vn(now());
+  a.href = URL.createObjectURL(blob); a.download = 'lich-su-' + d.getUTCFullYear() + p2(d.getUTCMonth() + 1) + p2(d.getUTCDate()) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+// ---------- dọn dữ liệu ----------
+async function clean() {
+  if (!confirm('Xoá toàn bộ lịch sử xem trang cũ hơn 60 ngày ở cả 4 web? Không khôi phục được.')) return;
+  const b = $('clean'), cut = now() - 60 * DAY, stale = now() - 15 * 60000; b.disabled = true; $('cleanMsg').textContent = 'Đang xoá…';
+  try {
+    let nLog = 0, nWho = 0;
+    for (const s of SITES) {
+      const sn = await D.get(D.query(D.ref(db, 'log/' + s), D.orderByChild('t'), D.endAt(cut)));
+      const keys = Object.keys(sn.val() || {});
+      for (let i = 0; i < keys.length; i += 500) { const u = {}; keys.slice(i, i + 500).forEach(k => { u[k] = null; }); await D.update(D.ref(db, 'log/' + s), u); }
+      nLog += keys.length;
+      const wh = live.who[s] || {}, old = Object.keys(wh).filter(k => !(wh[k] && wh[k].t >= stale));
+      if (old.length) { const u = {}; old.forEach(k => { u[k] = null; }); await D.update(D.ref(db, 'who/' + s), u); nWho += old.length; }
+    }
+    $('cleanMsg').textContent = 'Đã xoá ' + nLog + ' lượt xem cũ' + (nWho ? ' và ' + nWho + ' mục online bị kẹt' : '') + '.';
+    loadHist();
+  } catch (e) { $('cleanMsg').textContent = 'Không xoá được (' + (e && e.code || e && e.message || 'lỗi') + ').'; }
+  b.disabled = false;
+}
+
+// ---------- điều khiển ----------
+$('tabs').onclick = e => { const b = e.target.closest('button[data-t]'); if (b && b.dataset.t !== tab) setTab(b.dataset.t); };
+$('fSite').onchange = loadHist;
+$('fLop').onchange = () => { shown = PAGE; paint(); };
+$('fRange').onclick = e => { const b = e.target.closest('button'); if (!b) return; range = +b.dataset.d; [...$('fRange').children].forEach(x => x.classList.toggle('on', x === b)); loadHist(); };
+$('fSigned').onchange = () => { shown = PAGE; paint(); };
+let qT = 0; $('fQ').oninput = () => { clearTimeout(qT); qT = setTimeout(() => { shown = PAGE; paint(); }, 200); };
+$('moreB').onclick = () => { shown += PAGE; paint(); };
+$('reload').onclick = loadHist;
+$('csv').onclick = csv;
+$('clean').onclick = clean;
+let rT = 0; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { if (rows.length || !$('app').classList.contains('hide')) chart(filtered()); }, 200); });
+setTab(tab); loadClasses();
+boot();
+</script>
+
 </body>
 </html>
