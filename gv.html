@@ -14,7 +14,7 @@
 header{display:flex;align-items:center;gap:12px;padding:18px 0 6px}header svg{width:40px;height:40px}header b{font:600 22px/1.1 Fraunces,Georgia,serif;display:block}header small{color:var(--dim)}.gvnav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.gvnav a{font-size:13.5px;font-weight:600;color:var(--brand-ink,#6b4410);text-decoration:none;border:1px solid var(--line,#e6e0d3);background:#fff;border-radius:999px;padding:6px 12px}
 h2{font:500 22px/1.2 Fraunces,Georgia,serif;margin:26px 0 10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}[hidden]{display:none!important}
 label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:600;color:var(--dim)}
 input,select{font:inherit;padding:8px 10px;border:1px solid #ddd7c9;border-radius:9px;background:#fff;color:var(--ink);min-width:150px}
 button{font:inherit;font-weight:700;border:0;border-radius:9px;padding:9px 14px;background:var(--brand);color:#fff;cursor:pointer}button.alt{background:var(--panel2);color:var(--brand-ink)}
@@ -117,12 +117,12 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 <div id="vResults">
 <div class="card" id="setup">
   <div class="row" id="gRow" style="margin-bottom:12px"><button id="gLogin" type="button" style="background:#fff;color:#3c4043;border:1.5px solid #dadce0;display:inline-flex;gap:8px;align-items:center"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Đăng nhập bằng tài khoản Google của thầy</button><span class="hint" id="gStat" style="margin:0"></span></div>
-  <div class="row">
+  <div class="row" id="kForm">
     <label>Mã giáo viên<input id="key" type="password" autocomplete="off" placeholder="Mã trong Nhật ký Apps Script"></label>
     <button id="load" type="button">Tải dữ liệu</button>
     <button id="forget" type="button" class="alt">Quên mã trên máy này</button>
   </div>
-  <p class="hint">Mã được lưu trên trình duyệt này để lần sau khỏi nhập. Đừng mở trang này trên máy của học sinh.</p>
+  <p class="hint" id="kHint">Mã được lưu trên trình duyệt này để lần sau khỏi nhập. Đừng mở trang này trên máy của học sinh.</p>
   <div class="err" id="err"></div>
 </div>
 
@@ -230,14 +230,21 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   function jsonp(u,cb,fail){ var n='gvcb'+Date.now(), s=document.createElement('script'), t=setTimeout(function(){ cleanup(); fail('Hết thời gian chờ. Kiểm tra mạng hoặc link Apps Script.'); },25000);
     function cleanup(){ clearTimeout(t); delete window[n]; s.remove(); }
     window[n]=function(d){ cleanup(); cb(d); }; s.onerror=function(){ cleanup(); fail('Không gọi được Apps Script.'); }; s.src=u+(u.indexOf('?')<0?'?':'&')+'callback='+n; document.body.appendChild(s); }
+  function show(d){ $('err').textContent=''; D=d; prep(); $('app').hidden=false; render(); }
   function load(){
     var k=$('key').value.trim(); if(!k){ $('err').textContent='Nhập mã giáo viên trước nha.'; return; }
     $('err').textContent='Đang tải…';
     jsonp(URL_+'?key='+encodeURIComponent(k), function(d){
       if(!d||!d.results){ $('err').textContent='Mã không đúng, hoặc Apps Script chưa được cập nhật bản mới (xem hướng dẫn trong file Code.gs).'; return; }
-      try{ localStorage.setItem('gv.key',k); }catch(e){} saveKey(k);
-      $('err').textContent=''; D=d; prep(); $('app').hidden=false; render();
+      try{ localStorage.setItem('gv.key',k); }catch(e){} saveKey(k); show(d);
     }, function(m){ $('err').textContent=m; });
+  }
+  // Mở bằng đăng nhập Google: gửi thẻ đăng nhập (hết hạn sau 1 giờ) để Apps Script tự kiểm tra đúng tài khoản thầy.
+  function loadGoogle(u, fallback){
+    $('err').textContent='Đang tải…';
+    u.getIdToken().then(function(t){
+      jsonp(URL_+'?idt='+encodeURIComponent(t), function(d){ if(d&&d.results){ $('kForm').hidden=$('kHint').hidden=true; show(d); } else { $('err').textContent=''; fallback(); } }, function(){ $('err').textContent=''; fallback(); });
+    }, function(){ $('err').textContent=''; fallback(); });
   }
   function site(t){ return /^(ETS|TOEIC)/.test(t)?'T':/^(Cam|IELTS)/.test(t)?'I':''; }
   function prep(){
@@ -294,9 +301,11 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     var u=window.MACC&&MACC.user(); if(!u){ gStat(''); return; }
     gStat('Đang kiểm tra quyền của '+(u.email||'')+'…');
     MACC.fs().then(function(x){ FSX=x; return x.F.getDoc(x.F.doc(x.db,'config','gv')); }).then(function(sn){
-      $('gLogin').hidden=true;
-      if(sn.exists()&&sn.data().key){ gStat('✓ '+u.email+' · quyền giáo viên'); $('key').value=sn.data().key; load(); }
-      else gStat('✓ '+u.email+' · nhập mã giáo viên một lần, web sẽ lưu vào tài khoản để lần sau tự mở.');
+      $('gLogin').hidden=true; gStat('✓ '+u.email+' · quyền giáo viên');
+      loadGoogle(u, function(){
+        if(sn.exists()&&sn.data().key){ $('key').value=sn.data().key; load(); }
+        else gStat('✓ '+u.email+' · nhập mã giáo viên một lần, web sẽ lưu vào tài khoản để lần sau tự mở.');
+      });
       loadProgress(); loadFb().then(wsFeedback); loadSpeaking();
     }).catch(function(e){ gStat('⚠ Tài khoản '+(u.email||'')+' không có quyền giáo viên ('+((e&&e.code)||'lỗi')+').'); });
   }
