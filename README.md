@@ -3,6 +3,7 @@
 Trang chủ và các trang dùng chung cho mọi web học của Minto English trên `mangomint1805.github.io`:
 [IELTS](https://mangomint1805.github.io/cam/), [TOEIC](https://mangomint1805.github.io/toeic/),
 [Tóm tắt TOEIC Pre](https://mangomint1805.github.io/summary-new/).
+Trò chơi trắc nghiệm trực tiếp trên lớp (kiểu Kahoot) cho giáo viên: [Minto Quiz](https://mangomint1805.github.io/KH/) (repo `KH`; link vào trang soạn câu hỏi chỉ hiện cho thầy trong bảng ⚙ và ở `gv.html`).
 
 | File | Dùng để |
 |---|---|
@@ -23,3 +24,4 @@ Ai được đọc/ghi dữ liệu nào trên Firebase do *Rules* trong Firebase
 Kiểm tra ngày 25/10/2026:
 - **Firestore:** luật đang chạy (áp dụng 21/10) đã an toàn: học viên chỉ đọc/ghi dữ liệu của mình, mã giáo viên (`config/gv`) và dữ liệu cả lớp chỉ thầy đọc được. File `firestore.rules` trong repo chỉ là bản tham khảo cũ, **không Publish đè lên**.
 - **Realtime Database:** `who/` và `log/` (có email học viên) chỉ thầy đọc được; `online/` đọc công khai (chỉ đếm số người). Mỗi bản ghi chỉ nhận các trường đã liệt kê (`"$other": {".validate": false}`); đã thêm trường `l` (mã lớp, web Tóm tắt) ngày 25/10. Muốn web gửi thêm trường mới thì phải thêm vào luật trước, nếu không Firebase từ chối cả lần ghi.
+- **Minto Quiz:** Realtime Database có thêm nhánh `quiz/` (luật ở repo `KH`, file `firebase/database.rules.quiz.json`, đoạn để dán: `firebase/dan-vao-rtdb.txt`); Firestore có thêm `quizzes/` (chỉ thầy đọc/ghi, đoạn để dán: `firebase/firestore.rules.quiz.txt`).

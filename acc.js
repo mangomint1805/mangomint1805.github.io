@@ -151,7 +151,7 @@
       el.innerHTML = '<div class="ma-u">' + (a.photo ? '<img src="' + esc(a.photo) + '" alt="" referrerpolicy="no-referrer">' : '<span class="ma-av">' + esc((a.name || a.email || '?').charAt(0)) + '</span>') +
         '<span><b>' + esc(a.name || 'Tài khoản Google') + '</b><small>' + esc(a.email) + '</small></span></div>' +
         '<small class="ma-st">' + (lastErr ? '⚠ Chưa đồng bộ được (' + esc(lastErr) + ')' : last.at ? '☁ Đã đồng bộ lúc ' + fmt(last.at) : '☁ Đang đồng bộ…') + '</small>' +
-        '<div class="ma-l"><a href="/ho-so.html">👤 Hồ sơ của tôi</a><a href="/xep-hang.html">🏆 Xếp hạng tuần</a>' + (isGV(a.email) ? '<a href="/gv.html">🧑‍🏫 Bảng theo dõi lớp</a>' : '') + '</div>' +
+        '<div class="ma-l"><a href="/ho-so.html">👤 Hồ sơ của tôi</a><a href="/xep-hang.html">🏆 Xếp hạng tuần</a>' + (isGV(a.email) ? '<a href="/gv.html">🧑‍🏫 Bảng theo dõi lớp</a><a href="/KH/admin.html">🎮 Minto Quiz</a>' : '') + '</div>' +
         '<div class="ma-b"><button type="button" data-a="sync">Đồng bộ ngay</button><button type="button" data-a="out">Đăng xuất</button></div>';
     } else if (inApp()) {
       var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent), ext = extUrl();
@@ -211,7 +211,7 @@
     '.mp-acc .ma-u{display:flex;gap:9px;align-items:center}.mp-acc .ma-u img,.mp-acc .ma-av{width:34px;height:34px;border-radius:50%;flex:none;object-fit:cover}' +
     '.mp-acc .ma-av{display:flex;align-items:center;justify-content:center;background:#a8691a;color:#fff;font-weight:700}' +
     '.mp-acc .ma-u span{min-width:0}.mp-acc .ma-u b{display:block}.mp-acc .ma-u small{display:block;color:#7a7f88;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
-    '.mp-acc .ma-l{display:flex;gap:6px;margin:0 0 6px}.mp-acc .ma-l a{flex:1;text-align:center;font:600 12.5px/1.2 "IBM Plex Sans",sans-serif;padding:8px 4px;border-radius:9px;background:#f6efe2;color:#6b4410;text-decoration:none}html[data-theme=dark] .mp-acc .ma-l a{background:#2a2e36;color:#f0c787}' +
+    '.mp-acc .ma-l{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}.mp-acc .ma-l a{flex:1 1 40%;text-align:center;font:600 12.5px/1.2 "IBM Plex Sans",sans-serif;padding:8px 4px;border-radius:9px;background:#f6efe2;color:#6b4410;text-decoration:none}html[data-theme=dark] .mp-acc .ma-l a{background:#2a2e36;color:#f0c787}' +
     '.mp-acc .ma-b{display:flex;gap:6px}.mp-acc .ma-b.col{flex-direction:column}.mp-acc .ma-b button{flex:1;font:600 12.5px/1.2 "IBM Plex Sans",sans-serif;padding:8px;border:1.5px solid #ddd7c9;border-radius:9px;background:transparent;color:inherit;cursor:pointer}' +
     'html[data-theme=dark] .mp-acc{border-color:#373b44}html[data-theme=dark] .mp-acc .ma-st,html[data-theme=dark] .mp-acc .ma-u small{color:#9aa1ad}html[data-theme=dark] .mp-acc .ma-b button{border-color:#3a3f48}';
   document.head.appendChild(css);
