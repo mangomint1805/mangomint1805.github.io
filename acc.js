@@ -5,7 +5,8 @@
   if (window.MACC) return;
   var CFG = {
     apiKey: 'AIzaSyA7LEweMPy4tSjjR_An_KZaGXSzGI2nQv4',
-    authDomain: 'minto-english.firebaseapp.com',
+    // Safari / mọi trình duyệt trên iPhone, iPad chặn dữ liệu giữa hai tên miền, nên đăng nhập qua trang /__/auth/ đặt ngay trên github.io
+    authDomain: (/(^|\.)mangomint1805\.github\.io$/.test(location.hostname) && /AppleWebKit/.test(navigator.userAgent) && !/Chrome\/|Chromium|Edg\/|OPR\/|Android/.test(navigator.userAgent)) ? location.hostname : 'minto-english.firebaseapp.com',
     projectId: 'minto-english',
     storageBucket: 'minto-english.firebasestorage.app',
     messagingSenderId: '160119750089',
