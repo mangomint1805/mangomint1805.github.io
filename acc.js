@@ -12,6 +12,16 @@
     messagingSenderId: '160119750089',
     appId: '1:160119750089:web:aac59cf8b1f577c035bc18'
   };
+  // Safari / mọi trình duyệt trên iPhone, iPad chặn chia sẻ dữ liệu giữa hai tên miền, nên trang đăng nhập ở
+  // minto-english.firebaseapp.com báo lỗi "missing initial state". Với các máy này dùng trang đăng nhập đặt ngay trên
+  // mangomint1805.github.io/__/auth/ (cùng tên miền). Thử trên máy khác: localStorage mt.authdom = 'self' | 'fb'.
+  (function () {
+    if (location.hostname !== 'mangomint1805.github.io') return;
+    var ua = navigator.userAgent, f = null; try { f = localStorage.getItem('mt.authdom'); } catch (e) {}
+    var ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var safari = /Safari\//.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Edg\/|OPR\/|Android/.test(ua);
+    if (f === 'self' || (f !== 'fb' && (ios || safari))) CFG.authDomain = location.hostname;
+  })();
   var SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
   var RE = /^(ets26\.|cam\d+\.|cam\.|cam20\.|mt\.|vocab\.|summaryNew\.|summaryOld\.)/, EXCL = /^mt\.(acc|sync)/;
   var LS = window.localStorage, rawSet = Storage.prototype.setItem, rawDel = Storage.prototype.removeItem;
