@@ -10,7 +10,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 
 function walk(d, out = []) {
   for (const f of fs.readdirSync(d, { withFileTypes: true })) {
-    if (f.name.startsWith('.') || f.name === 'node_modules') continue;
+    if (f.name.startsWith('.') || f.name === 'node_modules' || f.name === '__') continue; // __/auth: trang đăng nhập của Firebase (code Google), không tự kiểm tra
     const p = path.join(d, f.name);
     if (f.isDirectory()) walk(p, out); else out.push(p);
   }
