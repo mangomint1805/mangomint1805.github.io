@@ -1,0 +1,38 @@
+/* Phong cách (theme) của trang chủ Minto English — giống 3 phong cách trên các web luyện đề:
+   Hành baro (Miku), Thiên thần (KAngel), Băng hoại (Honkai Impact 3rd). Chọn trong bảng ⚙ ở các web luyện đề; lưu ở localStorage mt.skin. */
+html[data-skin=idol]{--paper:#f2fbfa;--line:#cfeae6;--panel2:#e6f6f3;--brand:#139a92;--brand-soft:#d4f3ef;--brand-ink:#0b6660}
+html[data-skin=y2k]{--paper:#fff5fb;--line:#f0c9e6;--panel2:#fbe9f6;--brand:#e0559a;--brand-soft:#ffe0f0;--brand-ink:#9b2c66}
+html[data-skin=scifi]{color-scheme:dark;--paper:#070d1f;--card:#0f1730;--line:#24345f;--panel2:#16204a;--ink:#e9ecf7;--dim:#9aa6c8;--brand:#f2c14e;--brand-soft:#2e2a3c;--brand-ink:#ffd978;--red:#e0475f;--red-soft:#3d1826;--ok:#5fd3ff}
+html[data-skin=scifi] body{background:radial-gradient(1200px 600px at 85% -10%,rgba(200,50,94,.18),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(123,63,228,.18),transparent 60%);background-attachment:fixed}
+/* chữ logo */
+html[data-skin=idol] .brand b{font-family:"M PLUS Rounded 1c","IBM Plex Sans",sans-serif;font-weight:800}
+html[data-skin=idol] .brand b::after{content:" ♪";color:#e12885;font-size:.8em}
+html[data-skin=y2k] .brand b{font-family:"DotGothic16",monospace;font-weight:400}
+html[data-skin=y2k] .brand b::before{content:"♡ ";color:#e0559a}
+html[data-skin=scifi] .brand b{font-family:"Rajdhani","IBM Plex Sans",sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f2c14e}
+html[data-skin=scifi] .brand b::before{content:"◆ ";color:#e0475f}
+html[data-skin] .brand small{color:var(--dim)}
+/* điểm nhấn */
+html[data-skin=idol] h1 em,html[data-skin=idol] .me h2 em{color:#e12885}
+html[data-skin=y2k] h1 em,html[data-skin=y2k] .me h2 em{color:#c13f8e}
+html[data-skin=y2k] h1{text-shadow:2px 2px 0 #ffc2e2}
+html[data-skin=scifi] h1 em,html[data-skin=scifi] .me h2 em{color:#f2c14e}
+html[data-skin=scifi] h1{text-shadow:0 0 18px rgba(242,193,78,.25)}
+html[data-skin=idol] .num{background:linear-gradient(150deg,#86cecb,#139a92)}
+html[data-skin=y2k] .num{background:linear-gradient(150deg,#ffb7d5,#c59bff)}
+html[data-skin=scifi] .num{background:linear-gradient(150deg,#f2c14e,#e0475f);color:#141d42}
+/* thẻ */
+html[data-skin=idol] :is(.site,.step,.me){border-top:3px solid #39c5bb}
+html[data-skin=y2k] :is(.site,.step,.me,.bub){border:2px solid #d9a6e6;box-shadow:4px 4px 0 #c7a6f0}
+html[data-skin=y2k] :is(.step,.me){background-image:linear-gradient(90deg,#ff9ccf,#c59bff,#9ad8ff);background-size:100% 5px;background-repeat:no-repeat}
+html[data-skin=scifi] :is(.site,.step,.me){border-color:#2e4377;box-shadow:inset 3px 0 0 #f2c14e,0 10px 30px rgba(5,8,20,.5)}
+html[data-skin=scifi] :is(.bub,.bub:after){border-color:#2e4377}
+html[data-skin=scifi] .go{color:#141d42}
+html[data-skin=scifi] .seal{background:#e0475f}
+/* nút tài khoản / chế độ */
+html[data-skin] :is(.nacc,.tb){color:var(--brand-ink)}
+html[data-skin] .nacc img,html[data-skin] .nacc i{background:var(--brand)}
+html[data-skin] .me .acts .pri{background:var(--brand);border-color:var(--brand)}
+html[data-skin=scifi] .me .acts .pri{color:#141d42}
+html[data-skin=scifi] .mdeco{opacity:.9}
+html[data-skin=scifi] :is(.mdeco,.mdeco2){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 0l28 16v32L28 64 0 48V16zM28 64v33' fill='none' stroke='%23f2c14e' stroke-width='.7' opacity='.22'/%3E%3C/svg%3E")!important;background-size:56px 97px!important}
