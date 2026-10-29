@@ -133,8 +133,9 @@
   function dk(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function week() { var d = new Date(), mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7); return { mon: mon, wk: dk(mon) }; }
   function weekPts() {
-    var a = J('mt.act', {}), w = week(), pts = 0, days = 0, per = [];
-    for (var i = 0; i < 7; i++) { var d = new Date(w.mon.getFullYear(), w.mon.getMonth(), w.mon.getDate() + i), n = a[dk(d)] || 0, p = n ? 20 + Math.min(40, n * 3) : 0; if (n) days++; pts += p; per.push(p); }
+    // mỗi ngày có học: 20 + 3 điểm mỗi hoạt động (tối đa 60); xong đủ 3 nhiệm vụ hằng ngày (mt.quest.days, ui.js): thêm 15
+    var a = J('mt.act', {}), qd = J('mt.quest.days', {}) || {}, w = week(), pts = 0, days = 0, per = [];
+    for (var i = 0; i < 7; i++) { var d = new Date(w.mon.getFullYear(), w.mon.getMonth(), w.mon.getDate() + i), n = a[dk(d)] || 0, p = (n ? 20 + Math.min(40, n * 3) : 0) + (qd[dk(d)] ? 15 : 0); if (n) days++; pts += p; per.push(p); }
     return { wk: w.wk, pts: pts, days: days, per: per };
   }
   function boardName() { var a = J('mt.acc', {}); return String((get('cam20.name') || '').trim() || a.name || 'Bạn học').slice(0, 40); }
