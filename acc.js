@@ -138,14 +138,19 @@
     for (var i = 0; i < 7; i++) { var d = new Date(w.mon.getFullYear(), w.mon.getMonth(), w.mon.getDate() + i), n = a[dk(d)] || 0, p = (n ? 20 + Math.min(40, n * 3) : 0) + (qd[dk(d)] ? 15 : 0); if (n) days++; pts += p; per.push(p); }
     return { wk: w.wk, pts: pts, days: days, per: per };
   }
+  // kỷ lục Đào vàng trong tuần (game-gold.js lưu gw = tuần, gwb = vàng nhiều nhất 1 ván tuần đó)
+  function goldWk() { var g = J('mt.game.gold', {}) || {}; return g.gw === week().wk ? Math.max(0, Math.min(99999, g.gwb | 0)) : 0; }
   function boardName() { var a = J('mt.acc', {}); return String((get('cam20.name') || '').trim() || a.name || 'Bạn học').slice(0, 40); }
   function pushBoard(force) {
     if (!USER || !FB || !FB.F) return Promise.resolve();
     var F = FB.F, ref = F.doc(FB.db, 'board', USER.uid), on = get('mt.board.on') === '1';
     if (!on) { if (get('mt.sync.board')) { del('mt.sync.board'); return F.deleteDoc(ref).catch(function () {}); } return Promise.resolve(); }
-    var w = weekPts(), lop = String(get('cam20.lop') || '').trim().slice(0, 40), sig = [w.wk, w.pts, w.days, boardName(), lop].join('|');
+    var w = weekPts(), lop = String(get('cam20.lop') || '').trim().slice(0, 40), gold = goldWk(), sig = [w.wk, w.pts, w.days, boardName(), lop, gold].join('|');
     if (!force && get('mt.sync.board') === sig) return Promise.resolve();
-    return F.setDoc(ref, { name: boardName(), lop: lop, wk: w.wk, pts: w.pts, days: w.days, photo: (USER.photoURL || ''), at: F.serverTimestamp() }).then(function () { put('mt.sync.board', sig); }).catch(function (e) { console.error('board', e); });
+    return F.setDoc(ref, { name: boardName(), lop: lop, wk: w.wk, pts: w.pts, days: w.days, photo: (USER.photoURL || ''), at: F.serverTimestamp() }).then(function () {
+      // ghi riêng điểm Đào vàng: nếu luật Firebase không nhận thêm trường thì chỉ phần này lỗi, bảng điểm tuần vẫn lưu được
+      return gold ? F.setDoc(ref, { gold: gold }, { merge: true }).catch(function () {}) : null;
+    }).then(function () { put('mt.sync.board', sig); }).catch(function (e) { console.error('board', e); });
   }
   function listBoard(wk) {
     return loadDB().then(function () { var F = FB.F; return F.getDocs(F.query(F.collection(FB.db, 'board'), F.where('wk', '==', wk || week().wk))); })

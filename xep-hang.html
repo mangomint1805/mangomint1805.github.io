@@ -75,7 +75,8 @@ function render(){
     '<div class="bars" title="Thứ Hai → Chủ nhật">'+(w.per||[]).map(function(p){ return '<i class="'+(p?'':'z')+'" style="height:'+Math.round(p/60*36)+'px"></i>'; }).join('')+'</div></div>';
   if(!a) h+='<p style="margin:12px 0 0"><button class="btn pri" onclick="mLogin()">'+GSVG+(INAPP?'Mở bằng trình duyệt để đăng nhập':'Đăng nhập Google để vào bảng')+'</button></p><p class="hint">Cần đăng nhập để xem và có tên trên bảng xếp hạng.</p></div>';
   else h+='<label class="tog"><input type="checkbox" id="on"'+(on?' checked':'')+'> Hiện tôi trên bảng xếp hạng (tên: <b>'+esc(o.name||a.name)+'</b>'+(localStorage.getItem('cam20.lop')?' · lớp '+esc(localStorage.getItem('cam20.lop')):'')+')</label></div>';
-  if(a) h+='<div class="card"><div class="wk"><h3 style="margin:0;flex:1">Tuần này</h3><select id="lop" aria-label="Lọc theo lớp"><option value="">Tất cả lớp</option></select></div><ol class="lb" id="lb"><li><span class="nm"><small>Đang tải…</small></span></li></ol></div>';
+  if(a) h+='<div class="card"><div class="wk"><h3 style="margin:0;flex:1">Tuần này</h3><select id="lop" aria-label="Lọc theo lớp"><option value="">Tất cả lớp</option></select></div><ol class="lb" id="lb"><li><span class="nm"><small>Đang tải…</small></span></li></ol></div>'+
+    '<div class="card" id="dao-vang"><div class="wk"><h3 style="margin:0;flex:1">⛏️ Bảng vàng Đào vàng · tuần này</h3><a class="hint" href="/toeic/dao-vang.html">Chơi ngay →</a></div><p class="hint" style="margin:4px 0 8px">Vàng nhiều nhất trong 1 ván (Part 5, 6) của mỗi bạn trong tuần.</p><ol class="lb" id="lbg"><li><span class="nm"><small>Đang tải…</small></span></li></ol></div>';
   app.innerHTML=h;
   var cb=document.getElementById('on'); if(cb) cb.onchange=function(){ try{ localStorage.setItem('mt.board.on',cb.checked?'1':'0'); }catch(e){} MACC.board.push().then(load); };
   if(a&&window.MACC) load();
@@ -88,12 +89,14 @@ function load(){
     sel.dataset.init=1; sel.innerHTML='<option value="">Tất cả lớp</option>'+Object.keys(lops).sort().map(function(l){ return '<option'+(l===LOP?' selected':'')+'>'+esc(l)+'</option>'; }).join('');
     sel.onchange=function(){ LOP=sel.value; load(); };
     var R=L.filter(function(x){ return !LOP||x.lop===LOP; });
+    var lg=document.getElementById('lbg'), G=R.filter(function(x){ return x.gold>0; }).sort(function(p,q){ return q.gold-p.gold; });
+    if(lg) lg.innerHTML=G.length?G.slice(0,20).map(function(x){ return '<li class="'+(x.me?'me2':'')+'">'+(x.photo?'<img src="'+esc(x.photo)+'" alt="" referrerpolicy="no-referrer">':'<span class="ini">'+esc((x.name||'?').charAt(0).toUpperCase())+'</span>')+'<span class="nm"><b>'+esc(x.name)+(x.me?' (bạn)':'')+'</b>'+(x.lop?'<small>'+esc(x.lop)+'</small>':'')+'</span><span class="pt">'+x.gold+' 🪙</span></li>'; }).join(''):'<li><span class="nm"><small>Tuần này chưa ai chơi Đào vàng. Chơi một ván là có tên ở đây!</small></span></li>';
     lb.innerHTML=R.length?R.slice(0,50).map(function(x){ return '<li class="'+(x.me?'me2':'')+'">'+(x.photo?'<img src="'+esc(x.photo)+'" alt="" referrerpolicy="no-referrer">':'<span class="ini">'+esc((x.name||'?').charAt(0).toUpperCase())+'</span>')+'<span class="nm"><b>'+esc(x.name)+(x.me?' (bạn)':'')+'</b><small>'+(x.lop?esc(x.lop)+' · ':'')+x.days+'/7 ngày</small></span><span class="pt">'+x.pts+'</span></li>'; }).join(''):'<li><span class="nm"><small>Chưa có ai trên bảng tuần này — bật “Hiện tôi trên bảng xếp hạng” để mở màn nhé!</small></span></li>';
   }).catch(function(e){ lb.innerHTML='<li><span class="nm"><small>Không tải được bảng xếp hạng ('+esc(e&&e.code||'lỗi')+').</small></span></li>'; });
 }
 window.MACCPAINT=render; window.afterAcc=render; render();
 
 </script>
-<script src="acc.js?v=9" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
+<script src="acc.js?v=10" onload="if(!INAPP)MACC.preload(); if(window.afterAcc) afterAcc();"></script>
 </body>
 </html>
