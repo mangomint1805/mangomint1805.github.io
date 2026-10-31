@@ -64,7 +64,7 @@
     el.innerHTML = (tips.length ? '<p class="pw-tip">' + tips.map(esc).join('<br>') + '</p>' : '') + '<div class="pw-grid">' + cells + '</div>' +
       '<p class="pw-note">Mỗi ô là % câu đúng theo tuần, 8 tuần gần nhất (trái → phải). Rê chuột / chạm vào chấm để xem số câu.</p>';
   }
-  var CSS = '.pw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}' +
+  var CSS = '.pw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}' +
     '.pw-cell{border:1px solid var(--line,#ddd7c9);border-radius:10px;padding:8px 10px 4px;background:var(--card,#fff)}' +
     '.pw-h{display:flex;align-items:baseline;gap:6px;font-size:13px}.pw-h b{color:var(--ink,#1e232b)}.pw-h span{color:var(--dim,#666e7a);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pw-h em{font-style:normal;font-weight:700;color:var(--brand-ink,#6b4410)}' +
     '.pw-line{fill:none;stroke:var(--brand,#a8691a);stroke-width:2.2;stroke-linejoin:round}.pw-dot{fill:var(--card,#fff);stroke:var(--brand,#a8691a);stroke-width:2}.pw-mid{stroke:var(--line,#ddd7c9);stroke-dasharray:3 3}' +
