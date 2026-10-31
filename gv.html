@@ -652,7 +652,24 @@ function saveRoster(remote) {
   if (!remote || !window.MACC || !MACC.fs) return Promise.resolve(false);
   return MACC.fs().then(x => x.F.setDoc(x.F.doc(x.db, 'config', 'roster'), { v: JSON.stringify(ROS), t: ROS.t })).then(() => true, () => false);
 }
+// khoá đọc bài nộp lưu theo tài khoản Google của thầy (Firestore config/subs, chỉ thầy đọc được): máy nào đăng nhập cũng có
+function saveSubKeysRemote() {
+  if (!window.MACC || !MACC.fs) return;
+  const v = { a: subsKey('A'), b: subsKey('B'), t: Date.now() };
+  MACC.fs().then(x => x.F.setDoc(x.F.doc(x.db, 'config', 'subs'), v)).catch(() => {});
+}
+function loadSubKeysRemote() {
+  if (!window.MACC || !MACC.fs) return;
+  MACC.fs().then(x => x.F.getDoc(x.F.doc(x.db, 'config', 'subs'))).then(sn => {
+    const d = sn && sn.exists() ? sn.data() || {} : null;
+    if (!d) { if (subsKey('A') || subsKey('B')) saveSubKeysRemote(); return; } // máy này có khoá mà tài khoản chưa có: đưa lên
+    let ch = false;
+    [['A', d.a], ['B', d.b]].forEach(([g, k]) => { if (k && k !== subsKey(g)) { try { localStorage.setItem('gv.subsKey' + g, k); ch = true; } catch (e) {} } });
+    if (ch) { const code = $('rosCls') && $('rosCls').value, C = code && ROS.cls[code]; if (C && typeof loadSubs === 'function') { loadSubs(true); renderSubs(code, C.s); } }
+  }).catch(() => {});
+}
 function loadRosterRemote() {
+  loadSubKeysRemote();
   if (!window.MACC || !MACC.fs) return;
   MACC.fs().then(x => x.F.getDoc(x.F.doc(x.db, 'config', 'roster'))).then(sn => {
     if (!sn || !sn.exists()) return; const d = sn.data() || {};
@@ -864,6 +881,7 @@ function rosterCtl() {
   if ($('rosTodo')) $('rosTodo').addEventListener('click', e => {
     if (!e.target.closest('button[data-subsave]')) return;
     $('rosTodo').querySelectorAll('input[data-subkey]').forEach(i => { try { const v = i.value.trim(); if (v) localStorage.setItem('gv.subsKey' + i.dataset.subkey, v); else localStorage.removeItem('gv.subsKey' + i.dataset.subkey); } catch (er) {} });
+    saveSubKeysRemote();
     const code = $('rosCls').value, C = ROS.cls[code]; if (C) { loadSubs(true); renderSubs(code, C.s); }
   });
   if ($('rosTodo')) $('rosTodo').onclick = e => { const b = e.target.closest('button[data-todo]'); if (!b || !TODO[b.dataset.todo]) return; copyText(TODO[b.dataset.todo]).then(() => { const o = b.textContent; b.textContent = '✓ Đã chép'; setTimeout(() => { b.textContent = o; }, 1600); }, () => { b.textContent = 'Không chép được'; }); };
