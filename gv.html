@@ -96,6 +96,12 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTraffic .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:30px 0 10px;}
 #vTraffic .row h2{margin:0;}
 #vTraffic .note{color:var(--dim);font-size:13.5px;margin:6px 0 0;}
+#vTraffic .todo{margin-top:12px}#vTraffic .todo h3{font-size:16px;margin:0 0 4px}
+#vTraffic .tdg{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px;background:var(--paper)}
+#vTraffic .tdg .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#vTraffic .tdg .hd b{font-size:15px}#vTraffic .tdg .hd .n{font-weight:700;color:var(--amber-ink)}
+#vTraffic .tdg ol{margin:6px 0 0;padding-left:22px;columns:2 220px;column-gap:24px;font-size:14px}#vTraffic .tdg li{break-inside:avoid;margin:1px 0}
+#vTraffic .tdg li small{color:var(--dim);margin-left:4px}#vTraffic .tdg.ok{background:#eef8f3;border-color:#bfe3d2}
 @media (max-width:480px){#vTraffic .card{padding:14px;}
 #vTraffic .lc .n{font-size:28px;}
 #vTraffic .stats{gap:8px;}
@@ -207,6 +213,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
       </div>
     </div>
     <div class="tw" style="margin-top:12px"><table class="t ros"><thead><tr><th>#</th><th>Học viên</th><th>Tình trạng</th><th>Số lượt</th><th class="c-last">Lần cuối</th><th class="c-web">Tài khoản Google</th></tr></thead><tbody id="tkrosB"></tbody></table></div>
+    <div id="tkrosTodo" class="card todo"></div>
     <div id="tkrosUn"></div>
     <div id="tkrosOut"></div>
 
@@ -231,7 +238,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   function jsonp(u,cb,fail){ var n='gvcb'+Date.now(), s=document.createElement('script'), t=setTimeout(function(){ cleanup(); fail('Hết thời gian chờ. Kiểm tra mạng hoặc link Apps Script.'); },25000);
     function cleanup(){ clearTimeout(t); delete window[n]; s.remove(); }
     window[n]=function(d){ cleanup(); cb(d); }; s.onerror=function(){ cleanup(); fail('Không gọi được Apps Script.'); }; s.src=u+(u.indexOf('?')<0?'?':'&')+'callback='+n; document.body.appendChild(s); }
-  function show(d){ $('err').textContent=''; D=d; prep(); $('app').hidden=false; render(); }
+  function show(d){ $('err').textContent=''; D=d; prep(); window.GVROWS=D.rows; if(window.GVTODO) window.GVTODO(); $('app').hidden=false; render(); }
   function load(){
     var k=$('key').value.trim(); if(!k){ $('err').textContent='Nhập mã giáo viên trước nha.'; return; }
     $('err').textContent='Đang tải…';
@@ -673,7 +680,7 @@ function matchIdx(v, code, S) {
   return part.length === 1 ? part[0] : -1;
 }
 function renderRoster() {
-  renderOutside(); if (window.GVRERENDER) window.GVRERENDER();
+  renderOutside(); renderTodo(); if (window.GVRERENDER) window.GVRERENDER();
   const code = $('rosCls').value, C = ROS.cls[code];
   if (!C) { $('rosB').innerHTML = '<tr><td colspan="6">Chưa có danh sách lớp. Bấm “✏️ Dán danh sách từ ERP” để thêm.</td></tr>'; $('rosSum').textContent = ''; $('rosUn').innerHTML = ''; return; }
   const S = C.s, vis = new Map();
@@ -692,6 +699,66 @@ function renderRoster() {
   $('rosUn').innerHTML = un.length ? '<h2 style="font-size:18px;margin:18px 0 6px">Tài khoản chưa ghép được với ai trong lớp ' + esc(code) + '</h2><p class="note">Tên Google khác tên trên ERP (hoặc trùng tên). Chọn đúng học viên để ghép; chọn “Không thuộc lớp này” để ẩn.</p><div class="tw"><table class="t"><tbody>' +
     un.sort((a, b) => b.last - a.last).map(v => '<tr><td>' + esc(v.n || v.e) + '<small>' + esc(v.e) + '</small></td><td class="nw">' + v.c + ' lượt · ' + fmt(v.last) + '</td><td><select data-link="' + esc(v.e) + '"><option value="">Ghép với…</option>' +
       S.map((s, i) => '<option value="' + i + '">' + esc(s.n) + '</option>').join('') + '<option value="-">Không thuộc lớp này</option></select></td></tr>').join('') + '</tbody></table></div>' : '';
+}
+// ---------- ai chưa vào web / chưa làm bài 7 ngày qua (theo lớp đang chọn) ----------
+// Lượt vào web: log/<web> của cả 4 web trong 7 ngày (chỉ nhận ra bạn đã đăng nhập Google).
+// Bài nộp: bảng kết quả bài luyện trên web (tab "Kết quả & bài làm", window.GVROWS). Bài kiểm tra trên lớp (Minitest/Mock test) nằm ở sheet riêng, trang này chưa đọc được.
+let WK = { t: 0, p: null };
+function weekLog() {
+  if (WK.p && Date.now() - WK.t < 120000) return WK.p;
+  WK.t = Date.now(); const from = now() - 7 * DAY;
+  WK.p = Promise.all(SITES.map(s => D.get(D.query(D.ref(db, 'log/' + s), D.orderByChild('t'), D.startAt(from))).then(sn => {
+    const v = sn.val() || {}, o = [];
+    for (const k in v) { const x = v[k]; if (x && x.e && typeof x.t === 'number') o.push({ t: x.t, e: String(x.e).toLowerCase(), n: x.n || '' }); }
+    return o;
+  }, () => []))).then(a => a.flat());
+  return WK.p;
+}
+const TODO = {};
+function todoGroup(id, title, list, sub, empty) {
+  TODO[id] = list.length ? title.msg + '\n' + list.map((x, i) => (i + 1) + '. ' + x.n).join('\n') + (title.end ? '\n' + title.end : '') : '';
+  if (!list.length) return '<div class="tdg ok"><div class="hd"><b>' + esc(title.h) + '</b><span>' + esc(empty) + '</span></div></div>';
+  return '<div class="tdg"><div class="hd"><b>' + esc(title.h) + ' · <span class="n">' + list.length + ' bạn</span></b><button type="button" class="btn" data-todo="' + id + '">📋 Sao chép danh sách</button></div>' +
+    (sub ? '<p class="note" style="margin:2px 0 0">' + sub + '</p>' : '') + '<ol>' + list.map(x => '<li>' + esc(x.n) + (x.info ? '<small>' + esc(x.info) + '</small>' : '') + '</li>').join('') + '</ol></div>';
+}
+let todoSeq = 0;
+async function renderTodo() {
+  const box = $('rosTodo'); if (!box) return;
+  const code = $('rosCls').value, C = ROS.cls[code];
+  if (!C || !db) { box.innerHTML = ''; box.hidden = true; return; }
+  box.hidden = false;
+  const seq = ++todoSeq; if (!box.innerHTML) box.innerHTML = '<p class="note">Đang tải hoạt động 7 ngày qua…</p>';
+  let L; try { L = await weekLog(); } catch (e) { L = []; }
+  if (seq !== todoSeq || $('rosCls').value !== code) return;
+  const S = C.s, vis = S.map(() => 0), last = S.map(() => 0), sub = S.map(() => 0), seen = new Map();
+  L.forEach(r => { let x = seen.get(r.e); if (!x) seen.set(r.e, x = { e: r.e, n: r.n, c: 0, last: 0 }); x.c++; if (r.t > x.last) { x.last = r.t; if (r.n) x.n = r.n; } });
+  seen.forEach(v => { const i = matchIdx(v, code, S); if (i >= 0) { vis[i] += v.c; last[i] = Math.max(last[i], v.last); } });
+  const RS = window.GVROWS, since = Date.now() - 7 * DAY;
+  if (RS) RS.forEach(r => {
+    if (+r.t < since) return;
+    const e = r.email || '', mine = e && (S.some(x => x.e && x.e === e) || String(ROS.link[e] || '').split('|')[0] === code);
+    if (!mine && r.lop && !r.lop.toUpperCase().includes(code)) return; // bài của lớp khác
+    const i = matchIdx({ e, n: r.name }, code, S); if (i >= 0) sub[i]++;
+  });
+  const none = [], idle = [], did = [];
+  S.forEach((s, i) => {
+    if (!vis[i]) none.push({ n: s.n });
+    else if (RS && !sub[i]) idle.push({ n: s.n, info: vis[i] + ' lượt xem · lần cuối ' + fmt(last[i]) });
+    else if (sub[i]) did.push(i);
+  });
+  box.innerHTML = '<h3>👀 Ai chưa học trong 7 ngày qua · lớp ' + esc(code) + '</h3>' +
+    '<p class="note">Tính 7 ngày gần nhất trên cả 4 web, không theo bộ lọc phía trên. Bạn nào vào web mà chưa đăng nhập Google cũng sẽ nằm trong danh sách "chưa vào web". Bấm 📋 để chép tin nhắn, dán vào nhóm lớp hoặc nhắn riêng; trang không tự gửi gì.</p>' +
+    todoGroup('none', { h: 'Chưa vào web', msg: '📣 Lớp ' + code + ': 7 ngày qua các bạn sau chưa vào web ôn bài:', end: 'Các bạn nhớ đăng nhập Google rồi vào web ôn bài nha: https://mangomint1805.github.io' }, none, '', 'Cả lớp đều đã vào web 👍') +
+    (RS ? todoGroup('idle', { h: 'Có vào web nhưng chưa làm bài luyện nào', msg: '📣 Lớp ' + code + ': các bạn sau tuần này có vào web nhưng chưa làm bài luyện nào:', end: 'Mỗi ngày làm 1 đề mini 10 phút thôi là đủ giữ phong độ nha!' }, idle,
+      'Bài luyện = đề mini, đề ETS, IELTS… có nộp bài trên web (' + did.length + ' bạn đã nộp ít nhất 1 bài).', 'Ai vào web cũng đã làm bài 👍')
+      : '<p class="note" style="margin-top:10px">Danh sách "có vào web nhưng chưa làm bài" cần dữ liệu bài nộp: mở tab <b>📋 Kết quả &amp; bài làm</b> một lần để tải.</p>') +
+    '<p class="note" style="margin-top:10px">Bài kiểm tra trên lớp (Minitest / Mock test) lưu ở sheet kết quả riêng của từng lớp, trang này chưa đọc được.</p>';
+}
+window.GVTODO = () => { if ($('rosTodo')) renderTodo(); };
+function copyText(t) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
+  const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select();
+  try { document.execCommand('copy'); } finally { a.remove(); } return Promise.resolve();
 }
 // tài khoản Google đã đăng nhập nhưng không khớp ai trong mọi danh sách ERP (vẫn được vào web, chỉ ghi chú cho thầy)
 function inAnyRoster(v) {
@@ -731,6 +798,7 @@ function rosterCtl() {
   };
   $('rosCls').onchange = () => { try { localStorage.setItem('gv.rosCls', $('rosCls').value); } catch (e) {} renderRoster(); };
   $('rosUn').onchange = e => { const s = e.target.closest('select[data-link]'); if (!s || s.value === '') return; ROS.link[s.dataset.link] = s.value === '-' ? '-' : $('rosCls').value + '|' + s.value; saveRoster(true); renderRoster(); };
+  if ($('rosTodo')) $('rosTodo').onclick = e => { const b = e.target.closest('button[data-todo]'); if (!b || !TODO[b.dataset.todo]) return; copyText(TODO[b.dataset.todo]).then(() => { const o = b.textContent; b.textContent = '✓ Đã chép'; setTimeout(() => { b.textContent = o; }, 1600); }, () => { b.textContent = 'Không chép được'; }); };
   if ($('rosOut')) $('rosOut').onchange = e => { const s = e.target.closest('select[data-olink]'); if (!s || s.value === '') return; ROS.link[s.dataset.olink] = s.value; saveRoster(true); renderRoster(); };
   $('rosB').onclick = e => { const a = e.target.closest('a[data-unlink]'); if (!a) return; e.preventDefault(); delete ROS.link[a.dataset.unlink]; saveRoster(true); renderRoster(); };
   rosOptions(); renderRoster();
