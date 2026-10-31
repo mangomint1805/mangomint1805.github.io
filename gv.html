@@ -664,7 +664,9 @@ function matchIdx(v, code, S) {
   if (L) { if (L === '-') return -1; const [c, i] = L.split('|'); return c === code && S[+i] ? +i : -1; }
   let hit = S.findIndex(s => s.e && s.e === v.e); if (hit >= 0) return hit;
   const d = nm(v.n); if (!d) return -1;
-  const eq = S.map((s, i) => [s.n].concat(s.a || []).some(x => nm(x) === d) ? i : -1).filter(i => i >= 0);
+  // tên Google hay để kiểu "Tên + Họ đệm" (Bảo Trân Tăng, Minh Phan Hoàng Đăng): thử cả cách đưa họ lên đầu (Tăng Bảo Trân)
+  const ws = d.split(' '), alt = [d]; for (let k = 1; k < ws.length; k++) alt.push(ws.slice(k).concat(ws.slice(0, k)).join(' '));
+  const eq = S.map((s, i) => [s.n].concat(s.a || []).some(x => alt.includes(nm(x))) ? i : -1).filter(i => i >= 0);
   if (eq.length === 1) return eq[0];
   const dt = d.split(' '); if (dt.length < 2) return -1;
   const part = S.map((s, i) => [s.n].concat(s.a || []).some(x => { const st = nm(x).split(' '); return dt.includes(st[st.length - 1]) && dt.every(w => st.includes(w)); }) ? i : -1).filter(i => i >= 0);
@@ -696,6 +698,13 @@ function inAnyRoster(v) {
   const L = ROS.link[v.e]; if (L && L !== '-') return true;
   return Object.keys(ROS.cls).some(c => matchIdx(Object.assign({}, v), c, ROS.cls[c].s) >= 0);
 }
+// ô chọn học viên để ghép tay: lớp bạn ấy nhập trên web xếp lên đầu, các lớp khác bên dưới
+function linkSel(v) {
+  const mine = EL.get(v.e) || '', codes = Object.keys(ROS.cls).sort((a, b) => (b === mine) - (a === mine) || a.localeCompare(b));
+  return '<select data-olink="' + esc(v.e) + '"><option value="">Ghép với…</option>' + codes.map(c => '<optgroup label="' + esc(c) + '">' +
+    ROS.cls[c].s.map((s, i) => '<option value="' + esc(c + '|' + i) + '">' + esc(s.n) + '</option>').join('') + '</optgroup>').join('') +
+    (ROS.link[v.e] === '-' ? '' : '<option value="-">Không thuộc lớp nào</option>') + '</select>';
+}
 function renderOutside() {
   const box = $('rosOut'); if (!box) return;
   if (!Object.keys(ROS.cls).length) { box.innerHTML = ''; return; }
@@ -703,9 +712,9 @@ function renderOutside() {
   filtered().forEach(r => { if (!r.e || r.e === me) return; let x = vis.get(r.e); if (!x) vis.set(r.e, x = { e: r.e, n: '', c: 0, last: 0, w: {} }); x.c++; if (r.t > x.last) { x.last = r.t; x.n = r.n || x.n; } else if (!x.n) x.n = r.n; x.w[r.s] = 1; });
   const L = [...vis.values()].filter(v => { const k = ROS.link[v.e]; return k !== '-' ? !inAnyRoster(v) : true; }).sort((a, b) => b.last - a.last);
   box.innerHTML = '<h2 style="font-size:18px;margin:22px 0 6px">🔎 Đăng nhập nhưng không có trong danh sách ERP (' + L.length + ')</h2>' +
-    '<p class="note">Email và tên Google không khớp ai trong ' + Object.keys(ROS.cls).length + ' lớp trên ERP (trong khoảng thời gian đang chọn). Các bạn này <b>vẫn vào web bình thường</b>, danh sách chỉ để thầy biết. Nếu là học viên của lớp, ghép ở mục "chưa ghép được" phía trên.</p>' +
-    (L.length ? '<div class="tw"><table class="t"><thead><tr><th>Tài khoản</th><th>Lớp đã nhập trên web</th><th>Số lượt</th><th class="c-last">Lần cuối</th><th class="c-web">Web</th></tr></thead><tbody>' +
-      L.map(v => '<tr><td>' + esc(v.n || v.e) + '<small>' + esc(v.e) + (ROS.link[v.e] === '-' ? ' · thầy đã đánh dấu "không thuộc lớp"' : '') + '</small></td><td class="nw">' + esc(EL.get(v.e) || '–') + '</td><td class="nw">' + v.c + '</td><td class="nw c-last">' + fmt(v.last) + '</td><td class="c-web">' + Object.keys(v.w).map(k => esc(NAME[k])).join(', ') + '</td></tr>').join('') +
+    '<p class="note">Email và tên Google không khớp ai trong ' + Object.keys(ROS.cls).length + ' lớp trên ERP (trong khoảng thời gian đang chọn). Các bạn này <b>vẫn vào web bình thường</b>, danh sách chỉ để thầy biết. Nếu là học viên của lớp, chọn đúng tên ở cột Ghép.</p>' +
+    (L.length ? '<div class="tw"><table class="t"><thead><tr><th>Tài khoản</th><th>Lớp đã nhập trên web</th><th>Số lượt</th><th class="c-last">Lần cuối</th><th class="c-web">Web</th><th>Ghép</th></tr></thead><tbody>' +
+      L.map(v => '<tr><td>' + esc(v.n || v.e) + '<small>' + esc(v.e) + (ROS.link[v.e] === '-' ? ' · thầy đã đánh dấu "không thuộc lớp"' : '') + '</small></td><td class="nw">' + esc(EL.get(v.e) || '–') + '</td><td class="nw">' + v.c + '</td><td class="nw c-last">' + fmt(v.last) + '</td><td class="c-web">' + Object.keys(v.w).map(k => esc(NAME[k])).join(', ') + '</td><td>' + linkSel(v) + '</td></tr>').join('') +
       '</tbody></table></div>' : '<p class="note">Không có ai: mọi tài khoản đăng nhập đều có trong danh sách ERP. 👍</p>');
 }
 function rosterCtl() {
@@ -722,6 +731,7 @@ function rosterCtl() {
   };
   $('rosCls').onchange = () => { try { localStorage.setItem('gv.rosCls', $('rosCls').value); } catch (e) {} renderRoster(); };
   $('rosUn').onchange = e => { const s = e.target.closest('select[data-link]'); if (!s || s.value === '') return; ROS.link[s.dataset.link] = s.value === '-' ? '-' : $('rosCls').value + '|' + s.value; saveRoster(true); renderRoster(); };
+  if ($('rosOut')) $('rosOut').onchange = e => { const s = e.target.closest('select[data-olink]'); if (!s || s.value === '') return; ROS.link[s.dataset.olink] = s.value; saveRoster(true); renderRoster(); };
   $('rosB').onclick = e => { const a = e.target.closest('a[data-unlink]'); if (!a) return; e.preventDefault(); delete ROS.link[a.dataset.unlink]; saveRoster(true); renderRoster(); };
   rosOptions(); renderRoster();
 }
