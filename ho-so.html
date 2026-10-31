@@ -57,6 +57,7 @@ html[data-skin="scifi"] :is(.mdeco, .mdeco2) { background-image: url("data:image
 <p class="hint" style="text-align:center;margin-top:30px">Minto English · ミント英語</p>
 </div>
 <script src="progress.js?v=3"></script>
+<script src="partwk.js?v=1"></script>
 <script>
 window.MTOAST=function(ic,t,sub){ var d=document.createElement('div'); d.className='mtoast'; d.innerHTML='<b></b><small></small>'; d.firstChild.textContent=t||''; d.lastChild.textContent=sub||''; document.body.appendChild(d); setTimeout(function(){ d.remove(); },3200); };
 var GSVG='<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
@@ -88,6 +89,7 @@ function render(){
      [o.toeic.best?'~'+o.toeic.best:'–','TOEIC cao nhất (Full test)'],[o.toeic.mini,'ngày làm đề mini'],[(o.ielts.bestL||'–')+' / '+(o.ielts.bestR||'–'),'IELTS band cao nhất L / R'],[o.ielts.ws,'bài Writing đã gửi'],
      [o.nen.toeic+o.nen.ielts,'bài Kiến thức nền đã học'],[o.badges.toeic+o.badges.ielts,'huy hiệu đã mở']].map(function(t){ return '<div class="tile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>'; }).join('')+'</div></div>';
   h+='<div class="card"><h3>📅 Lịch học 20 tuần gần đây</h3>'+P.heat(o.days,o.act,20)+'<div class="legend">Ít <i style="background:#eee7da"></i><i style="background:#f2d08f"></i><i style="background:#d9a248"></i><i style="background:#a8691a"></i> Nhiều</div></div>';
+  h+='<div class="card"><h3>📈 Tiến bộ theo Part (TOEIC)</h3><div id="pwk"></div></div>';
   h+='<div class="two">';
   h+='<div class="card"><h3>▶ Bài đang làm dở</h3><div class="list">'+(o.unfinished.length?o.unfinished.map(function(u){ return '<a href="'+esc(u.href)+'"><span><span class="tag '+u.site+'">'+(u.site==='toeic'?'TOEIC':'IELTS')+'</span><b>'+esc(u.label)+'</b><br><small>'+esc(u.sub)+'</small></span><span class="r">Làm tiếp →</span></a>'; }).join(''):'<p class="hint">Không có bài nào làm dở 👍</p>')+'</div></div>';
   h+='<div class="card"><h3>🕘 Bài nộp gần đây</h3><div class="list">'+(o.recent.length?o.recent.map(function(r){ var tg=r.href?'a href="'+esc(r.href)+'"'+(VIEW?' data-src="'+esc(r.src)+'" data-rk="'+esc(r.rk)+'"':''):'div'; return '<'+tg+'><span><span class="tag '+r.site+'">'+(r.site==='toeic'?'TOEIC':'IELTS')+'</span>'+esc(r.label)+'<br><small>'+new Date(r.at).toLocaleDateString('vi-VN')+(r.href?(VIEW?' · 👀 bấm để xem bài làm chi tiết':' · 👀 bấm để xem lại bài'):'')+'</small></span><span class="r">'+esc(r.res)+'</span></'+(r.href?'a':'div')+'>'; }).join(''):'<p class="hint">Chưa nộp bài nào.</p>')+'</div></div>';
@@ -98,6 +100,7 @@ function render(){
     '<div class="card"><h3>🏅 Huy hiệu</h3><div class="list"><a href="toeic/#huy-hieu"><span><span class="tag toeic">TOEIC</span>'+o.badges.toeic+' huy hiệu</span><span class="r">Xem →</span></a><a href="cam/#huy-hieu"><span><span class="tag ielts">IELTS</span>'+o.badges.ielts+' huy hiệu</span><span class="r">Xem →</span></a></div></div></div>';
   h+='<div class="card" id="fbCard"><h3>💬 Nhận xét của thầy</h3><div class="list" id="fbList">'+(a?'<p class="hint">Đang tải…</p>':'<p class="hint">Đăng nhập Google để xem nhận xét của thầy cho bài Writing và bài nói bạn đã gửi.</p>')+'</div></div>';
   app.innerHTML=h;
+  try{ if(window.MPARTWK) MPARTWK.render(document.getElementById('pwk'), VIEW?(VIEW.d['mt.partwk']||null):localStorage.getItem('mt.partwk'), VIEW?{who:1,empty:'Bạn này chưa có dữ liệu luyện TOEIC theo tuần (hoặc chưa đồng bộ).'}:null); }catch(e){}
   var hm=app.querySelector('.mheat'); if(hm) hm.scrollLeft=hm.scrollWidth;
   if(VIEW) [].forEach.call(app.querySelectorAll('.list a'),function(x){
     if(!x.dataset.src){ x.removeAttribute('href'); return; }

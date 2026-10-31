@@ -96,7 +96,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTraffic .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:30px 0 10px;}
 #vTraffic .row h2{margin:0;}
 #vTraffic .note{color:var(--dim);font-size:13.5px;margin:6px 0 0;}
-#vTraffic .todo{margin-top:12px}#vTraffic .todo h3{font-size:16px;margin:0 0 4px}
+#vTraffic .todo{margin-top:12px}#vTraffic .subs{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px}#vTraffic .subs h4{font-size:15px;margin:0 0 6px}#vTraffic .subkey{margin-top:10px;font-size:14px}#vTraffic .subkey summary{cursor:pointer;color:var(--dim)}#vTraffic .todo h3{font-size:16px;margin:0 0 4px}
 #vTraffic .tdg{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px;background:var(--paper)}
 #vTraffic .tdg .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 #vTraffic .tdg .hd b{font-size:15px}#vTraffic .tdg .hd .n{font-weight:700;color:var(--amber-ink)}
@@ -702,7 +702,7 @@ function renderRoster() {
 }
 // ---------- ai chưa vào web / chưa làm bài 7 ngày qua (theo lớp đang chọn) ----------
 // Lượt vào web: log/<web> của cả 4 web trong 7 ngày (chỉ nhận ra bạn đã đăng nhập Google).
-// Bài nộp: bảng kết quả bài luyện trên web (tab "Kết quả & bài làm", window.GVROWS). Bài kiểm tra trên lớp (Minitest/Mock test) nằm ở sheet riêng, trang này chưa đọc được.
+// Bài nộp: bảng kết quả bài luyện trên web (tab "Kết quả & bài làm", window.GVROWS). Bài kiểm tra trên lớp (Minitest/Mock test): renderSubs bên dưới.
 let WK = { t: 0, p: null };
 function weekLog() {
   if (WK.p && Date.now() - WK.t < 120000) return WK.p;
@@ -752,7 +752,67 @@ async function renderTodo() {
     (RS ? todoGroup('idle', { h: 'Có vào web nhưng chưa làm bài luyện nào', msg: '📣 Lớp ' + code + ': các bạn sau tuần này có vào web nhưng chưa làm bài luyện nào:', end: 'Mỗi ngày làm 1 đề mini 10 phút thôi là đủ giữ phong độ nha!' }, idle,
       'Bài luyện = đề mini, đề ETS, IELTS… có nộp bài trên web (' + did.length + ' bạn đã nộp ít nhất 1 bài).', 'Ai vào web cũng đã làm bài 👍')
       : '<p class="note" style="margin-top:10px">Danh sách "có vào web nhưng chưa làm bài" cần dữ liệu bài nộp: mở tab <b>📋 Kết quả &amp; bài làm</b> một lần để tải.</p>') +
-    '<p class="note" style="margin-top:10px">Bài kiểm tra trên lớp (Minitest / Mock test) lưu ở sheet kết quả riêng của từng lớp, trang này chưa đọc được.</p>';
+    '<div id="tkrosSubs" class="subs"></div>';
+  renderSubs(code, S);
+}
+// ---------- ai chưa nộp bài kiểm tra trên lớp (Minitest / Mock test): đọc danh sách bài nộp từ 2 file chấm điểm ----------
+// File chấm điểm trả danh sách khi có khoá (Script Properties SUBS_KEY, thầy tạo bằng taoKhoaGV()); khoá chỉ lưu trên máy thầy, không nằm trên GitHub.
+const GRADERS = {
+  A: { url: 'https://script.google.com/macros/s/AKfycbwCpoSvYtTwk3Viq4dCFeco_Lo1sAgVG8V0rPgYi4GuNh7oIXf7Rb7eUXj8o0juW83s/exec', n: 'file chấm lớp cũ + TOEIC A' },
+  B: { url: 'https://script.google.com/macros/s/AKfycbxCAh01fUjerxSU1Qt4e7IYUzfYBLJ08blQu8ATWlZhfth3UW67R8lwbRljuQJ1xkndtg/exec', n: 'file chấm lớp Pre mới' }
+};
+// lớp nào dùng file chấm nào, bài nào (mã đề). Lớp chưa có ở đây: lấy mọi bài có bạn của lớp đó nộp.
+const CLASS_TESTS = [[/^TOA/, 'A', /^TOEIC-A-MOCK/], [/^TOPRE/, 'B', /^TOEIC-PRE-MOCK/], [/^PRE/, 'A', /^TOEIC-PRE-(MT|PT)/]];
+const SUBS = { t: 0, p: null };
+function subsKey(g) { try { return localStorage.getItem('gv.subsKey' + g) || ''; } catch (e) { return ''; } }
+function jsonp(url, ms) {
+  return new Promise((ok, no) => {
+    const cb = 'gvcb' + Math.random().toString(36).slice(2), sc = document.createElement('script'), done = v => { clearTimeout(t); delete window[cb]; sc.remove(); v instanceof Error ? no(v) : ok(v); };
+    const t = setTimeout(() => done(new Error('timeout')), ms || 20000);
+    window[cb] = d => done(d); sc.onerror = () => done(new Error('net')); sc.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb; document.head.appendChild(sc);
+  });
+}
+function loadSubs(force) {
+  if (!force && SUBS.p && Date.now() - SUBS.t < 120000) return SUBS.p;
+  SUBS.t = Date.now();
+  SUBS.p = Promise.all(Object.keys(GRADERS).map(g => {
+    const k = subsKey(g); if (!k) return Promise.resolve({ g, err: 'nokey' });
+    return jsonp(GRADERS[g].url + '?action=subs&key=' + encodeURIComponent(k)).then(d => d && d.ok ? { g, tests: d.tests || [], subs: d.subs || [] } : { g, err: (d && d.err) || 'lỗi' }, e => ({ g, err: e.message === 'timeout' ? 'timeout' : 'chưa triển khai' }));
+  }));
+  return SUBS.p;
+}
+const testLabel = id => { let m; if ((m = id.match(/MOCK(\d+)/))) return 'Mock Test ' + m[1]; if ((m = id.match(/-MT(\d+)/))) return 'Minitest ' + m[1]; if ((m = id.match(/-PT(\d+)/))) return 'Progress Test ' + m[1]; return id; };
+const SUBSEL = {};
+async function renderSubs(code, S) {
+  const box = $('rosSubs'); if (!box) return;
+  const keys = Object.keys(GRADERS).filter(g => subsKey(g));
+  const keyForm = '<details class="subkey"' + (keys.length ? '' : ' open') + '><summary>🔑 Khoá đọc bài nộp (' + (keys.length ? 'đã có ' + keys.map(g => 'file ' + g).join(', ') : 'chưa có') + ')</summary>' +
+    '<p class="note">Chạy hàm <b>taoKhoaGV</b> trong từng file chấm điểm, chép khoá trong nhật ký rồi dán vào đây. Khoá chỉ lưu trên máy này.</p>' +
+    Object.keys(GRADERS).map(g => '<label style="display:block;margin:4px 0">File ' + g + ' (' + esc(GRADERS[g].n) + '): <input type="password" data-subkey="' + g + '" value="' + esc(subsKey(g)) + '" placeholder="dán khoá" style="width:260px"></label>').join('') +
+    '<button type="button" class="btn" data-subsave="1">Lưu khoá</button></details>';
+  if (!keys.length) { box.innerHTML = '<h4>📝 Chưa nộp Mock test / Minitest</h4>' + keyForm; return; }
+  box.innerHTML = '<h4>📝 Chưa nộp Mock test / Minitest</h4><p class="note">Đang đọc danh sách bài nộp…</p>' + keyForm;
+  const R = await loadSubs(); if ($('rosCls').value !== code) return;
+  const rule = CLASS_TESTS.find(r => r[0].test(code)), errs = R.filter(x => x.err && x.err !== 'nokey');
+  let pool = R.filter(x => !x.err && (!rule || x.g === rule[1]));
+  const subs = [], tests = new Set();
+  pool.forEach(x => { x.tests.forEach(id => { if (!rule || rule[2].test(id)) tests.add(id); }); x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0 })); });
+  const mine = subs.filter(r => (rule ? rule[2].test(r.id) : true) && (r.cls.toUpperCase().includes(code) || (!r.cls && matchIdx({ e: '', n: r.n }, code, S) >= 0)));
+  if (!rule) mine.forEach(r => tests.add(r.id));
+  const T = [...tests].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  const lastAt = id => Math.max(0, ...mine.filter(r => r.id === id).map(r => r.at));
+  let sel = SUBSEL[code]; if (!sel || !T.includes(sel)) sel = T.filter(id => lastAt(id)).sort((a, b) => lastAt(b) - lastAt(a))[0] || T[0];
+  SUBSEL[code] = sel;
+  let h = '<h4>📝 Chưa nộp Mock test / Minitest</h4>';
+  if (errs.length) h += '<p class="note" style="color:#c14636">Không đọc được ' + errs.map(x => 'file ' + x.g + ' (' + esc(x.err === 'key' ? 'sai khoá' : x.err) + ')').join(', ') + '.</p>';
+  if (!T.length) { box.innerHTML = h + '<p class="note">Chưa có bài kiểm tra nào của lớp này trong file chấm điểm' + (rule && !subsKey(rule[1]) ? ' (chưa có khoá file ' + rule[1] + ')' : '') + '.</p>' + keyForm; return; }
+  h += '<label class="note">Bài: <select data-subsel="' + esc(code) + '">' + T.map(id => '<option value="' + esc(id) + '"' + (id === sel ? ' selected' : '') + '>' + esc(testLabel(id)) + ' (' + mine.filter(r => r.id === id).length + ' bài nộp)</option>').join('') + '</select></label>';
+  const got = S.map(() => 0), odd = [];
+  mine.filter(r => r.id === sel).forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S); if (i >= 0) got[i]++; else if (!odd.includes(r.n)) odd.push(r.n); });
+  const miss = S.map((s, i) => got[i] ? null : { n: s.n }).filter(Boolean), lb = testLabel(sel);
+  h += todoGroup('subs', { h: 'Chưa nộp ' + lb, msg: '📣 Lớp ' + code + ': các bạn sau chưa nộp bài ' + lb + ' online:', end: 'Các bạn làm bài sớm giúp thầy nha!' }, miss,
+    (S.length - miss.length) + '/' + S.length + ' bạn đã nộp' + (odd.length ? ' · bài nộp không khớp tên trên ERP: <b>' + odd.map(esc).join(', ') + '</b> (kiểm tra xem có bạn nào gõ tên khác không)' : ''), 'Cả lớp đã nộp ' + lb + ' 👍');
+  box.innerHTML = h + keyForm;
 }
 window.GVTODO = () => { if ($('rosTodo')) renderTodo(); };
 function copyText(t) {
@@ -798,6 +858,14 @@ function rosterCtl() {
   };
   $('rosCls').onchange = () => { try { localStorage.setItem('gv.rosCls', $('rosCls').value); } catch (e) {} renderRoster(); };
   $('rosUn').onchange = e => { const s = e.target.closest('select[data-link]'); if (!s || s.value === '') return; ROS.link[s.dataset.link] = s.value === '-' ? '-' : $('rosCls').value + '|' + s.value; saveRoster(true); renderRoster(); };
+  if ($('rosTodo')) $('rosTodo').addEventListener('change', e => {
+    const s = e.target.closest('select[data-subsel]'); if (!s) return; SUBSEL[s.dataset.subsel] = s.value; const C = ROS.cls[s.dataset.subsel]; if (C) renderSubs(s.dataset.subsel, C.s);
+  });
+  if ($('rosTodo')) $('rosTodo').addEventListener('click', e => {
+    if (!e.target.closest('button[data-subsave]')) return;
+    $('rosTodo').querySelectorAll('input[data-subkey]').forEach(i => { try { const v = i.value.trim(); if (v) localStorage.setItem('gv.subsKey' + i.dataset.subkey, v); else localStorage.removeItem('gv.subsKey' + i.dataset.subkey); } catch (er) {} });
+    const code = $('rosCls').value, C = ROS.cls[code]; if (C) { loadSubs(true); renderSubs(code, C.s); }
+  });
   if ($('rosTodo')) $('rosTodo').onclick = e => { const b = e.target.closest('button[data-todo]'); if (!b || !TODO[b.dataset.todo]) return; copyText(TODO[b.dataset.todo]).then(() => { const o = b.textContent; b.textContent = '✓ Đã chép'; setTimeout(() => { b.textContent = o; }, 1600); }, () => { b.textContent = 'Không chép được'; }); };
   if ($('rosOut')) $('rosOut').onchange = e => { const s = e.target.closest('select[data-olink]'); if (!s || s.value === '') return; ROS.link[s.dataset.olink] = s.value; saveRoster(true); renderRoster(); };
   $('rosB').onclick = e => { const a = e.target.closest('a[data-unlink]'); if (!a) return; e.preventDefault(); delete ROS.link[a.dataset.unlink]; saveRoster(true); renderRoster(); };
