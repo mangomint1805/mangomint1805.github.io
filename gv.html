@@ -113,13 +113,32 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTraffic .stu .c-web,#vTraffic .stu .c-last{display:none;}}
 #vTraffic label.chk{flex-direction:row;color:var(--ink);font-size:14.5px;font-weight:500}#vTraffic input[type=checkbox]{min-width:0}
 .vtabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}.vtabs button{background:var(--card);color:var(--dim);border:1.5px solid var(--line);font-size:15px;padding:10px 16px;border-radius:12px}.vtabs button.on{background:var(--brand-soft);color:var(--brand-ink);border-color:var(--brand)}
+#vTests h2{font-family:'Lora','Times New Roman',serif;font-weight:600;font-size:22px;margin:22px 0 8px}
+#vTests .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+#vTests .flt{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#vTests select{font:inherit;font-size:15px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}
+#vTests .btn{font:inherit;font-size:14.5px;font-weight:600;border:1.5px solid var(--brand);background:var(--card);color:var(--brand-ink);border-radius:10px;padding:8px 14px;cursor:pointer}
+#vTests .note{color:var(--dim);font-size:13.5px;margin:6px 0 0}
+#vTests label.chk{display:inline-flex;flex-direction:row;align-items:center;gap:6px;font-size:14.5px;font-weight:500;cursor:pointer;color:var(--ink)}#vTests .chk input{min-width:0;width:17px;height:17px}
+#vTests .tw{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+#vTests table{border-collapse:collapse;width:100%;font-size:14px}
+#vTests th,#vTests td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+#vTests th{font-size:12.5px;color:var(--dim);background:#f6f2ea;position:sticky;top:0}
+#vTests td.nm,#vTests th.nm{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
+#vTests th.nm{background:#f6f2ea;z-index:2}
+#vTests td.ok{color:#1f8f6c;font-weight:600}#vTests td.ok small{display:block;font-weight:400;font-size:11.5px;color:var(--dim)}
+#vTests td.no{background:#fbe6e2;color:#c14636;font-weight:700}
+#vTests td.miss{font-weight:700;color:#c14636}#vTests td.miss.z{color:#1f8f6c}
+#vTests tfoot td{font-weight:700;background:#f6f2ea}
+#vTests .odd{margin-top:10px;font-size:13.5px;color:var(--dim)}
+@media (max-width:480px){#vTests th,#vTests td{padding:6px 7px;font-size:13px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg><div><b>Bảng theo dõi lớp</b><small>Chỉ dành cho thầy · dữ liệu lấy trực tiếp từ Google Sheet kết quả</small></div><nav class="gvnav"><a href="./">🏠 Trang chủ</a><a href="toeic/">TOEIC</a><a href="cam/">IELTS</a><a href="KH/admin.html">🎮 Minto Quiz</a></nav></header>
 
-<div class="vtabs" id="vtabs" role="tablist" aria-label="Chọn phần"><button type="button" role="tab" data-v="vResults" class="on" aria-selected="true">📋 Kết quả &amp; bài làm</button><button type="button" role="tab" data-v="vTraffic" aria-selected="false">📈 Truy cập web</button></div>
+<div class="vtabs" id="vtabs" role="tablist" aria-label="Chọn phần"><button type="button" role="tab" data-v="vResults" class="on" aria-selected="true">📋 Kết quả &amp; bài làm</button><button type="button" role="tab" data-v="vTraffic" aria-selected="false">📈 Truy cập web</button><button type="button" role="tab" data-v="vTests" aria-selected="false">📝 Bài test</button></div>
 <div id="vResults">
 <div class="card" id="setup">
   <div class="row" id="gRow" style="margin-bottom:12px"><button id="gLogin" type="button" style="background:#fff;color:#3c4043;border:1.5px solid #dadce0;display:inline-flex;gap:8px;align-items:center"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Đăng nhập bằng tài khoản Google của thầy</button><span class="hint" id="gStat" style="margin:0"></span></div>
@@ -228,7 +247,16 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     </div>
   
 </div><!-- /vTraffic -->
+
 </div>
+<div id="vTests" hidden>
+  <h2>📝 Ai chưa nộp Minitest / Mock test</h2>
+  <div class="card">
+    <div class="flt"><select id="tkvtCls" aria-label="Lớp"></select><button type="button" class="btn" id="tkvtReload">↻ Tải lại</button><label class="chk"><input type="checkbox" id="tkvtMiss"> Chỉ hiện bạn còn thiếu bài</label></div>
+    <p class="note">Mỗi cột là một bài test online đã có bạn trong lớp nộp (không tính Progress Test làm trên giấy). ✓ = đã nộp (ngày nộp, ×số lần), ✗ = chưa nộp. Đọc từ file chấm điểm bằng khoá đã lưu ở tab 📈 Truy cập web.</p>
+  </div>
+  <div id="tkvtBox"></div>
+</div><!-- /vTests -->
 <script>
 (function(){
   var URL_='https://script.google.com/macros/s/AKfycby3_45o2Zn3FMEMrVAg9nBCiQEIUvU9HgQxI2ZZtwJ4oUQ_bqXxj1vN0kL6cvhbDQCx/exec';
@@ -408,9 +436,9 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 (function(){ // chuyển giữa 2 phần; #truy-cap mở thẳng phần Truy cập web (link cũ thong-ke-gv.html chuyển về đây)
   var bs=[].slice.call(document.querySelectorAll('#vtabs button'));
   function show(v){ bs.forEach(function(b){ var on=b.dataset.v===v; b.classList.toggle('on',on); b.setAttribute('aria-selected',on); document.getElementById(b.dataset.v).hidden=!on; });
-    try{ history.replaceState(null,'',v==='vTraffic'?'#truy-cap':location.pathname+location.search); }catch(e){} }
+    try{ history.replaceState(null,'',v==='vTraffic'?'#truy-cap':v==='vTests'?'#bai-test':location.pathname+location.search); }catch(e){} if(v==='vTests'&&window.GVTESTS) window.GVTESTS(); }
   bs.forEach(function(b){ b.onclick=function(){ show(b.dataset.v); }; });
-  if(location.hash==='#truy-cap') show('vTraffic');
+  if(location.hash==='#truy-cap') show('vTraffic'); if(location.hash==='#bai-test') show('vTests');
 })();
 </script>
 <script type="module">
@@ -697,6 +725,7 @@ function matchIdx(v, code, S) {
   return part.length === 1 ? part[0] : -1;
 }
 function renderRoster() {
+  if (window.GVTESTS && !document.getElementById('vTests').hidden) window.GVTESTS();
   renderOutside(); renderTodo(); if (window.GVRERENDER) window.GVRERENDER();
   const code = $('rosCls').value, C = ROS.cls[code];
   if (!C) { $('rosB').innerHTML = '<tr><td colspan="6">Chưa có danh sách lớp. Bấm “✏️ Dán danh sách từ ERP” để thêm.</td></tr>'; $('rosSum').textContent = ''; $('rosUn').innerHTML = ''; return; }
@@ -934,6 +963,56 @@ $('csv').onclick = csv;
 $('clean').onclick = clean;
 let rT = 0; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { if (rows.length || !$('app').classList.contains('hide')) chart(filtered()); }, 200); });
 rosterCtl(); setTab(tab); loadClasses();
+// ---------- tab "📝 Bài test": bảng tổng ai đã / chưa nộp từng Minitest / Mock test của một lớp ----------
+const vtTestOk = id => !/-PT\d|DIAG/.test(id);
+let vtSeq = 0;
+function vtOptions() {
+  const f = $('vtCls'); if (!f) return;
+  const codes = Object.keys(ROS.cls).sort(); let want = f.value; if (!want) try { want = localStorage.getItem('gv.vtCls') || localStorage.getItem('gv.rosCls') || ''; } catch (e) {}
+  f.innerHTML = codes.length ? codes.map(c => '<option value="' + esc(c) + '">' + esc(c) + ' · ' + ROS.cls[c].s.length + ' bạn</option>').join('') : '<option value="">Chưa có danh sách lớp (dán ở tab 📈 Truy cập web)</option>';
+  if (codes.includes(want)) f.value = want;
+}
+async function renderTests(force) {
+  const box = $('vtBox'); if (!box) return;
+  vtOptions();
+  const code = $('vtCls').value, C = ROS.cls[code];
+  if (!C) { box.innerHTML = '<p class="note">Chưa có danh sách lớp. Vào tab 📈 Truy cập web, bấm “✏️ Dán danh sách từ ERP”.</p>'; return; }
+  if (!Object.keys(GRADERS).some(g => subsKey(g))) { box.innerHTML = '<p class="note">Chưa có khoá đọc bài nộp trên máy này. Đăng nhập Google bằng tài khoản của thầy (khoá tự tải về), hoặc dán khoá ở mục “Chưa nộp Mock test / Minitest” trong tab 📈 Truy cập web.</p>'; return; }
+  const seq = ++vtSeq; box.innerHTML = '<p class="note">Đang đọc danh sách bài nộp…</p>';
+  const R = await loadSubs(!!force); if (seq !== vtSeq || $('vtCls').value !== code) return;
+  const S = C.s, rule = CLASS_TESTS.find(r => r[0].test(code)), errs = R.filter(x => x.err && x.err !== 'nokey');
+  const subs = [];
+  R.filter(x => !x.err && (!rule || x.g === rule[1])).forEach(x => x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0 })));
+  const mine = subs.filter(r => vtTestOk(r.id) && (!rule || rule[2].test(r.id)) && (r.cls.toUpperCase().includes(code) || (!r.cls && matchIdx({ e: '', n: r.n }, code, S) >= 0)));
+  const T = [...new Set(mine.filter(r => matchIdx({ e: '', n: r.n }, code, S) >= 0).map(r => r.id))].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  let h = errs.length ? '<p class="note" style="color:#c14636">Không đọc được ' + errs.map(x => 'file ' + x.g + ' (' + esc(x.err === 'key' ? 'sai khoá' : x.err) + ')').join(', ') + '.</p>' : '';
+  if (!T.length) { box.innerHTML = h + '<p class="note">Lớp ' + esc(code) + ' chưa có ai nộp bài test online nào.</p>'; return; }
+  const cell = S.map(() => T.map(() => ({ c: 0, at: 0 }))), odd = new Map();
+  mine.forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S), j = T.indexOf(r.id); if (i < 0) { odd.set(r.n, (odd.get(r.n) || []).concat(testLabel(r.id))); return; } const x = cell[i][j]; x.c++; x.at = Math.max(x.at, r.at); });
+  const miss = S.map((s, i) => T.filter((id, j) => !cell[i][j].c));
+  const onlyMiss = $('vtMiss') && $('vtMiss').checked;
+  const order = S.map((s, i) => i).filter(i => !onlyMiss || miss[i].length).sort((a, b) => miss[b].length - miss[a].length || a - b);
+  const dm = t => { const d = vn(t); return p2(d.getUTCDate()) + '/' + p2(d.getUTCMonth() + 1); };
+  const short = id => testLabel(id).replace('Minitest ', 'MT ').replace('Mock Test ', 'Mock ');
+  h += '<div class="tw"><table><thead><tr><th class="nm">Học viên</th>' + T.map(id => '<th title="' + esc(id) + '">' + esc(short(id)) + '</th>').join('') + '<th>Thiếu</th></tr></thead><tbody>' +
+    (order.length ? order.map(i => '<tr><td class="nm">' + esc(S[i].n) + '</td>' + T.map((id, j) => { const x = cell[i][j]; return x.c ? '<td class="ok">✓<small>' + dm(x.at) + (x.c > 1 ? ' ×' + x.c : '') + '</small></td>' : '<td class="no">✗</td>'; }).join('') +
+      '<td class="miss' + (miss[i].length ? '' : ' z') + '">' + (miss[i].length || '✓') + '</td></tr>').join('') : '<tr><td colspan="' + (T.length + 2) + '">Cả lớp đã nộp đủ 👍</td></tr>') +
+    '</tbody><tfoot><tr><td class="nm">Đã nộp</td>' + T.map((id, j) => '<td>' + S.filter((s, i) => cell[i][j].c).length + '/' + S.length + '</td>').join('') + '<td></td></tr></tfoot></table></div>';
+  const lack = S.map((s, i) => ({ n: s.n, m: miss[i] })).filter(x => x.m.length);
+  TODO.vt = lack.length ? '📣 Lớp ' + code + ': các bạn sau còn thiếu bài test online:\n' + lack.map((x, k) => (k + 1) + '. ' + x.n + ': ' + x.m.map(testLabel).join(', ')).join('\n') + '\nCác bạn làm bài sớm giúp thầy nha!' : '';
+  h += '<div class="flt" style="margin-top:12px"><b>' + lack.length + '/' + S.length + ' bạn còn thiếu bài</b>' + (lack.length ? '<button type="button" class="btn" data-vtcopy="1">📋 Sao chép tin nhắc</button>' : '') + '</div>';
+  if (odd.size) h += '<p class="odd">Bài nộp không khớp tên trên ERP (kiểm tra xem có bạn gõ tên khác không): ' + [...odd].map(([n, l]) => '<b>' + esc(n) + '</b> (' + esc([...new Set(l)].join(', ')) + ')').join(', ') + '</p>';
+  box.innerHTML = h;
+}
+window.GVTESTS = () => renderTests();
+if (!document.getElementById('vTests').hidden) renderTests();
+if ($('vtCls')) {
+  $('vtCls').onchange = () => { try { localStorage.setItem('gv.vtCls', $('vtCls').value); } catch (e) {} renderTests(); };
+  $('vtMiss').onchange = () => renderTests();
+  $('vtReload').onclick = () => renderTests(true);
+  $('vtBox').onclick = e => { const b = e.target.closest('button[data-vtcopy]'); if (!b || !TODO.vt) return; copyText(TODO.vt).then(() => { const o = b.textContent; b.textContent = '✓ Đã chép'; setTimeout(() => { b.textContent = o; }, 1600); }, () => { b.textContent = 'Không chép được'; }); };
+}
+
 boot();
 </script>
 
