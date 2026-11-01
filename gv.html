@@ -127,6 +127,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTests td.nm,#vTests th.nm{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
 #vTests th.nm{background:#f6f2ea;z-index:2}
 #vTests td.ok{color:#1f8f6c;font-weight:600}#vTests td.ok small{display:block;font-weight:400;font-size:11.5px;color:var(--dim)}
+#vTests td.ok.lo{background:#fff1dc;color:#b45309}
 #vTests td.no{background:#fbe6e2;color:#c14636;font-weight:700}
 #vTests td.miss{font-weight:700;color:#c14636}#vTests td.miss.z{color:#1f8f6c}
 #vTests tfoot td{font-weight:700;background:#f6f2ea}
@@ -253,7 +254,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   <h2>📝 Ai chưa nộp Minitest / Mock test</h2>
   <div class="card">
     <div class="flt"><select id="tkvtCls" aria-label="Lớp"></select><button type="button" class="btn" id="tkvtReload">↻ Tải lại</button><label class="chk"><input type="checkbox" id="tkvtMiss"> Chỉ hiện bạn còn thiếu bài</label></div>
-    <p class="note">Mỗi cột là một bài test online đã có bạn trong lớp nộp (không tính Progress Test làm trên giấy). ✓ = đã nộp (ngày nộp, ×số lần), ✗ = chưa nộp. Đọc từ file chấm điểm bằng khoá đã lưu ở tab 📈 Truy cập web.</p>
+    <p class="note">Mỗi cột là một bài test online đã có bạn trong lớp nộp (không tính Progress Test làm trên giấy). Ô xanh = điểm /10 đã nộp (lấy lần cao nhất; ngày nộp, ×số lần), ô cam = dưới 5, ✗ = chưa nộp. Điểm chưa gồm điểm cộng. Đọc từ file chấm điểm bằng khoá đã lưu ở tab 📈 Truy cập web.</p>
   </div>
   <div id="tkvtBox"></div>
 </div><!-- /vTests -->
@@ -842,7 +843,7 @@ async function renderSubs(code, S) {
   const rule = CLASS_TESTS.find(r => r[0].test(code)), errs = R.filter(x => x.err && x.err !== 'nokey');
   let pool = R.filter(x => !x.err && (!rule || x.g === rule[1]));
   const subs = [], tests = new Set();
-  pool.forEach(x => { x.tests.forEach(id => { if (!rule || rule[2].test(id)) tests.add(id); }); x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0 })); });
+  pool.forEach(x => { x.tests.forEach(id => { if (!rule || rule[2].test(id)) tests.add(id); }); x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0, sc: r[4] })); });
   const mine = subs.filter(r => (rule ? rule[2].test(r.id) : true) && (r.cls.toUpperCase().includes(code) || (!r.cls && matchIdx({ e: '', n: r.n }, code, S) >= 0)));
   if (!rule) mine.forEach(r => tests.add(r.id));
   const T = [...tests].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
@@ -982,22 +983,24 @@ async function renderTests(force) {
   const R = await loadSubs(!!force); if (seq !== vtSeq || $('vtCls').value !== code) return;
   const S = C.s, rule = CLASS_TESTS.find(r => r[0].test(code)), errs = R.filter(x => x.err && x.err !== 'nokey');
   const subs = [];
-  R.filter(x => !x.err && (!rule || x.g === rule[1])).forEach(x => x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0 })));
+  R.filter(x => !x.err && (!rule || x.g === rule[1])).forEach(x => x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0, sc: r[4] })));
   const mine = subs.filter(r => vtTestOk(r.id) && (!rule || rule[2].test(r.id)) && (r.cls.toUpperCase().includes(code) || (!r.cls && matchIdx({ e: '', n: r.n }, code, S) >= 0)));
   const T = [...new Set(mine.filter(r => matchIdx({ e: '', n: r.n }, code, S) >= 0).map(r => r.id))].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
   let h = errs.length ? '<p class="note" style="color:#c14636">Không đọc được ' + errs.map(x => 'file ' + x.g + ' (' + esc(x.err === 'key' ? 'sai khoá' : x.err) + ')').join(', ') + '.</p>' : '';
   if (!T.length) { box.innerHTML = h + '<p class="note">Lớp ' + esc(code) + ' chưa có ai nộp bài test online nào.</p>'; return; }
-  const cell = S.map(() => T.map(() => ({ c: 0, at: 0 }))), odd = new Map();
-  mine.forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S), j = T.indexOf(r.id); if (i < 0) { odd.set(r.n, (odd.get(r.n) || []).concat(testLabel(r.id))); return; } const x = cell[i][j]; x.c++; x.at = Math.max(x.at, r.at); });
+  const cell = S.map(() => T.map(() => ({ c: 0, at: 0, sc: null }))), odd = new Map();
+  mine.forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S), j = T.indexOf(r.id); if (i < 0) { odd.set(r.n, (odd.get(r.n) || []).concat(testLabel(r.id))); return; } const x = cell[i][j]; x.c++; x.at = Math.max(x.at, r.at); if (typeof r.sc === 'number' && (x.sc == null || r.sc > x.sc)) x.sc = r.sc; });
   const miss = S.map((s, i) => T.filter((id, j) => !cell[i][j].c));
   const onlyMiss = $('vtMiss') && $('vtMiss').checked;
   const order = S.map((s, i) => i).filter(i => !onlyMiss || miss[i].length).sort((a, b) => miss[b].length - miss[a].length || a - b);
   const dm = t => { const d = vn(t); return p2(d.getUTCDate()) + '/' + p2(d.getUTCMonth() + 1); };
+  const fmtSc = v => (Math.round(v * 10) / 10).toString().replace('.', ',');
   const short = id => testLabel(id).replace('Minitest ', 'MT ').replace('Mock Test ', 'Mock ');
   h += '<div class="tw"><table><thead><tr><th class="nm">Học viên</th>' + T.map(id => '<th title="' + esc(id) + '">' + esc(short(id)) + '</th>').join('') + '<th>Thiếu</th></tr></thead><tbody>' +
-    (order.length ? order.map(i => '<tr><td class="nm">' + esc(S[i].n) + '</td>' + T.map((id, j) => { const x = cell[i][j]; return x.c ? '<td class="ok">✓<small>' + dm(x.at) + (x.c > 1 ? ' ×' + x.c : '') + '</small></td>' : '<td class="no">✗</td>'; }).join('') +
+    (order.length ? order.map(i => '<tr><td class="nm">' + esc(S[i].n) + '</td>' + T.map((id, j) => { const x = cell[i][j]; return x.c ? '<td class="ok' + (x.sc != null && x.sc < 5 ? ' lo' : '') + '">' + (x.sc != null ? fmtSc(x.sc) : '✓') + '<small>' + dm(x.at) + (x.c > 1 ? ' ×' + x.c : '') + '</small></td>' : '<td class="no">✗</td>'; }).join('') +
       '<td class="miss' + (miss[i].length ? '' : ' z') + '">' + (miss[i].length || '✓') + '</td></tr>').join('') : '<tr><td colspan="' + (T.length + 2) + '">Cả lớp đã nộp đủ 👍</td></tr>') +
-    '</tbody><tfoot><tr><td class="nm">Đã nộp</td>' + T.map((id, j) => '<td>' + S.filter((s, i) => cell[i][j].c).length + '/' + S.length + '</td>').join('') + '<td></td></tr></tfoot></table></div>';
+    '</tbody><tfoot><tr><td class="nm">Đã nộp</td>' + T.map((id, j) => '<td>' + S.filter((s, i) => cell[i][j].c).length + '/' + S.length + '</td>').join('') + '<td></td></tr>' +
+    '<tr><td class="nm">Điểm TB</td>' + T.map((id, j) => { const v = S.map((s, i) => cell[i][j].sc).filter(x => x != null); return '<td>' + (v.length ? fmtSc(v.reduce((a, b) => a + b, 0) / v.length) : '–') + '</td>'; }).join('') + '<td></td></tr></tfoot></table></div>';
   const lack = S.map((s, i) => ({ n: s.n, m: miss[i] })).filter(x => x.m.length);
   TODO.vt = lack.length ? '📣 Lớp ' + code + ': các bạn sau còn thiếu bài test online:\n' + lack.map((x, k) => (k + 1) + '. ' + x.n + ': ' + x.m.map(testLabel).join(', ')).join('\n') + '\nCác bạn làm bài sớm giúp thầy nha!' : '';
   h += '<div class="flt" style="margin-top:12px"><b>' + lack.length + '/' + S.length + ' bạn còn thiếu bài</b>' + (lack.length ? '<button type="button" class="btn" data-vtcopy="1">📋 Sao chép tin nhắc</button>' : '') + '</div>';
