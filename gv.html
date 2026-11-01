@@ -128,6 +128,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTests th.nm{background:#f6f2ea;z-index:2}
 #vTests td.ok{color:#1f8f6c;font-weight:600}#vTests td.ok small{display:block;font-weight:400;font-size:11.5px;color:var(--dim)}
 #vTests td.ok.lo{background:#fff1dc;color:#b45309}
+#vTests td.ok.pend{box-shadow:inset 0 0 0 2px #3b82f6}
 #vTests td.no{background:#fbe6e2;color:#c14636;font-weight:700}
 #vTests td.miss{font-weight:700;color:#c14636}#vTests td.miss.z{color:#1f8f6c}
 #vTests tfoot td{font-weight:700;background:#f6f2ea}
@@ -254,7 +255,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   <h2>📝 Ai chưa nộp Minitest / Mock test</h2>
   <div class="card">
     <div class="flt"><select id="tkvtCls" aria-label="Lớp"></select><button type="button" class="btn" id="tkvtReload">↻ Tải lại</button><label class="chk"><input type="checkbox" id="tkvtMiss"> Chỉ hiện bạn còn thiếu bài</label></div>
-    <p class="note">Mỗi cột là một bài test online đã có bạn trong lớp nộp (không tính Progress Test làm trên giấy). Ô xanh = điểm /10 đã nộp (lấy lần cao nhất; ngày nộp, ×số lần), ô cam = dưới 5, ✗ = chưa nộp. Điểm chưa gồm điểm cộng. Đọc từ file chấm điểm bằng khoá đã lưu ở tab 📈 Truy cập web.</p>
+    <p class="note">Mỗi cột là một bài test online đã có bạn trong lớp nộp (không tính Progress Test làm trên giấy). Ô có điểm = đã làm: ưu tiên điểm trên ERP (đã gồm điểm cộng, kể cả bài làm giấy), chưa có thì lấy điểm online cao nhất. Ô cam = dưới 5, ô viền xanh = nộp online nhưng chưa nhập ERP, ✗ = chưa làm. Đọc từ file chấm điểm bằng khoá đã lưu ở tab 📈 Truy cập web.</p>
   </div>
   <div id="tkvtBox"></div>
 </div><!-- /vTests -->
@@ -973,6 +974,13 @@ function vtOptions() {
   f.innerHTML = codes.length ? codes.map(c => '<option value="' + esc(c) + '">' + esc(c) + ' · ' + ROS.cls[c].s.length + ' bạn</option>').join('') : '<option value="">Chưa có danh sách lớp (dán ở tab 📈 Truy cập web)</option>';
   if (codes.includes(want)) f.value = want;
 }
+let ERPC = { t: 0, p: null };
+function loadErp(force) {
+  if (!force && ERPC.p && Date.now() - ERPC.t < 120000) return ERPC.p;
+  ERPC.t = Date.now();
+  ERPC.p = (window.MACC && MACC.fs ? MACC.fs().then(x => x.F.getDoc(x.F.doc(x.db, 'config', 'erp'))).then(sn => { if (!sn || !sn.exists()) return null; const d = sn.data() || {}; try { return { t: d.t || 0, v: JSON.parse(d.v || '{}') }; } catch (e) { return null; } }) : Promise.resolve(null)).catch(() => null);
+  return ERPC.p;
+}
 async function renderTests(force) {
   const box = $('vtBox'); if (!box) return;
   vtOptions();
@@ -980,30 +988,46 @@ async function renderTests(force) {
   if (!C) { box.innerHTML = '<p class="note">Chưa có danh sách lớp. Vào tab 📈 Truy cập web, bấm “✏️ Dán danh sách từ ERP”.</p>'; return; }
   if (!Object.keys(GRADERS).some(g => subsKey(g))) { box.innerHTML = '<p class="note">Chưa có khoá đọc bài nộp trên máy này. Đăng nhập Google bằng tài khoản của thầy (khoá tự tải về), hoặc dán khoá ở mục “Chưa nộp Mock test / Minitest” trong tab 📈 Truy cập web.</p>'; return; }
   const seq = ++vtSeq; box.innerHTML = '<p class="note">Đang đọc danh sách bài nộp…</p>';
-  const R = await loadSubs(!!force); if (seq !== vtSeq || $('vtCls').value !== code) return;
+  const [R, E] = await Promise.all([loadSubs(!!force), loadErp(!!force)]); if (seq !== vtSeq || $('vtCls').value !== code) return;
   const S = C.s, rule = CLASS_TESTS.find(r => r[0].test(code)), errs = R.filter(x => x.err && x.err !== 'nokey');
   const subs = [];
   R.filter(x => !x.err && (!rule || x.g === rule[1])).forEach(x => x.subs.forEach(r => subs.push({ id: r[0], n: r[1], cls: String(r[2] || ''), at: +r[3] || 0, sc: r[4] })));
   const mine = subs.filter(r => vtTestOk(r.id) && (!rule || rule[2].test(r.id)) && (r.cls.toUpperCase().includes(code) || (!r.cls && matchIdx({ e: '', n: r.n }, code, S) >= 0)));
-  const T = [...new Set(mine.filter(r => matchIdx({ e: '', n: r.n }, code, S) >= 0).map(r => r.id))].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  const lk = s => String(s).toLowerCase().replace(/\s+/g, ' ').trim();
+  const EC = (E && E.v && E.v[code]) || {};   // {"Minitest 6": {tên trên ERP: điểm}}
+  const keys = new Set(mine.filter(r => matchIdx({ e: '', n: r.n }, code, S) >= 0).map(r => lk(testLabel(r.id))));
+  Object.keys(EC).forEach(k => { if (Object.keys(EC[k]).length) keys.add(lk(k)); });
+  const T = [...keys].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
   let h = errs.length ? '<p class="note" style="color:#c14636">Không đọc được ' + errs.map(x => 'file ' + x.g + ' (' + esc(x.err === 'key' ? 'sai khoá' : x.err) + ')').join(', ') + '.</p>' : '';
   if (!T.length) { box.innerHTML = h + '<p class="note">Lớp ' + esc(code) + ' chưa có ai nộp bài test online nào.</p>'; return; }
-  const cell = S.map(() => T.map(() => ({ c: 0, at: 0, sc: null }))), odd = new Map();
-  mine.forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S), j = T.indexOf(r.id); if (i < 0) { odd.set(r.n, (odd.get(r.n) || []).concat(testLabel(r.id))); return; } const x = cell[i][j]; x.c++; x.at = Math.max(x.at, r.at); if (typeof r.sc === 'number' && (x.sc == null || r.sc > x.sc)) x.sc = r.sc; });
-  const miss = S.map((s, i) => T.filter((id, j) => !cell[i][j].c));
+  const cell = S.map(() => T.map(() => ({ c: 0, at: 0, sc: null, erp: null }))), odd = new Map();
+  mine.forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S), j = T.indexOf(lk(testLabel(r.id))); if (i < 0 || j < 0) { if (i < 0) odd.set(r.n, (odd.get(r.n) || []).concat(testLabel(r.id))); return; } const x = cell[i][j]; x.c++; x.at = Math.max(x.at, r.at); if (typeof r.sc === 'number' && (x.sc == null || r.sc > x.sc)) x.sc = r.sc; });
+  Object.keys(EC).forEach(k => { const j = T.indexOf(lk(k)); if (j < 0) return; Object.keys(EC[k]).forEach(n => { const i = S.findIndex(s => nm(s.n) === nm(n)); if (i >= 0) cell[i][j].erp = EC[k][n]; }); });
+  const done = x => x.c || x.erp != null, val = x => x.erp != null ? x.erp : x.sc;
+  const miss = S.map((s, i) => T.filter((id, j) => !done(cell[i][j])));
   const onlyMiss = $('vtMiss') && $('vtMiss').checked;
   const order = S.map((s, i) => i).filter(i => !onlyMiss || miss[i].length).sort((a, b) => miss[b].length - miss[a].length || a - b);
   const dm = t => { const d = vn(t); return p2(d.getUTCDate()) + '/' + p2(d.getUTCMonth() + 1); };
   const fmtSc = v => (Math.round(v * 10) / 10).toString().replace('.', ',');
-  const short = id => testLabel(id).replace('Minitest ', 'MT ').replace('Mock Test ', 'Mock ');
-  h += '<div class="tw"><table><thead><tr><th class="nm">Học viên</th>' + T.map(id => '<th title="' + esc(id) + '">' + esc(short(id)) + '</th>').join('') + '<th>Thiếu</th></tr></thead><tbody>' +
-    (order.length ? order.map(i => '<tr><td class="nm">' + esc(S[i].n) + '</td>' + T.map((id, j) => { const x = cell[i][j]; return x.c ? '<td class="ok' + (x.sc != null && x.sc < 5 ? ' lo' : '') + '">' + (x.sc != null ? fmtSc(x.sc) : '✓') + '<small>' + dm(x.at) + (x.c > 1 ? ' ×' + x.c : '') + '</small></td>' : '<td class="no">✗</td>'; }).join('') +
+  const lab = k => k.replace(/^minitest /, 'Minitest ').replace(/^mock test /, 'Mock test ');
+  const short = k => lab(k).replace('Minitest ', 'MT ').replace('Mock test ', 'Mock ');
+  let pend = 0;
+  h += '<div class="tw"><table><thead><tr><th class="nm">Học viên</th>' + T.map(k => '<th>' + esc(short(k)) + '</th>').join('') + '<th>Thiếu</th></tr></thead><tbody>' +
+    (order.length ? order.map(i => '<tr><td class="nm">' + esc(S[i].n) + '</td>' + T.map((k, j) => {
+      const x = cell[i][j]; if (!done(x)) return '<td class="no">✗</td>';
+      const v = val(x), sub = [];
+      if (x.c) sub.push(dm(x.at) + (x.c > 1 ? ' ×' + x.c : ''));
+      if (x.erp != null) sub.push(x.c ? 'ERP' : 'ERP · giấy');
+      else { sub.push('chưa nhập ERP'); pend++; }
+      return '<td class="ok' + (v != null && v < 5 ? ' lo' : '') + (x.erp == null ? ' pend' : '') + '"' + (x.erp != null && x.sc != null && x.erp !== x.sc ? ' title="Điểm online ' + fmtSc(x.sc) + ', trên ERP ' + fmtSc(x.erp) + ' (có thể đã cộng điểm)"' : '') + '>' + (v != null ? fmtSc(v) : '✓') + '<small>' + sub.join(' · ') + '</small></td>';
+    }).join('') +
       '<td class="miss' + (miss[i].length ? '' : ' z') + '">' + (miss[i].length || '✓') + '</td></tr>').join('') : '<tr><td colspan="' + (T.length + 2) + '">Cả lớp đã nộp đủ 👍</td></tr>') +
-    '</tbody><tfoot><tr><td class="nm">Đã nộp</td>' + T.map((id, j) => '<td>' + S.filter((s, i) => cell[i][j].c).length + '/' + S.length + '</td>').join('') + '<td></td></tr>' +
-    '<tr><td class="nm">Điểm TB</td>' + T.map((id, j) => { const v = S.map((s, i) => cell[i][j].sc).filter(x => x != null); return '<td>' + (v.length ? fmtSc(v.reduce((a, b) => a + b, 0) / v.length) : '–') + '</td>'; }).join('') + '<td></td></tr></tfoot></table></div>';
+    '</tbody><tfoot><tr><td class="nm">Đã có điểm</td>' + T.map((k, j) => '<td>' + S.filter((s, i) => done(cell[i][j])).length + '/' + S.length + '</td>').join('') + '<td></td></tr>' +
+    '<tr><td class="nm">Điểm TB</td>' + T.map((k, j) => { const v = S.map((s, i) => val(cell[i][j])).filter(x => x != null); return '<td>' + (v.length ? fmtSc(v.reduce((a, b) => a + b, 0) / v.length) : '–') + '</td>'; }).join('') + '<td></td></tr></tfoot></table></div>';
   const lack = S.map((s, i) => ({ n: s.n, m: miss[i] })).filter(x => x.m.length);
-  TODO.vt = lack.length ? '📣 Lớp ' + code + ': các bạn sau còn thiếu bài test online:\n' + lack.map((x, k) => (k + 1) + '. ' + x.n + ': ' + x.m.map(testLabel).join(', ')).join('\n') + '\nCác bạn làm bài sớm giúp thầy nha!' : '';
+  TODO.vt = lack.length ? '📣 Lớp ' + code + ': các bạn sau còn thiếu bài test:\n' + lack.map((x, k) => (k + 1) + '. ' + x.n + ': ' + x.m.map(lab).join(', ')).join('\n') + '\nCác bạn làm bài sớm giúp thầy nha!' : '';
   h += '<div class="flt" style="margin-top:12px"><b>' + lack.length + '/' + S.length + ' bạn còn thiếu bài</b>' + (lack.length ? '<button type="button" class="btn" data-vtcopy="1">📋 Sao chép tin nhắc</button>' : '') + '</div>';
+  h += '<p class="note">' + (E && E.t ? 'Điểm ERP cập nhật lúc ' + fmt(E.t) + '. ' : 'Chưa có dữ liệu điểm ERP. ') + (pend ? '<b>' + pend + ' bài</b> đã nộp online nhưng chưa có điểm trên ERP (ô viền xanh).' : 'Mọi bài nộp online đều đã có điểm trên ERP.') + '</p>';
   if (odd.size) h += '<p class="odd">Bài nộp không khớp tên trên ERP (kiểm tra xem có bạn gõ tên khác không): ' + [...odd].map(([n, l]) => '<b>' + esc(n) + '</b> (' + esc([...new Set(l)].join(', ')) + ')').join(', ') + '</p>';
   box.innerHTML = h;
 }
