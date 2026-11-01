@@ -36,3 +36,8 @@ html[data-skin] .me .acts .pri{background:var(--brand);border-color:var(--brand)
 html[data-skin=scifi] .me .acts .pri{color:#141d42}
 html[data-skin=scifi] .mdeco{opacity:.9}
 html[data-skin=scifi] :is(.mdeco,.mdeco2){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 0l28 16v32L28 64 0 48V16zM28 64v33' fill='none' stroke='%23f2c14e' stroke-width='.7' opacity='.22'/%3E%3C/svg%3E")!important;background-size:56px 97px!important}
+/* điện thoại: vùng chạm lớn hơn cho nút nhỏ (lớp ::before vô hình, không đổi bố cục) */
+@media (max-width:600px){
+.more a::before{content:"";position:absolute;inset:-4px -3px}
+.back{position:relative}.back::before{content:"";position:absolute;inset:-11px -8px}
+}
