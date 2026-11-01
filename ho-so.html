@@ -83,7 +83,7 @@ function render(){
   if(VIEW){ a=o.acc={name:VIEW.name,email:VIEW.email,photo:VIEW.photo}; o.name=o.name||VIEW.name; h+='<div class="card" style="background:#fff6dd;border-color:#f0d996">👀 Thầy đang xem hồ sơ của <b>'+esc(o.name||VIEW.email)+'</b> (chỉ xem). <a href="gv.html">← Bảng theo dõi lớp</a></div>'; }
   h+='<div class="card top">'+(a&&a.photo?'<img class="av" src="'+esc(a.photo)+'" alt="" referrerpolicy="no-referrer">':'<span class="av">'+esc((o.name||'?').charAt(0).toUpperCase())+'</span>')+
     '<div class="who"><b>'+esc(o.name||'Bạn học')+'</b><small>'+(a?esc(a.email)+' · tiến độ tự đồng bộ ☁':'Chưa đăng nhập · tiến độ chỉ lưu trên máy này')+'</small></div>'+
-    (VIEW?'':a?'<a class="btn" href="xep-hang.html">🏆 Xếp hạng tuần</a>':'<button class="btn pri" onclick="mLogin()">'+GSVG+(INAPP?'Mở bằng trình duyệt để đăng nhập':'Đăng nhập bằng Google')+'</button>')+'</div>';
+    (VIEW?'':'<a class="btn" href="hanh-trinh.html">🎓 Hành trình</a>')+(VIEW?'':a?'<a class="btn" href="xep-hang.html">🏆 Xếp hạng tuần</a>':'<button class="btn pri" onclick="mLogin()">'+GSVG+(INAPP?'Mở bằng trình duyệt để đăng nhập':'Đăng nhập bằng Google')+'</button>')+'</div>';
   h+='<div class="card"><div class="tiles">'+
     [['🔥 '+o.streak,'ngày liên tục'],[o.ndays,'ngày đã học'],[o.week.pts,'điểm tuần này ('+o.week.days+' ngày)'],[o.cards,'từ trong flashcard'+(o.cardsDue?' · '+o.cardsDue+' cần ôn':'')],
      [o.toeic.best?'~'+o.toeic.best:'–','TOEIC cao nhất (Full test)'],[o.toeic.mini,'ngày làm đề mini'],[(o.ielts.bestL||'–')+' / '+(o.ielts.bestR||'–'),'IELTS band cao nhất L / R'],[o.ielts.ws,'bài Writing đã gửi'],

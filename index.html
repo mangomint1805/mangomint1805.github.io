@@ -132,7 +132,7 @@ window.MTOAST=function(ic,t,sub){ var d=document.createElement('div'); d.classNa
     me.hidden=false;
     var h='<div><h2>'+(o.name?'Chào <em>'+esc(first(o.name))+'</em> 👋':'Chào bạn 👋')+'</h2><div class="st">'+
       '<span>🔥 <b>'+o.streak+'</b> ngày liên tục</span><span>📅 <b>'+o.ndays+'</b> ngày đã học</span>'+(o.toeic.best?'<span>TOEIC cao nhất <b>~'+o.toeic.best+'</b></span>':'')+((o.ielts.bestL||o.ielts.bestR)?'<span>IELTS <b>L '+(o.ielts.bestL||'–')+' · R '+(o.ielts.bestR||'–')+'</b></span>':'')+(o.cardsDue?'<span>🃏 <b>'+o.cardsDue+'</b> thẻ cần ôn</span>':'')+'</div></div>'+
-      '<div class="acts"><a class="pri" href="ho-so.html">Hồ sơ của tôi</a><a href="xep-hang.html">🏆 Xếp hạng tuần</a>'+(a?'':'<button type="button" id="meLogin">'+G+(INAPP?'Mở để đăng nhập':'Đăng nhập để lưu')+'</button>')+'</div>';
+      '<div class="acts"><a class="pri" href="ho-so.html">Hồ sơ của tôi</a><a href="xep-hang.html">🏆 Xếp hạng tuần</a><a href="hanh-trinh.html">🎓 Hành trình</a>'+(a?'':'<button type="button" id="meLogin">'+G+(INAPP?'Mở để đăng nhập':'Đăng nhập để lưu')+'</button>')+'</div>';
     if(o.unfinished.length) h+='<div class="cont">'+o.unfinished.slice(0,3).map(function(u){ return '<a href="'+esc(u.href)+'"><span><b>'+esc(u.label)+'</b><br><small>'+esc(u.sub)+'</small></span><span>Làm tiếp →</span></a>'; }).join('')+'</div>';
     if(!a) h+='<p class="hint">Tiến độ đang lưu trên máy này. Đăng nhập Google để không mất khi đổi máy hoặc xoá trình duyệt.</p>';
     me.innerHTML=h; var b=document.getElementById('meLogin'); if(b) b.onclick=login;

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<script>try{var d=document.documentElement,k=JSON.parse(localStorage.getItem('mt.skin')||'""');if(k==='scifi')d.setAttribute('data-theme','dark');if(k)d.setAttribute('data-skin',k);if(k){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=DotGothic16&family=Rajdhani:wght@700&family=M+PLUS+Rounded+1c:wght@800&display=swap';document.head.appendChild(l)}}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Hành trình của mình · Minto English</title>
+<link rel="icon" type="image/png" href="fav-64.png?v=3">
+<meta name="theme-color" content="#a8691a">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--paper:#faf8f4;--card:#fff;--line:#e6e0d3;--ink:#1e232b;--dim:#666e7a;--panel2:#f4f0e8;--brand:#a8691a;--brand-soft:#f2e2c4;--brand-ink:#6b4410;--ok:#1f8f6c}
+*{box-sizing:border-box}
+html{background:var(--paper)}body{margin:0;color:var(--ink);font:16px/1.55 'IBM Plex Sans',system-ui,sans-serif;position:relative}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 50px}
+nav{display:flex;align-items:center;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}.brand .mlogo{width:40px;height:40px;overflow:visible}
+.brand b{display:block;font:600 20px/1 Fraunces,Georgia,serif}.brand small{display:block;font:500 11px/1 "Hiragino Sans","Noto Sans JP",sans-serif;letter-spacing:.3em;color:#9a8f7d;margin-top:5px}
+.back{margin-left:auto;font-weight:700;font-size:14px;color:var(--brand-ink);text-decoration:none}
+h1{font:500 clamp(28px,6vw,40px)/1.1 Fraunces,Georgia,serif;margin:10px 0 4px}
+.lead{color:var(--dim);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin:12px 0}
+.card h3{margin:0 0 10px;font:600 18px/1.3 Fraunces,Georgia,serif}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 14px/1 'IBM Plex Sans',sans-serif;border-radius:12px;padding:11px 15px;text-decoration:none;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--brand-ink)}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.hint{font-size:13px;color:var(--dim)}
+.mtoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1e232b;color:#fff;border-radius:12px;padding:12px 16px;font:500 14px/1.4 'IBM Plex Sans',sans-serif;z-index:99;max-width:calc(100vw - 32px)}.mtoast small{display:block;opacity:.8}
+.mdeco { position: absolute; left: 0px; right: 0px; top: 0px; height: 460px; z-index: -1; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2220%22%20viewBox%3D%220%200%2040%2020%22%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200M-14%2010a14%2014%200%200%201%2028%200M-8%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200M26%2010a14%2014%200%200%201%2028%200M32%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200M6%2020a14%2014%200%200%201%2028%200M12%2020a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200M-14%2030a14%2014%200%200%201%2028%200M-8%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200M26%2030a14%2014%200%200%201%2028%200M32%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3C%2Fsvg%3E"); background-size: 56px 28px; -webkit-mask-image: linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0.35) 45%, transparent); mask-image: linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, 0.35) 45%, transparent); opacity: 0.75; }
+.mdeco2 { position: fixed; inset: 0px; z-index: -2; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2220%22%20viewBox%3D%220%200%2040%2020%22%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2010a20%2020%200%200%201%2040%200M-14%2010a14%2014%200%200%201%2028%200M-8%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2010a20%2020%200%200%201%2040%200M26%2010a14%2014%200%200%201%2028%200M32%2010a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M0%2020a20%2020%200%200%201%2040%200M6%2020a14%2014%200%200%201%2028%200M12%2020a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M-20%2030a20%2020%200%200%201%2040%200M-14%2030a14%2014%200%200%201%2028%200M-8%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200z%22%20fill%3D%22%23faf8f4%22%2F%3E%3Cpath%20d%3D%22M20%2030a20%2020%200%200%201%2040%200M26%2030a14%2014%200%200%201%2028%200M32%2030a8%208%200%200%201%2016%200%22%20fill%3D%22none%22%20stroke%3D%22%23a8691a%22%20stroke-opacity%3D%22.22%22%20stroke-width%3D%221.3%22%2F%3E%3C%2Fsvg%3E"); background-size: 56px 28px; opacity: 0.38 !important; }
+html[data-skin="idol"] :is(.mdeco, .mdeco2) { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M15%208l2%205%205%201-4%203%201%205-4-3-4%203%201-5-4-3%205-1z%22%20fill%3D%22%2312a4a3%22%20opacity%3D%22.11%22%2F%3E%3Cpath%20d%3D%22M45%2038v-10l8-2v10M45%2038a3%203%200%201%201-1-1M53%2036a3%203%200%201%201-1-1%22%20stroke%3D%22%23ff5fa2%22%20stroke-width%3D%221.8%22%20fill%3D%22none%22%20opacity%3D%22.16%22%2F%3E%3C%2Fsvg%3E"); background-size: 60px 60px; }
+html[data-skin="y2k"] :is(.mdeco, .mdeco2) { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23e0559a%22%20opacity%3D%22.035%22%2F%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%238b5cf6%22%20opacity%3D%22.035%22%2F%3E%3Cpath%20d%3D%22M22%206h2v1h1v-1h2v1h1v3h-1v1h-1v1h-1v1h-1v-1h-1v-1h-1v-1h-1v-3h1z%22%20fill%3D%22%23e0559a%22%20opacity%3D%22.16%22%2F%3E%3C%2Fsvg%3E"); background-size: 32px 32px; }
+html[data-skin="scifi"] :is(.mdeco, .mdeco2) { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2244%22%20height%3D%2244%22%20viewBox%3D%220%200%2044%2044%22%3E%3Cpath%20d%3D%22M44%200H0v44%22%20fill%3D%22none%22%20stroke%3D%22%234ad7ff%22%20stroke-width%3D%22.6%22%20opacity%3D%22.35%22%2F%3E%3Cpath%20d%3D%22M22%2018l4%204-4%204-4-4z%22%20fill%3D%22%23b04cff%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E"); background-size: 44px 44px; opacity: 0.9; }
+
+.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.av{width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font:700 26px/1 'IBM Plex Sans';flex:none}
+.top .who{flex:1;min-width:180px}.top .who b{display:block;font:600 22px/1.2 Fraunces,Georgia,serif}.top .who small{color:var(--dim)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{background:var(--panel2);border-radius:14px;padding:10px 12px}.tile b{display:block;font:600 26px/1.15 Fraunces,Georgia,serif;color:var(--brand-ink)}.tile span{font-size:12.5px;color:var(--dim)}
+.list a,.list div{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--panel2);border-radius:12px;padding:10px 14px;text-decoration:none;color:var(--ink);font-size:14.5px;margin:6px 0}
+.list small{color:var(--dim)}.list .r{color:var(--brand-ink);font-weight:700;white-space:nowrap}
+.tag{display:inline-block;font:700 10.5px/1 'IBM Plex Sans';letter-spacing:.06em;border-radius:6px;padding:4px 6px;margin-right:6px;vertical-align:1px}
+.tag.toeic{background:#f2e2c4;color:#6b4410}.tag.ielts{background:#f7e3df;color:#b0453a}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.legend{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--dim);margin-top:6px}.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+.hero{display:flex;gap:14px;align-items:center}
+.hero .who{flex:1;min-width:0}.hero .who b{display:block;font:600 22px/1.2 Fraunces,Georgia,serif}.hero .who small{color:var(--dim)}
+.span{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;flex-wrap:wrap}.span .pt{background:var(--brand-soft);color:var(--brand-ink);border-radius:10px;padding:6px 10px;font-weight:700}.span .ln{flex:1;min-width:30px;height:2px;background:repeating-linear-gradient(90deg,var(--brand) 0 6px,transparent 6px 11px)}
+.big{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.big .tile b{font-size:30px}
+@media(max-width:480px){.big{grid-template-columns:1fr 1fr}}
+.tl{position:relative;margin:4px 0 0 8px;padding-left:18px;border-left:2px solid var(--line)}
+.tl div{position:relative;margin:0 0 12px;font-size:14.5px}.tl div:before{content:"";position:absolute;left:-25px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px var(--card)}
+.tl small{display:block;color:var(--dim);font-size:12.5px}
+.chart svg{display:block;width:100%;height:auto}.chart .ax{stroke:var(--line);stroke-dasharray:3 3}.chart text{font:500 10px 'IBM Plex Sans',sans-serif;fill:var(--dim)}
+.chart .l{fill:none;stroke:var(--brand);stroke-width:2.4;stroke-linejoin:round}.chart .d{stroke:var(--card);stroke-width:1.5}
+.chart .d.toeic{fill:var(--brand)}.chart .d.ielts{fill:#c0574a}.chart .d.exam{fill:#2d7fa8}
+.bdg{display:flex;flex-wrap:wrap;gap:8px}.bdg span{background:var(--panel2);border-radius:999px;padding:7px 12px;font-size:13.5px;font-weight:600}.bdg small{color:var(--dim);font-weight:500}
+.letter{background:#fffaf0;border-color:#ecd9b2;font-size:15.5px}.letter p{margin:0 0 10px}.letter .sig{text-align:right;font:italic 600 17px/1.3 Fraunces,Georgia,serif;color:var(--brand-ink);margin:0}
+html[data-skin=scifi] .letter{background:var(--card);border-color:var(--line)}
+#shot{display:block;width:100%;max-width:360px;margin:10px auto;border-radius:14px;border:1px solid var(--line)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.two>.card{min-width:0}.list .r.w{white-space:normal;text-align:right}
+.empty{text-align:center}.empty p{margin:6px 0}
+</style>
+<link rel="stylesheet" href="skin.css?v=1">
+</head>
+<body>
+<div class="mdeco2" aria-hidden="true"></div><div class="mdeco" aria-hidden="true"></div>
+<div class="wrap">
+<nav><a class="brand" href="./"><svg class="mlogo" viewBox="0 0 100 100" aria-hidden="true"><defs><filter id="lgf" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter></defs><circle class="lg-bg" cx="50" cy="50" r="48" fill="#a8691a"/><g filter="url(#lgf)" transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" transform="translate(2 2)"/><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 70 l3 -3 M31 71 l3 -3 M66 71 l3 -3 M69 70 l3 -3" stroke="#ff7b6b" stroke-width="2.4" stroke-linecap="round"/></g></svg><span><b>Minto English</b><small lang="ja">ミント英語</small></span></a><a class="back" href="ho-so.html">← Hồ sơ</a></nav>
+<h1>Hành trình của mình</h1>
+<p class="lead">Nhìn lại cả chặng đường học: từ ngày đầu tiên đến hôm nay.</p>
+<div id="app"></div>
+<p class="hint" style="text-align:center;margin-top:30px">Minto English · ミント英語</p>
+</div>
+<script src="progress.js?v=3"></script>
+<script src="partwk.js?v=2"></script>
+<script>
+window.MTOAST=function(ic,t,sub){ var d=document.createElement('div'); d.className='mtoast'; d.innerHTML='<b></b><small></small>'; d.firstChild.textContent=t||''; d.lastChild.textContent=sub||''; document.body.appendChild(d); setTimeout(function(){ d.remove(); },3200); };
+var INAPP=/FBAN|FBAV|FB_IAB|Messenger|Instagram|Zalo|Line\/|MicroMessenger|TikTok|musical_ly/i.test(navigator.userAgent);
+function mLogin(){ if(window.MACC) window.MACC.quick(); }
+function J(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+function vn(k){ var p=String(k).split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function dOf(t){ return MPROG.dkey(new Date(+t||t)); }
+var BN={first:'Khởi động',full1:'Full test đầu tiên',s500:'Vượt mốc 500',s700:'Vượt mốc 700',s850:'Vượt mốc 850',perfect:'Không sai câu nào',compass:'Kiểm tra xếp lớp',user:'Nhập họ tên',nen1:'Chịu khó học nền',nen10:'Nền vững',streak3:'Chuỗi 3 ngày',streak7:'Chuỗi 7 ngày',streak30:'Chuỗi 30 ngày',mini7:'Mini x7',mini30:'Mini x30',tests5:'Thử sức 5 đề',tests10:'Chăm luyện đề',cards20:'Sưu tầm 20 từ',cards100:'Sưu tầm 100 từ',learn50:'Thuộc 50 từ',quest1:'Nhiệm vụ đầu tiên',quest7:'Chăm chỉ 7 ngày',quest30:'Kỷ luật thép',dict50:'Tai thính',px10:'Phản xạ nhanh',p5pro:'Cao thủ Part 5',books3:'Khám phá 3 bộ',b6:'Band 6',b7:'Band 7',b8:'Band 8',ws1:'Bài viết đầu tiên'};
+// tên bài kiểm tra trên lớp từ mã đề (mt.exam.<mã>)
+function examName(id){ var m;
+  if((m=/MOCK(\d+)(?:-P(\d+))?/.exec(id))) return (/^TOEIC-A/.test(id)?'TOEIC A · ':'')+'Mock Test '+m[1]+(m[2]?' (Part '+m[2].split('').join(', ')+')':'');
+  if((m=/-MT(\d+)(?:-P(\d+))?/.exec(id))) return 'Minitest '+m[1]+(m[2]?' (Part '+m[2]+')':'');
+  if((m=/-PT(\d+)/.exec(id))) return 'Progress Test '+m[1];
+  return id; }
+function collect(){
+  var o=MPROG.summary(), days=o.days, S=[], E={mini:0,mock:0,prog:0,other:0,n:0};
+  (J('ets26.hist',[])||[]).forEach(function(r){ if(r&&r.at&&r.total) S.push({at:+new Date(r.at),p:r.got/r.total,k:'toeic',t:(r.test>10?'ETS 2024 · Test '+(r.test-10):'ETS 2026 · Test '+r.test)+(r.name?' · '+r.name:''),full:r.lcS&&r.rcS?r.lcS+r.rcS:0}); });
+  [17,18,19,20,21,'v7'].forEach(function(b){ (J('cam'+b+'.hist',[])||[]).forEach(function(r){ if(r&&r.t&&r.total) S.push({at:+r.t,p:r.got/r.total,k:'ielts',t:'Cambridge '+b+' · Test '+r.test+(r.band?' · band '+r.band:'')}); }); });
+  for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i), m=/^mt\.exam\.(.+)$/.exec(k||''); if(!m) continue; var L=J(k,null); if(!Array.isArray(L)||!L.length) continue;
+    var id=m[1]; E.n++; if(/MOCK/.test(id)) E.mock++; else if(/-MT\d/.test(id)) E.mini++; else if(/-PT\d/.test(id)) E.prog++; else E.other++;
+    L.forEach(function(x){ if(!x||!x.at) return; days[dOf(x.at)]=1; if(x.sc!=null&&x.of) S.push({at:+x.at,p:Math.min(1,x.sc/x.of),k:'exam',t:examName(id)+' · '+x.sc+'/'+x.of}); }); }
+  S.sort(function(a,b){ return a.at-b.at; });
+  var dk=Object.keys(days).filter(function(x){ return /^\d{4}-\d\d-\d\d$/.test(x)&&x<=o.today; }).sort(), best=0, run=0, prev=null;
+  dk.forEach(function(x){ var d=new Date(x+'T00:00:00'); run=prev&&Math.round((d-prev)/864e5)===1?run+1:1; best=Math.max(best,run); prev=d; });
+  o.ndays=dk.length; o.first=dk[0]||''; o.longest=best; o.subs=S; o.exam=E;
+  var el=J('mt.errlog',{})||{}, ek=Object.keys(el), qa=J('mt.qact',{})||{};
+  o.err={open:ek.length,prog:ek.filter(function(k){ return el[k]&&el[k].s>=1; }).length,fixed:Object.keys(qa).reduce(function(s,d){ return s+((qa[d]&&qa[d].err)|0); },0)};
+  var g=J('mt.game.gold',{})||{}; o.gold={best:g.best|0,games:g.games|0,right:g.right|0,total:g.total|0};
+  var cards=J('vocab.cards',{})||{}; o.learned=Object.keys(cards).filter(function(k){ var c=cards[k]; return c&&(c.box!=null?c.box:(c.lv||0)*2)>=5; }).length;
+  o.qdays=Object.keys(J('mt.quest.days',{})||{}).length;
+  var B=[]; ['toeic','ielts'].forEach(function(s){ var b=J('mt.badges.'+s,{})||{}; Object.keys(b).forEach(function(id){ B.push({id:id,at:+b[id]||0,s:s,n:(id==='full1'&&s==='ielts')?'Trọn một test':(BN[id]||id)}); }); });
+  o.blist=B.sort(function(a,b){ return a.at-b.at; });
+  o.days0=Math.max(1,o.first?Math.round((new Date(o.today+'T00:00:00')-new Date(o.first+'T00:00:00'))/864e5)+1:0);
+  o.ntests=S.length; o.firstSub=S[0]||null;
+  return o;
+}
+function chart(S){
+  if(S.length<2) return '<p class="hint">'+(S.length?'Mới có 1 bài có điểm. Làm thêm vài bài nữa để thấy đường tiến bộ nhé.':'Chưa có bài nào có điểm. Làm một đề mini hoặc bài kiểm tra trên lớp là biểu đồ hiện ngay.')+'</p>';
+  var P=S.slice(-30), W=340, H=150, l=28, r=8, t=10, b=20, n=P.length;
+  function x(i){ return l+(n<2?0:i*(W-l-r)/(n-1)); } function y(v){ return t+(H-t-b)*(1-v); }
+  var g='';[0,.5,1].forEach(function(v){ g+='<line class="ax" x1="'+l+'" x2="'+(W-r)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text x="'+(l-4)+'" y="'+(y(v)+3)+'" text-anchor="end">'+(v*100)+'%</text>'; });
+  // đường trung bình trượt 3 bài cho dễ thấy xu hướng
+  var d=P.map(function(q,i){ var a=P.slice(Math.max(0,i-2),i+1), m=a.reduce(function(s,z){ return s+z.p; },0)/a.length; return (i?'L':'M')+x(i).toFixed(1)+' '+y(m).toFixed(1); }).join('');
+  g+='<path class="l" d="'+d+'"/>';
+  P.forEach(function(q,i){ g+='<circle class="d '+q.k+'" r="4" cx="'+x(i).toFixed(1)+'" cy="'+y(q.p).toFixed(1)+'"><title>'+MPROG.esc(new Date(q.at).toLocaleDateString('vi-VN')+' · '+q.t+' · '+Math.round(q.p*100)+'%')+'</title></circle>'; });
+  g+='<text x="'+l+'" y="'+(H-4)+'">'+new Date(P[0].at).toLocaleDateString('vi-VN')+'</text><text x="'+(W-r)+'" y="'+(H-4)+'" text-anchor="end">'+new Date(P[n-1].at).toLocaleDateString('vi-VN')+'</text>';
+  var a3=P.slice(0,3), z3=P.slice(-3), av=function(L){ return Math.round(L.reduce(function(s,z){ return s+z.p; },0)/L.length*100); }, up=av(z3)-av(a3);
+  return '<div class="chart"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Điểm % câu đúng qua '+n+' bài gần nhất">'+g+'</svg></div>'+
+    '<div class="legend"><i style="background:var(--brand)"></i> Luyện đề TOEIC &nbsp;<i style="background:#2d7fa8"></i> Bài kiểm tra trên lớp &nbsp;<i style="background:#c0574a"></i> IELTS</div>'+
+    (n>=6?'<p class="hint" style="margin:8px 0 0">3 bài đầu trung bình <b>'+av(a3)+'%</b> → 3 bài gần nhất <b>'+av(z3)+'%</b>'+(up>0?' (tăng '+up+' điểm % 🎉)':'')+'. Đường là trung bình 3 bài liền nhau.</p>':'');
+}
+function letter(o){
+  var nm=o.name?o.name.split(' ').pop():'em', L=[];
+  L.push('Chào '+MPROG.esc(nm)+',');
+  if(o.ndays>=20) L.push('Thầy nhìn lại hành trình của em mà thấy tự hào lắm: <b>'+o.ndays+' ngày</b> ngồi vào bàn học, có lúc học liền <b>'+o.longest+' ngày</b> không nghỉ. Kiên trì như vậy là điều khó nhất, và em đã làm được.');
+  else if(o.ndays>=5) L.push('Em đã học <b>'+o.ndays+' ngày</b> trên web. Mỗi ngày một chút thôi nhưng cộng lại là cả một chặng đường đó. Thầy ghi nhận hết.');
+  else L.push('Hành trình của em mới bắt đầu. Không sao cả, ai cũng bắt đầu từ con số 0. Quan trọng là mình đã bước bước đầu tiên.');
+  var u=[]; if(o.ntests) u.push(o.ntests+' bài đã nộp'); if(o.err.fixed) u.push(o.err.fixed+' lần sửa đúng câu từng sai'); if(o.cards) u.push(o.cards+' từ mới trong flashcard');
+  if(u.length) L.push('Em đã có '+u.join(', ')+'. Mỗi câu sai được sửa lại là một lần em giỏi hơn hôm qua.');
+  L.push('Tiếng Anh là đường dài, khóa học kết thúc nhưng việc học thì không. Cứ giữ thói quen mỗi ngày 10–15 phút, làm đề mini, ôn lại Sổ lỗi sai. Thầy tin em sẽ đi xa hơn nữa. Cố lên nhé!');
+  return '<div class="card letter"><h3>✉️ Thư của thầy</h3>'+L.map(function(p){ return '<p>'+p+'</p>'; }).join('')+'<p class="sig">— Thầy Minto</p></div>';
+}
+var O=null;
+function render(){
+  var app=document.getElementById('app'), esc=MPROG.esc, o=O=collect(), a=o.acc, h='';
+  h+='<div class="card"><div class="hero">'+(a&&a.photo?'<img class="av" src="'+esc(a.photo)+'" alt="" referrerpolicy="no-referrer">':'<span class="av">'+esc((o.name||'?').charAt(0).toUpperCase())+'</span>')+
+    '<div class="who"><b>'+esc(o.name||'Bạn học')+'</b><small>'+(o.lop?'Lớp '+esc(o.lop)+' · ':'')+(a?'dữ liệu từ tài khoản ☁':'chưa đăng nhập · chỉ dữ liệu trên máy này')+'</small></div></div>'+
+    (o.first?'<div class="span"><span class="pt">🌱 '+vn(o.first)+'</span><span class="ln"></span><span class="pt">🎓 '+vn(o.today)+'</span></div><p class="hint" style="margin:8px 0 0">'+o.days0+' ngày kể từ buổi đầu tiên trên web.</p>':'')+
+    (a||INAPP?'':'<p class="hint" style="margin:10px 0 0">Học trên nhiều máy? <button class="btn" style="padding:7px 12px" onclick="mLogin()">Đăng nhập Google</button> để gom đủ dữ liệu.</p>')+'</div>';
+  if(!o.first&&!o.ntests&&!o.cards){
+    h+='<div class="card empty"><p style="font-size:40px">🌱</p><p><b>Hành trình của bạn chưa có dấu chân nào.</b></p><p class="hint">Làm một đề mini, lưu vài từ vào flashcard hay chơi một ván Đào vàng, trang này sẽ tự ghi lại từng bước.</p><p><a class="btn pri" href="toeic/mini.html">Làm đề mini đầu tiên →</a></p></div>';
+    app.innerHTML=h; return;
+  }
+  var T=[[o.ndays,'ngày đã học'],['🔥 '+o.longest,'ngày liên tục dài nhất'],[o.ntests,'bài đã nộp có điểm'],[o.exam.n,'bài kiểm tra trên lớp'],[o.cards,'từ trong flashcard'+(o.learned?' · '+o.learned+' đã thuộc':'')],[o.err.fixed,'lần sửa đúng câu sai']];
+  h+='<div class="card"><div class="tiles big">'+T.map(function(t){ return '<div class="tile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>'; }).join('')+'</div></div>';
+  // mốc đáng nhớ
+  var M=[]; if(o.first) M.push([o.first,'Buổi học đầu tiên trên web','Mọi thứ bắt đầu từ đây 🌱']);
+  if(o.firstSub) M.push([dOf(o.firstSub.at),'Nộp bài đầu tiên',o.firstSub.t+' · '+Math.round(o.firstSub.p*100)+'% câu đúng']);
+  var bp=o.subs.reduce(function(m,s){ return !m||s.p>m.p?s:m; },null); if(bp&&o.subs.length>1) M.push([dOf(bp.at),'Bài điểm cao nhất',bp.t+' · '+Math.round(bp.p*100)+'% câu đúng']);
+  var bf=o.subs.reduce(function(m,s){ return s.full&&(!m||s.full>m.full)?s:m; },null); if(bf) M.push([dOf(bf.at),'Full test cao nhất','~'+bf.full+' điểm TOEIC']);
+  o.blist.slice(-3).forEach(function(b){ if(b.at) M.push([dOf(b.at),'Mở huy hiệu “'+b.n+'”',b.s==='toeic'?'Web TOEIC':'Web IELTS']); });
+  M.push([o.today,'Hôm nay','Nhìn lại cả chặng đường 🎓']);
+  M.sort(function(x,y){ return x[0]<y[0]?-1:x[0]>y[0]?1:0; });
+  h+='<div class="card"><h3>🗺 Những mốc đáng nhớ</h3><div class="tl">'+M.map(function(m){ return '<div><b>'+esc(m[1])+'</b><small>'+vn(m[0])+' · '+esc(m[2])+'</small></div>'; }).join('')+'</div></div>';
+  h+='<div class="card"><h3>📈 Điểm qua từng bài</h3>'+chart(o.subs)+'</div>';
+  var E=o.exam, el=[]; if(E.mini) el.push(E.mini+' minitest'); if(E.mock) el.push(E.mock+' mock test'); if(E.prog) el.push(E.prog+' progress test'); if(E.other) el.push(E.other+' bài khác');
+  h+='<div class="two"><div class="card"><h3>📝 Bài đã làm</h3><div class="list">'+
+    '<div><span>Bài kiểm tra trên lớp</span><span class="r w">'+(el.length?el.join('<br>'):'0')+'</span></div>'+
+    '<div><span>Luyện đề TOEIC (ETS)</span><span class="r">'+o.toeic.subs+' bài'+(o.toeic.full?' · '+o.toeic.full+' full test':'')+'</span></div>'+
+    '<div><span>Ngày làm đề mini</span><span class="r">'+o.toeic.mini+'</span></div>'+
+    (o.ielts.subs||o.ielts.ws?'<div><span>IELTS (Listening / Reading / Writing)</span><span class="r">'+o.ielts.subs+' / '+o.ielts.ws+'</span></div>':'')+
+    '<div><span>Bài Kiến thức nền</span><span class="r">'+(o.nen.toeic+o.nen.ielts)+'</span></div>'+
+    '<div><span>Ngày xong đủ nhiệm vụ</span><span class="r">'+o.qdays+'</span></div></div></div>';
+  h+='<div class="card"><h3>📕 Sổ lỗi sai & ⛏ Đào vàng</h3><div class="list">'+
+    '<div><span>Lần ôn đúng câu từng sai<br><small>tính 14 ngày gần nhất</small></span><span class="r">'+o.err.fixed+'</span></div>'+
+    '<div><span>Câu đang trong sổ<br><small>'+o.err.prog+' câu đã ôn đúng ít nhất 1 lần</small></span><span class="r">'+o.err.open+'</span></div>'+
+    '<div><span>Ván Đào vàng đã chơi</span><span class="r">'+o.gold.games+'</span></div>'+
+    '<div><span>Vàng nhiều nhất 1 ván</span><span class="r">'+o.gold.best+'</span></div>'+
+    (o.gold.total?'<div><span>Câu Part 5, 6 trả lời đúng</span><span class="r">'+o.gold.right+'/'+o.gold.total+'</span></div>':'')+'</div></div></div>';
+  h+='<div class="card"><h3>📊 Tiến bộ theo Part (TOEIC)</h3><div id="pwk"></div></div>';
+  h+='<div class="card"><h3>🏅 Huy hiệu đã mở ('+o.blist.length+')</h3>'+(o.blist.length?'<div class="bdg">'+o.blist.slice().reverse().map(function(b){ return '<span>'+esc(b.n)+(b.at?' <small>'+new Date(b.at).toLocaleDateString('vi-VN')+'</small>':'')+'</span>'; }).join('')+'</div>':'<p class="hint">Chưa mở huy hiệu nào. Xem các huy hiệu ở <a href="toeic/#huy-hieu">web TOEIC</a>.</p>')+'</div>';
+  h+=letter(o);
+  h+='<div class="card"><h3>🎴 Thẻ hành trình</h3><p class="hint" style="margin:0">Tải ảnh về để khoe với bạn bè hoặc giữ làm kỷ niệm. Ảnh chỉ lưu trên máy bạn.</p><img id="shot" alt="Thẻ tóm tắt hành trình học"><div class="acts"><button class="btn pri" id="dl">⬇ Tải ảnh PNG</button><a class="btn" href="ho-so.html">← Hồ sơ</a></div></div>';
+  app.innerHTML=h;
+  try{ MPARTWK.render(document.getElementById('pwk'),localStorage.getItem('mt.partwk')); }catch(e){}
+  drawCard().then(function(c){ var im=document.getElementById('shot'); if(im) im.src=c.toDataURL('image/png'); });
+  document.getElementById('dl').onclick=download;
+}
+function cv(n,d){ var v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||d; }
+function drawCard(){
+  var o=O, c=document.createElement('canvas'), W=1080, H=1350; c.width=W; c.height=H; var x=c.getContext('2d');
+  var paper=cv('--paper','#faf8f4'), card=cv('--card','#fff'), brand=cv('--brand','#a8691a'), ink=cv('--ink','#1e232b'), dim=cv('--dim','#666e7a'), soft=cv('--panel2','#f4f0e8'), bink=cv('--brand-ink','#6b4410');
+  return (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).catch(function(){}).then(function(){
+    var SF='Fraunces, Georgia, serif', SS="'IBM Plex Sans', system-ui, sans-serif";
+    x.fillStyle=paper; x.fillRect(0,0,W,H);
+    x.strokeStyle=brand; x.globalAlpha=.16; x.lineWidth=3; for(var i=0;i<14;i++){ x.beginPath(); x.arc(W, 0, 120+i*46, 0, 7); x.stroke(); } x.globalAlpha=1;
+    function rr(X,Y,w,h,r,f){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+w,Y,X+w,Y+h,r); x.arcTo(X+w,Y+h,X,Y+h,r); x.arcTo(X,Y+h,X,Y,r); x.arcTo(X,Y,X+w,Y,r); x.closePath(); x.fillStyle=f; x.fill(); }
+    function fit(t,max,font,size){ x.font=font.replace('S',size); while(x.measureText(t).width>max&&size>20){ size-=2; x.font=font.replace('S',size); } return t; }
+    x.fillStyle=bink; x.font='700 30px '+SS; x.fillText('MINTO ENGLISH · HÀNH TRÌNH CỦA MÌNH',80,120);
+    x.fillStyle=ink; var nm=fit(o.name||'Bạn học',W-160,'600 Spx '+SF,88); x.fillText(nm,80,230);
+    x.fillStyle=dim; x.font='500 34px '+SS; x.fillText(o.first?vn(o.first)+'  →  '+vn(o.today)+'  ·  '+o.days0+' ngày':'Bắt đầu hành trình hôm nay '+vn(o.today),80,290);
+    var T=[[o.ndays,'ngày đã học'],[o.longest,'ngày liên tục dài nhất'],[o.ntests,'bài đã nộp'],[o.exam.n,'bài kiểm tra trên lớp'],[o.cards,'từ mới đã lưu'],[o.err.fixed,'lần sửa câu sai'],[o.gold.best,'vàng nhiều nhất 1 ván'],[o.blist.length,'huy hiệu']];
+    T.forEach(function(t,i){ var cx=80+(i%2)*470, cy=350+Math.floor(i/2)*190; rr(cx,cy,450,170,28,card); x.fillStyle=brand; x.fillRect(cx,cy+30,8,110);
+      x.fillStyle=bink; x.font='600 76px '+SF; x.fillText(String(t[0]),cx+40,cy+95); x.fillStyle=dim; x.font='500 30px '+SS; x.fillText(t[1],cx+40,cy+140); });
+    rr(80,1120,920,140,28,soft); x.fillStyle=ink; x.font='italic 600 40px '+SF;
+    var q=o.ndays>=20?'“Kiên trì là điều khó nhất, và em đã làm được.”':o.ndays>=5?'“Mỗi ngày một chút, cộng lại là cả chặng đường.”':'“Bước đầu tiên luôn là bước quan trọng nhất.”';
+    fit(q,860,'italic 600 Spx '+SF,40); x.fillText(q,110,1185); x.fillStyle=bink; x.font='600 30px '+SS; x.fillText('— Thầy Minto',110,1235);
+    x.fillStyle=dim; x.font='500 26px '+SS; x.textAlign='right'; x.fillText('mangomint1805.github.io',W-80,1310); x.textAlign='left';
+    return c;
+  });
+}
+function download(){
+  drawCard().then(function(c){ var a=document.createElement('a'); a.download='hanh-trinh-'+(O.name||'minto').replace(/[^\p{L}\p{N}]+/gu,'-').toLowerCase()+'.png'; c.toBlob(function(bl){ a.href=URL.createObjectURL(bl); document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(a.href); },4000); },'image/png'); window.MTOAST('check','Đã tải ảnh','Xem trong thư mục Tải về của máy.'); });
+}
+window.MACCPAINT=render; render();
+</script>
+<script src="acc.js?v=10" onload="if(!INAPP)MACC.preload();"></script>
+</body>
+</html>
