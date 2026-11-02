@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light only">
+<title>Phòng thi chung · Minto English</title>
+<link rel="icon" type="image/png" href="fav-64.png?v=3">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#faf8f4;--card:#fff;--line:#e6e0d3;--ink:#1e232b;--dim:#666e7a;--panel2:#f4f0e8;--brand:#a8691a;--brand-soft:#f2e2c4;--brand-ink:#6b4410;--ok:#1f8f6c;--ok-soft:#e1f4ec;--bad:#c14636;--bad-soft:#fbe6e2;--mid:#9a6a00;--mid-soft:#fff2d6}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 'IBM Plex Sans',system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 50px}
+header{display:flex;align-items:center;gap:12px;padding:18px 0 6px;flex-wrap:wrap}header svg{width:40px;height:40px;flex:none}header b{font:600 22px/1.1 Fraunces,Georgia,serif;display:block}header small{color:var(--dim)}
+.nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}.nav a{color:var(--brand-ink);text-decoration:none;font-weight:600;font-size:14px;background:var(--panel2);border-radius:999px;padding:6px 12px}
+h2{font:500 21px/1.2 Fraunces,Georgia,serif;margin:22px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}[hidden]{display:none!important}
+label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:600;color:var(--dim)}
+input,select{font:inherit;padding:9px 10px;border:1px solid #ddd7c9;border-radius:9px;background:#fff;color:var(--ink);min-height:42px}
+button{font:inherit;font-weight:700;border:0;border-radius:9px;padding:10px 16px;background:var(--brand);color:#fff;cursor:pointer;min-height:42px}button.alt{background:var(--panel2);color:var(--brand-ink)}button.go{background:var(--ok)}button.stop{background:var(--bad)}button:disabled{opacity:.45;cursor:default}
+.msg{margin-top:10px;font-weight:600}.msg.bad{color:var(--bad)}.note{color:var(--dim);font-size:13px;margin:8px 0 0}
+.warn{background:var(--mid-soft);border:1px solid #f0c98a;color:#6b4a00;border-radius:12px;padding:12px 14px;margin-top:12px}
+.warn code{background:#fff;border-radius:6px;padding:1px 5px}
+.room{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.qr{width:180px;height:180px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px}.qr svg{width:100%;height:100%;display:block}
+.code{font:600 56px/1 Fraunces,Georgia,serif;letter-spacing:.08em;color:var(--brand-ink)}
+.link{font-size:14px;word-break:break-all;color:var(--dim)}.link b{color:var(--ink)}
+.ttl{font-weight:700;margin:4px 0}
+.clock{font:600 30px/1 Fraunces,Georgia,serif;color:var(--brand)}.clock.low{color:var(--bad)}
+.ph{display:inline-block;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}.tile small{color:var(--dim);font-weight:600;font-size:12.5px}.tile b{display:block;font:600 28px/1.15 Fraunces,Georgia,serif}
+.tw{overflow-x:auto;border-radius:14px;margin-top:12px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid #efeae0;text-align:left;vertical-align:middle}th{background:var(--panel2);font-size:12.5px;color:var(--dim);white-space:nowrap}
+tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:700;white-space:nowrap}.ok{background:var(--ok-soft);color:var(--ok)}.mid{background:var(--mid-soft);color:var(--mid)}.bad{background:var(--bad-soft);color:var(--bad)}.dim{background:var(--panel2);color:var(--dim)}
+.bar{height:7px;border-radius:9px;background:#efeae0;overflow:hidden;min-width:60px;margin-top:4px}.bar i{display:block;height:100%;background:var(--brand)}
+small.s{color:#8a8f99}
+.empty{color:var(--dim);text-align:center;padding:18px}
+@media (max-width:700px){.room{grid-template-columns:1fr;justify-items:center;text-align:center}.ctl{justify-content:center}.code{font-size:48px}.tiles{grid-template-columns:repeat(2,1fr)}.ctl button{flex:1 1 140px}th.hm,td.hm{display:none}#setupRow label{flex:1 1 140px}#setupRow input,#setupRow select{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg>
+<div><b>Phòng thi chung</b><small>Cả lớp làm cùng một đề TOEIC, bắt đầu và hết giờ cùng lúc</small></div>
+<nav class="nav"><a href="gv.html">← Bảng theo dõi lớp</a><a href="toeic/">TOEIC</a></nav></header>
+
+<div class="card" id="gate">
+  <div class="row"><button id="login" type="button" disabled>Đang tải…</button></div>
+  <p class="msg" id="gateMsg"></p>
+</div>
+
+<div id="app" hidden>
+  <div class="card" id="setup">
+    <div class="row" id="setupRow">
+      <label>Đề<select id="fT"></select></label>
+      <label>Phần thi<select id="fM"></select></label>
+      <label>Số phút<input id="fMin" type="number" min="1" max="240" style="width:100px"></label>
+      <label>Lớp<input id="fLop" list="lops" maxlength="40" placeholder="VD: TOPRE115276" style="width:170px"></label>
+      <label>Tên bài (tuỳ chọn)<input id="fTi" maxlength="80" placeholder="VD: Kiểm tra giữa khoá"></label>
+      <button id="open" type="button">Mở phòng</button>
+    </div>
+    <datalist id="lops"></datalist>
+    <p class="note">Học viên mở link hoặc quét QR, nhập tên rồi chờ trong phòng. Thầy bấm <b>Bắt đầu</b> thì cả lớp vào đề cùng lúc (đếm ngược 5 giây), giờ tính theo máy chủ nên máy nào cũng hết giờ cùng lúc và tự nộp.</p>
+    <p class="msg" id="setupMsg"></p>
+  </div>
+
+  <div id="roomBox" hidden>
+    <div class="card" style="margin-top:14px">
+      <div class="room">
+        <div class="qr" id="qr" aria-label="Mã QR vào phòng"></div>
+        <div>
+          <div class="code" id="rCode">——</div>
+          <div class="ttl" id="rTtl"></div>
+          <div class="link">Vào: <b id="rLink"></b> <button type="button" class="alt" id="copyLink" style="min-height:32px;padding:4px 10px;font-size:13px">Chép link</button></div>
+          <div style="margin-top:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="ph" id="rPh"></span><span class="clock" id="rClock"></span></div>
+          <div class="ctl">
+            <button type="button" class="go" id="bStart">▶ Bắt đầu</button>
+            <button type="button" class="alt" id="bPlus">+5 phút</button>
+            <button type="button" class="stop" id="bEnd">■ Kết thúc cho cả lớp</button>
+            <button type="button" class="alt" id="bCopy">Chép kết quả</button>
+            <button type="button" class="alt" id="bNew">Phòng mới</button>
+          </div>
+          <p class="msg" id="roomMsg"></p>
+        </div>
+      </div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><small>Đã vào phòng</small><b id="kIn">0</b></div>
+      <div class="tile"><small>Đang làm</small><b id="kRun">0</b></div>
+      <div class="tile"><small>Đã nộp</small><b id="kDone">0</b></div>
+      <div class="tile"><small>Có rời tab</small><b id="kHid">0</b></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Học viên</th><th class="hm">Lớp</th><th>Trạng thái</th><th>Đã làm</th><th class="hm">Câu vừa chọn</th><th>Rời tab</th><th>Điểm</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </div>
+
+  <div class="warn" id="noRules" hidden><b>Phòng thi chưa được bật trên Firebase.</b> Thầy dán đoạn luật trong file <code>firebase/them-luat-phong-thi.txt</code> (repo trang chủ) vào Realtime Database → Rules, thay <code>EMAIL_CUA_THAY</code> bằng email của thầy rồi bấm Publish. Xong tải lại trang này.</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="acc.js?v=10"></script>
+<script type="module">
+const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
+const DBURL = 'https://minto-english-default-rtdb.asia-southeast1.firebasedatabase.app';
+const CFG = { apiKey: 'AIzaSyA7LEweMPy4tSjjR_An_KZaGXSzGI2nQv4', authDomain: 'minto-english.firebaseapp.com', databaseURL: DBURL, projectId: 'minto-english', storageBucket: 'minto-english.firebasestorage.app', messagingSenderId: '160119750089', appId: '1:160119750089:web:aac59cf8b1f577c035bc18' };
+const TEACHER = '979n45';
+function eh(t) { t = String(t || '').toLowerCase(); let x = 2166136261; for (let i = 0; i < t.length; i++) { x ^= t.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36); }
+const $ = id => document.getElementById(id);
+const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const p2 = n => String(n).padStart(2, '0');
+// các cách làm có trên web toeic (assets/test.js): số câu + số phút gợi ý
+const MODES = { full: ['Full test (200 câu)', 200, 120], lc: ['Listening (Part 1–4)', 100, 46], rc: ['Reading (Part 5–7)', 100, 75],
+  p1: ['Part 1 · Mô tả tranh', 6, 5], p2: ['Part 2 · Hỏi – đáp', 25, 10], p3: ['Part 3 · Hội thoại', 39, 20], p4: ['Part 4 · Bài nói', 30, 15],
+  p5: ['Part 5 · Điền câu', 30, 12], p6: ['Part 6 · Điền đoạn văn', 16, 10], p7: ['Part 7 · Đọc hiểu', 54, 55] };
+const tName = t => t > 10 ? 'ETS 2024 · Test ' + (t - 10) : 'ETS 2026 · Test ' + t;
+const SITE = location.origin + '/toeic/test.html';
+const CUR = 'gvroom.cur';
+
+let A, Au, D, auth, db, off = 0, code = '', room = null, unsub = null, tick = 0;
+const now = () => Date.now() + off;
+const msg = (id, t, bad) => { const e = $(id); e.textContent = t || ''; e.classList.toggle('bad', !!bad); };
+const denied = e => /permission|PERMISSION_DENIED/i.test(String((e && (e.code || e.message)) || e));
+const R = p => D.ref(db, 'examroom/' + code + (p ? '/' + p : ''));
+function noRules() { $('noRules').hidden = false; }
+
+// ---------- form ----------
+(function form() {
+  let h = ''; for (let t = 1; t <= 20; t++) h += '<option value="' + t + '">' + tName(t) + '</option>'; $('fT').innerHTML = h;
+  $('fM').innerHTML = Object.keys(MODES).map(k => '<option value="' + k + '">' + MODES[k][0] + '</option>').join('');
+  let last = {}; try { last = JSON.parse(localStorage.getItem('gvroom.last') || '{}') || {}; } catch (e) {}
+  if (last.t) $('fT').value = last.t; if (last.m && MODES[last.m]) $('fM').value = last.m; if (last.lop) $('fLop').value = last.lop;
+  $('fMin').value = last.m === $('fM').value && last.mins ? last.mins : MODES[$('fM').value][2];
+  $('fM').onchange = () => { $('fMin').value = MODES[$('fM').value][2]; };
+  try { const ros = JSON.parse(localStorage.getItem('gv.roster') || 'null'); if (ros && ros.cls) $('lops').innerHTML = Object.keys(ros.cls).sort().map(c => '<option value="' + esc(c) + '">').join(''); } catch (e) {}
+})();
+
+// ---------- đăng nhập (tài khoản Google của thầy, qua acc.js như gv.html) ----------
+async function boot() {
+  try { [A, Au, D] = await Promise.all([import(SDK + 'firebase-app.js'), import(SDK + 'firebase-auth.js'), import(SDK + 'firebase-database.js')]); }
+  catch (e) { $('login').textContent = 'Không tải được'; msg('gateMsg', 'Không tải được dịch vụ Google. Kiểm tra mạng rồi tải lại trang.', true); return; }
+  const emu = window.ROOM_EMU; let app;
+  if (emu) { app = A.initializeApp(CFG, 'emu'); }
+  else {
+    for (let i = 0; i < 50 && !window.MACC; i++) await new Promise(r => setTimeout(r, 100));
+    if (window.MACC && MACC.load) { try { await MACC.load(); } catch (e) {} }
+    app = A.getApps().find(a => a.name === '[DEFAULT]') || A.initializeApp(CFG);
+  }
+  auth = Au.getAuth(app); db = D.getDatabase(app, DBURL);
+  if (emu) { Au.connectAuthEmulator(auth, emu.auth, { disableWarnings: true }); D.connectDatabaseEmulator(db, emu.db[0], emu.db[1]); window.__emuLogin = em => Au.signInWithCredential(auth, Au.GoogleAuthProvider.credential(JSON.stringify({ sub: 'gv-' + eh(em), email: em, email_verified: true }))); }
+  D.onValue(D.ref(db, '.info/serverTimeOffset'), s => { const v = s.val(); if (typeof v === 'number') off = v; });
+  const b = $('login'); b.disabled = false; b.textContent = 'Đăng nhập Google';
+  b.onclick = () => {
+    if (!emu && window.MACC && MACC.quick) { MACC.quick(); return; }
+    const pr = new Au.GoogleAuthProvider(); pr.setCustomParameters({ prompt: 'select_account' });
+    Au.signInWithPopup(auth, pr).catch(e => { const c = e && e.code || ''; if (c !== 'auth/popup-closed-by-user' && c !== 'auth/cancelled-popup-request') msg('gateMsg', 'Chưa đăng nhập được: ' + (c || 'lỗi') + '.', true); });
+  };
+  Au.onAuthStateChanged(auth, u => {
+    if (!u) { $('app').hidden = true; $('gate').hidden = false; msg('gateMsg', 'Đăng nhập bằng tài khoản Google của thầy để mở phòng thi.'); return; }
+    if (eh(u.email) !== TEACHER || !u.emailVerified) { $('app').hidden = true; $('gate').hidden = false; msg('gateMsg', 'Tài khoản ' + (u.email || '') + ' không mở được phòng thi. Hãy đăng nhập bằng tài khoản của thầy.', true); return; }
+    $('gate').hidden = true; $('app').hidden = false;
+    let c = ''; try { c = localStorage.getItem(CUR) || ''; } catch (e) {}
+    if (/^\d{6}$/.test(c)) watch(c);
+  });
+}
+
+// ---------- mở phòng ----------
+$('open').onclick = async () => {
+  const t = +$('fT').value, m = $('fM').value, mins = Math.max(1, Math.min(240, Math.round(+$('fMin').value || MODES[m][2]))), lop = $('fLop').value.trim().slice(0, 40), ti = $('fTi').value.trim().slice(0, 80);
+  if (room && room.state && room.state.ph === 'run' && !confirm('Phòng ' + code + ' đang thi. Mở phòng mới?')) return;
+  $('open').disabled = true; msg('setupMsg', 'Đang mở phòng…');
+  try {
+    let c = '';
+    for (let i = 0; i < 6 && !c; i++) { const x = String(100000 + Math.floor(Math.random() * 900000)); const s = await D.get(D.ref(db, 'examroom/' + x + '/meta')); if (!s.exists() || s.val().at < now() - 12 * 3600000) c = x; }
+    if (!c) throw new Error('no code');
+    const meta = { t, m, mins, at: D.serverTimestamp() }; if (lop) meta.lop = lop; if (ti) meta.ti = ti;
+    await D.set(D.ref(db, 'examroom/' + c), { meta, state: { ph: 'lobby' } });
+    try { localStorage.setItem('gvroom.last', JSON.stringify({ t, m, mins, lop })); } catch (e) {}
+    msg('setupMsg', ''); watch(c);
+  } catch (e) {
+    console.warn('phong-thi open', e);
+    if (denied(e)) { noRules(); msg('setupMsg', 'Firebase chưa cho mở phòng (chưa có luật examroom).', true); }
+    else msg('setupMsg', 'Chưa mở được phòng: ' + ((e && e.code) || 'lỗi mạng') + '.', true);
+  }
+  $('open').disabled = false;
+};
+
+function watch(c) {
+  if (unsub) unsub(); code = c; room = null;
+  try { localStorage.setItem(CUR, c); } catch (e) {}
+  const url = SITE + '?room=' + c;
+  $('roomBox').hidden = false; $('setup').hidden = true; $('rCode').textContent = c; $('rLink').textContent = url.replace(/^https?:\/\//, '');
+  try { const g = window.qrcode(0, 'M'); g.addData(url); g.make(); $('qr').innerHTML = g.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { $('qr').hidden = true; }
+  unsub = D.onValue(R(), s => {
+    room = s.val();
+    if (!room || !room.meta) { msg('roomMsg', 'Phòng ' + c + ' không còn.', true); $('roomBox').hidden = true; $('setup').hidden = false; try { localStorage.removeItem(CUR); } catch (e) {} return; }
+    render();
+  }, e => { console.warn('phong-thi watch', e); if (denied(e)) noRules(); msg('roomMsg', 'Không đọc được phòng (' + ((e && e.code) || 'lỗi') + ').', true); });
+  clearInterval(tick); tick = setInterval(clock, 1000);
+}
+
+function phase() { const s = room && room.state || {}; if (s.ph === 'run' && s.en && now() >= s.en) return 'over'; return s.ph || 'lobby'; }
+function clock() {
+  if (!room) return; const s = room.state || {}, ph = phase(), el = $('rClock');
+  if (ph === 'run') { const left = Math.max(0, Math.floor((s.en - now()) / 1000)); el.textContent = left > 0 && now() < s.st ? 'Bắt đầu sau ' + Math.ceil((s.st - now()) / 1000) + 's' : '⏱ ' + p2(Math.floor(left / 60)) + ':' + p2(left % 60); el.classList.toggle('low', left < 300); }
+  else el.textContent = '';
+  const PH = { lobby: ['Phòng chờ — học viên đang vào', 'mid'], run: ['Đang thi', 'ok'], over: ['Hết giờ — bài tự nộp', 'bad'], end: ['Đã kết thúc', 'dim'] }[ph];
+  const e2 = $('rPh'); e2.textContent = PH[0]; e2.className = 'ph tag ' + PH[1];
+  $('bStart').disabled = ph !== 'lobby'; $('bPlus').disabled = !(ph === 'run' || ph === 'over'); $('bEnd').disabled = ph === 'end';
+}
+function render() {
+  const m = room.meta, P = room.p || {}, ph = phase(), tot = MODES[m.m] ? MODES[m.m][1] : 0;
+  $('rTtl').textContent = (m.ti ? m.ti + ' · ' : '') + tName(m.t) + ' · ' + (MODES[m.m] ? MODES[m.m][0] : m.m) + ' · ' + m.mins + ' phút' + (m.lop ? ' · Lớp ' + m.lop : '');
+  const L = Object.keys(P).map(k => Object.assign({ k }, P[k])).sort((a, b) => (b.s ? 1 : 0) - (a.s ? 1 : 0) || String(a.n || '').localeCompare(String(b.n || ''), 'vi'));
+  let nRun = 0, nDone = 0, nHid = 0;
+  $('rows').innerHTML = L.length ? L.map(x => {
+    const tt = x.tt || tot, a = x.a || 0, pc = tt ? Math.round(a / tt * 100) : 0;
+    let st;
+    if (x.s) { nDone++; st = '<span class="tag ok">Đã nộp</span>'; }
+    else if (x.o === false) st = '<span class="tag bad">Mất kết nối</span>';
+    else if (ph === 'lobby') st = '<span class="tag mid">Đang chờ</span>';
+    else if (ph === 'end' || ph === 'over') st = '<span class="tag mid">Đang nộp…</span>';
+    else { nRun++; st = '<span class="tag dim">Đang làm</span>'; }
+    if (x.h) nHid++;
+    const sc = x.s ? '<b>' + (x.g || 0) + '/' + tt + '</b>' + (x.sc ? '<br><small class="s">' + esc(x.sc) + '</small>' : '') : '–';
+    return '<tr><td><b>' + esc(x.n || '(chưa có tên)') + '</b>' + (x.e ? '<br><small class="s">' + esc(x.e) + '</small>' : '') + '</td><td class="hm">' + esc(x.l || '') + '</td><td>' + st + '</td>' +
+      '<td>' + a + '/' + tt + '<div class="bar"><i style="width:' + pc + '%"></i></div></td><td class="hm n">' + (x.q ? 'Câu ' + x.q : '–') + '</td>' +
+      '<td>' + (x.h ? '<span class="tag bad">' + x.h + ' lần</span>' : '<span class="tag ok">0</span>') + '</td><td>' + sc + '</td></tr>';
+  }).join('') : '<tr><td colspan="7" class="empty">Chưa có ai vào phòng. Chiếu mã QR hoặc gửi link cho lớp nhé.</td></tr>';
+  $('kIn').textContent = L.length; $('kRun').textContent = nRun; $('kDone').textContent = nDone; $('kHid').textContent = nHid;
+  clock();
+}
+
+async function act(fn, ok) { msg('roomMsg', ''); try { await fn(); if (ok) msg('roomMsg', ok); } catch (e) { console.warn('phong-thi', e); if (denied(e)) noRules(); msg('roomMsg', 'Chưa làm được: ' + ((e && e.code) || 'lỗi mạng') + '.', true); } }
+$('bStart').onclick = () => { if (!room) return; const n = Object.keys(room.p || {}).length; if (!n && !confirm('Chưa có học viên nào trong phòng. Vẫn bắt đầu?')) return;
+  const st = Math.round(now() + 5000); act(() => D.set(R('state'), { ph: 'run', st, en: st + room.meta.mins * 60000 }), 'Đã bắt đầu — học viên vào đề sau 5 giây.'); };
+$('bPlus').onclick = () => { const s = room && room.state; if (!s || !s.en) return; const en = Math.max(s.en, now()) + 300000; act(() => D.update(R('state'), { ph: 'run', en }), 'Đã cộng thêm 5 phút.'); };
+$('bEnd').onclick = () => { if (!room || !confirm('Kết thúc bài thi cho cả lớp? Bài của mọi bạn sẽ được nộp tự động.')) return; const s = room.state || {}; act(() => D.set(R('state'), { ph: 'end', st: s.st || now(), en: Math.round(now()) }), 'Đã kết thúc — bài của các bạn đang được nộp tự động.'); };
+$('bNew').onclick = () => { if (room && phase() === 'run' && !confirm('Phòng đang thi. Rời phòng này để mở phòng mới? (phòng cũ vẫn chạy)')) return; if (unsub) unsub(); unsub = null; clearInterval(tick); room = null; code = ''; try { localStorage.removeItem(CUR); } catch (e) {} $('roomBox').hidden = true; $('setup').hidden = false; window.scrollTo(0, 0); };
+$('copyLink').onclick = () => copy(SITE + '?room=' + code, 'Đã chép link phòng.');
+$('bCopy').onclick = () => {
+  if (!room) return; const P = room.p || {}, tot = MODES[room.meta.m] ? MODES[room.meta.m][1] : 0;
+  const rows = [['Họ tên', 'Lớp', 'Email', 'Đúng', 'Tổng', 'Điểm ước tính', 'Đã làm', 'Rời tab', 'Đã nộp']].concat(Object.keys(P).map(k => { const x = P[k]; return [x.n || '', x.l || '', x.e || '', x.s ? x.g || 0 : '', x.tt || tot, x.sc || '', x.a || 0, x.h || 0, x.s ? 'có' : 'chưa']; }));
+  copy(rows.map(r => r.join('\t')).join('\n'), 'Đã chép bảng kết quả — dán vào Google Sheet / Excel.');
+};
+function copy(t, ok) { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => msg('roomMsg', ok), () => { window.prompt('Chép nội dung này:', t); }); }
+
+boot();
+</script>
+</body>
+</html>

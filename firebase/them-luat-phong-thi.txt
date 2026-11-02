@@ -1,0 +1,125 @@
+PHÒNG THI CHUNG — luật Realtime Database cần THÊM (thầy tự dán, Claude không tự Publish)
+================================================================================
+
+Trang thầy: mangomint1805.github.io/phong-thi.html (mở từ gv.html)
+Trang học viên: mangomint1805.github.io/toeic/test.html?room=MÃ
+Nhánh mới: examroom/{mã 6 số}
+  - meta, state: chỉ tài khoản của thầy ghi được (mở phòng, Bắt đầu, +5 phút, Kết thúc)
+  - p/{uid}: mỗi học viên (đăng nhập ẩn danh) chỉ ghi được mục CỦA MÌNH; nộp bài rồi (s = true) thì khoá,
+    không sửa được nữa; phòng quá 12 giờ hoặc đã kết thúc quá 3 phút thì không ghi được.
+  - Học viên chỉ đọc được meta, state và mục của chính mình; danh sách cả lớp chỉ thầy đọc.
+  - Mọi trường đều được kiểm tra kiểu và độ dài, trường lạ bị từ chối ($other).
+
+CÁC BƯỚC
+1. Mở https://console.firebase.google.com → dự án minto-english → Build → Realtime Database → tab Rules.
+2. Tìm dòng   "quiz": {   (nhánh của Minto Quiz). Đặt con trỏ ở ĐẦU dòng đó.
+3. Dán toàn bộ đoạn giữa hai vạch ----- bên dưới vào (đoạn này kết thúc bằng dấu phẩy, nên nằm ngay trước "quiz").
+4. Trong đoạn vừa dán, thay cả 2 chỗ EMAIL_CUA_THAY bằng email Google của thầy
+   (đúng email đang có trong luật "quiz" ngay bên dưới — copy từ đó cho chắc).
+5. Bấm Publish. Nếu Firebase báo lỗi đỏ, thường là thiếu/thừa dấu phẩy hoặc ngoặc — kiểm tra chỗ vừa dán.
+6. Tải lại phong-thi.html, thử mở một phòng. Trước khi dán luật, trang thầy và trang học viên chỉ hiện
+   thông báo "Phòng thi chưa được bật", không hỏng gì khác.
+
+Không cần sửa Firestore.
+
+-----
+    "examroom": {
+      ".read": "auth != null && auth.token.email == 'EMAIL_CUA_THAY' && auth.token.email_verified == true",
+      "$code": {
+        ".write": "auth != null && auth.token.email == 'EMAIL_CUA_THAY' && auth.token.email_verified == true && $code.matches(/^[0-9]{6}$/)",
+        "meta": {
+          ".read": "auth != null",
+          ".validate": "newData.hasChildren(['t', 'm', 'mins', 'at'])",
+          "t": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 20"
+          },
+          "m": {
+            ".validate": "newData.isString() && newData.val().matches(/^(full|lc|rc|p[1-7])$/)"
+          },
+          "mins": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 240"
+          },
+          "lop": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "ti": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "at": {
+            ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "state": {
+          ".read": "auth != null",
+          ".validate": "newData.hasChildren(['ph'])",
+          "ph": {
+            ".validate": "newData.isString() && newData.val().matches(/^(lobby|run|end)$/)"
+          },
+          "st": {
+            ".validate": "newData.isNumber()"
+          },
+          "en": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "p": {
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid",
+            ".write": "auth != null && auth.uid == $uid && newData.exists() && data.child('s').val() != true && root.child('examroom/' + $code + '/meta/at').val() > now - 43200000 && (root.child('examroom/' + $code + '/state/ph').val() != 'end' || now <= root.child('examroom/' + $code + '/state/en').val() + 180000)",
+            ".validate": "newData.hasChildren(['n', 'j', 'at'])",
+            "n": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 40"
+            },
+            "e": {
+              ".validate": "newData.isString() && newData.val().length <= 100"
+            },
+            "l": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "j": {
+              ".validate": "newData.isNumber() && newData.val() <= now"
+            },
+            "a": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+            },
+            "q": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+            },
+            "h": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999"
+            },
+            "tt": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+            },
+            "g": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200"
+            },
+            "o": {
+              ".validate": "newData.isBoolean()"
+            },
+            "s": {
+              ".validate": "newData.isBoolean()"
+            },
+            "sc": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "at": {
+              ".validate": "newData.isNumber() && newData.val() <= now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+-----
