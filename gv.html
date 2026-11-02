@@ -138,7 +138,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 </head>
 <body>
 <div class="wrap">
-<header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg><div><b>Bảng theo dõi lớp</b><small>Chỉ dành cho thầy · dữ liệu lấy trực tiếp từ Google Sheet kết quả</small></div><nav class="gvnav"><a href="./">🏠 Trang chủ</a><a href="toeic/">TOEIC</a><a href="cam/">IELTS</a><a href="KH/admin.html">🎮 Minto Quiz</a></nav></header>
+<header><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#a8691a"/><g transform="translate(10 12) scale(.82)"><path d="M50 26 C 76 24 88 50 83 76 C 78 98 54 106 36 100 C 16 94 10 72 15 52 C 20 34 33 27 50 26 Z" fill="#ffc94a" stroke="#2b2118" stroke-width="3.4"/><path d="M50 27 q0 -6 3 -11" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/><path d="M53 17 C 60 6 75 6 80 10 C 74 19 63 22 53 17 Z" fill="#8fe0ad" stroke="#2b2118" stroke-width="2.6"/><path d="M38 60 l1 5 M60 60 l1 5" stroke="#2b2118" stroke-width="5" stroke-linecap="round"/><path d="M41 72 q9 8 17 -1" fill="none" stroke="#2b2118" stroke-width="3.4" stroke-linecap="round"/></g></svg><div><b>Bảng theo dõi lớp</b><small>Chỉ dành cho thầy · dữ liệu lấy trực tiếp từ Google Sheet kết quả</small></div><nav class="gvnav"><a href="./">🏠 Trang chủ</a><a href="toeic/">TOEIC</a><a href="cam/">IELTS</a><a href="KH/admin.html">🎮 Minto Quiz</a><a href="dong-ho.html" target="_blank" rel="noopener">⏱ Đồng hồ coi thi</a></nav></header>
 
 <div class="vtabs" id="vtabs" role="tablist" aria-label="Chọn phần"><button type="button" role="tab" data-v="vResults" class="on" aria-selected="true">📋 Kết quả &amp; bài làm</button><button type="button" role="tab" data-v="vTraffic" aria-selected="false">📈 Truy cập web</button><button type="button" role="tab" data-v="vTests" aria-selected="false">📝 Bài test</button></div>
 <div id="vResults">
@@ -258,6 +258,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
     <p class="note">Mỗi cột là một bài test online đã có bạn trong lớp nộp (không tính Progress Test làm trên giấy). Ô có điểm = đã làm: ưu tiên điểm trên ERP (đã gồm điểm cộng, kể cả bài làm giấy), chưa có thì lấy điểm online cao nhất. Ô cam = dưới 5, ô viền xanh = nộp online nhưng chưa nhập ERP, ✗ = chưa làm. Đọc từ file chấm điểm bằng khoá đã lưu ở tab 📈 Truy cập web.</p>
   </div>
   <div id="tkvtBox"></div>
+  <div id="tkptBox"></div>
 </div><!-- /vTests -->
 <script>
 (function(){
@@ -443,6 +444,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
   if(location.hash==='#truy-cap') show('vTraffic'); if(location.hash==='#bai-test') show('vTests');
 })();
 </script>
+<script src="gv-diem.js?v=1"></script>
 <script type="module">
 const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const DBURL = 'https://minto-english-default-rtdb.asia-southeast1.firebasedatabase.app';
@@ -985,6 +987,7 @@ async function renderTests(force) {
   const box = $('vtBox'); if (!box) return;
   vtOptions();
   const code = $('vtCls').value, C = ROS.cls[code];
+  window.GVSC = null; if (window.GVDIEM) GVDIEM.paint(!!force);
   if (!C) { box.innerHTML = '<p class="note">Chưa có danh sách lớp. Vào tab 📈 Truy cập web, bấm “✏️ Dán danh sách từ ERP”.</p>'; return; }
   if (!Object.keys(GRADERS).some(g => subsKey(g))) { box.innerHTML = '<p class="note">Chưa có khoá đọc bài nộp trên máy này. Đăng nhập Google bằng tài khoản của thầy (khoá tự tải về), hoặc dán khoá ở mục “Chưa nộp Mock test / Minitest” trong tab 📈 Truy cập web.</p>'; return; }
   const seq = ++vtSeq; box.innerHTML = '<p class="note">Đang đọc danh sách bài nộp…</p>';
@@ -999,6 +1002,7 @@ async function renderTests(force) {
   Object.keys(EC).forEach(k => { if (Object.keys(EC[k]).length) keys.add(lk(k)); });
   const T = [...keys].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
   let h = errs.length ? '<p class="note" style="color:#c14636">Không đọc được ' + errs.map(x => 'file ' + x.g + ' (' + esc(x.err === 'key' ? 'sai khoá' : x.err) + ')').join(', ') + '.</p>' : '';
+  if (!T.length) { window.GVSC = { code, rows: C.s.map(() => []) }; if (window.GVDIEM) GVDIEM.paint(); }
   if (!T.length) { box.innerHTML = h + '<p class="note">Lớp ' + esc(code) + ' chưa có ai nộp bài test online nào.</p>'; return; }
   const cell = S.map(() => T.map(() => ({ c: 0, at: 0, sc: null, erp: null }))), odd = new Map();
   mine.forEach(r => { const i = matchIdx({ e: '', n: r.n }, code, S), j = T.indexOf(lk(testLabel(r.id))); if (i < 0 || j < 0) { if (i < 0) odd.set(r.n, (odd.get(r.n) || []).concat(testLabel(r.id))); return; } const x = cell[i][j]; x.c++; x.at = Math.max(x.at, r.at); if (typeof r.sc === 'number' && (x.sc == null || r.sc > x.sc)) x.sc = r.sc; });
@@ -1030,8 +1034,12 @@ async function renderTests(force) {
   h += '<p class="note">' + (E && E.t ? 'Điểm ERP cập nhật lúc ' + fmt(E.t) + '. ' : 'Chưa có dữ liệu điểm ERP. ') + (pend ? '<b>' + pend + ' bài</b> đã nộp online nhưng chưa có điểm trên ERP (ô viền xanh).' : 'Mọi bài nộp online đều đã có điểm trên ERP.') + '</p>';
   if (odd.size) h += '<p class="odd">Bài nộp không khớp tên trên ERP (kiểm tra xem có bạn gõ tên khác không): ' + [...odd].map(([n, l]) => '<b>' + esc(n) + '</b> (' + esc([...new Set(l)].join(', ')) + ')').join(', ') + '</p>';
   box.innerHTML = h;
+  // điểm từng bạn cho "Điểm của mình" (gv-diem.js gửi vào priv/{uid}): ưu tiên ERP, chưa có thì điểm online cao nhất
+  window.GVSC = { code, rows: S.map((s, i) => T.map((k, j) => ({ k: lab(k), x: cell[i][j] })).filter(o => done(o.x)).map(o => ({ k: o.k, v: val(o.x) == null ? null : val(o.x), src: o.x.erp != null ? 'ERP' : 'online' }))) };
+  if (window.GVDIEM) GVDIEM.paint();
 }
 window.GVTESTS = () => renderTests();
+window.GVX = { ros: () => ROS, nm, cls: () => ($('vtCls') ? $('vtCls').value : '') };
 if (!document.getElementById('vTests').hidden) renderTests();
 if ($('vtCls')) {
   $('vtCls').onchange = () => { try { localStorage.setItem('gv.vtCls', $('vtCls').value); } catch (e) {} renderTests(); };

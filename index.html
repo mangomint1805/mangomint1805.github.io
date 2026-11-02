@@ -114,6 +114,7 @@ html[data-skin="scifi"] :is(.mdeco, .mdeco2) { background-image: url("data:image
 <footer><span>© Minto English · ミント英語</span><span>Tài liệu luyện tập cho học viên. Điểm quy đổi chỉ mang tính ước tính. · <a href="chinh-sach.html" style="color:inherit">Quyền riêng tư</a></span></footer>
 </div>
 <script src="progress.js?v=3"></script>
+<script src="diem.js?v=1"></script>
 <script>
 window.MTOAST=function(ic,t,sub){ var d=document.createElement('div'); d.className='mtoast'; d.innerHTML='<b></b><small></small>'; d.firstChild.textContent=t||''; d.lastChild.textContent=sub||''; document.body.appendChild(d); setTimeout(function(){ d.remove(); },3200); };
 (function(){
@@ -136,6 +137,7 @@ window.MTOAST=function(ic,t,sub){ var d=document.createElement('div'); d.classNa
     if(o.unfinished.length) h+='<div class="cont">'+o.unfinished.slice(0,3).map(function(u){ return '<a href="'+esc(u.href)+'"><span><b>'+esc(u.label)+'</b><br><small>'+esc(u.sub)+'</small></span><span>Làm tiếp →</span></a>'; }).join('')+'</div>';
     if(!a) h+='<p class="hint">Tiến độ đang lưu trên máy này. Đăng nhập Google để không mất khi đổi máy hoặc xoá trình duyệt.</p>';
     me.innerHTML=h; var b=document.getElementById('meLogin'); if(b) b.onclick=login;
+    if(a&&window.MDIEM&&window.MACC&&MACC.user()) MDIEM.get().then(function(d){ var st=me.querySelector('.st'); if(!d||!st||st.querySelector('.dc')) return; var t=MDIEM.total(d); var x=document.createElement('a'); x.className='dc'; x.href='ho-so.html#diem'; x.style.cssText='color:inherit;text-decoration:none'; x.innerHTML='⭐ <b>'+(t>0?'+':'')+MDIEM.num(t)+'</b> điểm cộng'; st.appendChild(x); });
   }
   window.MACCPAINT=draw; draw();
   var s=document.createElement('script'); s.src='acc.js?v=10'; s.onload=function(){ if(!INAPP) window.MACC.preload(); }; document.head.appendChild(s);

@@ -12,6 +12,8 @@ Trò chơi trắc nghiệm trực tiếp trên lớp (kiểu Kahoot) cho giáo v
 | `ket-qua.html` | kết quả bài làm |
 | `xep-hang.html` | bảng xếp hạng tuần |
 | `gv.html` | bảng theo dõi lớp cho giáo viên, 2 tab: **Kết quả & bài làm** (kết quả từ Google Sheet, tiến độ, góp ý, bài nói, bài viết; cần mã giáo viên) và **Truy cập web** (`gv.html#truy-cap`: ai đang online, lịch sử xem trang, chia TOEIC / IELTS / Tóm tắt lớp Ms.Hoa, lọc theo lớp). Trước đây phần Truy cập web nằm ở `summary-new/thong-ke-gv.html` (link cũ tự chuyển về). |
+| `dong-ho.html` | đồng hồ đếm ngược coi thi chiếu lên máy chiếu (link từ `gv.html`): chọn sẵn 120′/45′/75′/60′/30′…, nhắc 15/5/1 phút, màn hình "Hết giờ — dừng bút", giữ màn hình sáng, tải lại vẫn chạy tiếp (lưu ở `localStorage` `dongho.v1`) |
+| `diem.js`, `gv-diem.js` | **Điểm của mình**: điểm cộng + điểm Minitest/Mock test riêng của từng học viên. Thầy ghi ở `gv.html` → tab 📝 Bài test (sổ gốc `config/pts`), web gửi bản riêng vào `priv/{uid}`; học viên xem trong Hồ sơ. Cần thêm luật: `firebase/them-luat-priv.txt` |
 | `chinh-sach.html` | chính sách quyền riêng tư |
 | `acc.js` | đăng nhập Google + đồng bộ tiến độ qua Firebase (project `minto-english`) |
 | `progress.js` | tổng hợp tiến độ từ web TOEIC và IELTS |

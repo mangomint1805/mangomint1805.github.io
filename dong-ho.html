@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<script>try{var d=document.documentElement,k=JSON.parse(localStorage.getItem('mt.skin')||'""');if(k==='scifi')d.setAttribute('data-theme','dark');if(k)d.setAttribute('data-skin',k);if(k){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=DotGothic16&family=Rajdhani:wght@700&family=M+PLUS+Rounded+1c:wght@800&display=swap';document.head.appendChild(l)}}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex">
+<title>Đồng hồ coi thi · Minto English</title>
+<link rel="icon" type="image/png" href="fav-64.png?v=3">
+<meta name="theme-color" content="#a8691a">
+<style>
+:root{color-scheme:light;--paper:#faf8f4;--card:#fff;--line:#e6e0d3;--ink:#1e232b;--dim:#666e7a;--panel2:#f4f0e8;--brand:#a8691a;--brand-soft:#f2e2c4;--brand-ink:#6b4410;--ok:#1f8f6c;--w15:#b7791f;--w5:#d9480f;--w1:#c92a2a}
+*{box-sizing:border-box}
+html,body{height:100%}
+html{background:var(--paper)}
+body{margin:0;color:var(--ink);font:16px/1.5 'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--paper);display:flex;flex-direction:column;overflow-x:hidden;transition:background .6s}
+.top{display:flex;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.top a{color:var(--brand-ink);font-weight:700;text-decoration:none;font-size:14px}
+#name{flex:1;min-width:0;font-family:inherit;font-weight:600;font-size:clamp(18px,3.4vw,40px);line-height:1.2;color:var(--ink);background:transparent;border:0;border-bottom:2px dashed var(--line);padding:4px 2px;text-align:center}
+#name:focus{outline:none;border-bottom-color:var(--brand)}
+#now{font-weight:700;font-size:clamp(18px,3vw,36px);line-height:1;font-variant-numeric:tabular-nums;color:var(--dim);white-space:nowrap}
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 16px;min-height:0}
+#big{font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;font-size:min(26vw,48vh);color:var(--ink);white-space:nowrap;transition:color .4s}
+#big.h{font-size:min(19vw,44vh)}
+#sub{font-size:clamp(16px,2.6vw,30px);color:var(--dim);margin-top:.4em;text-align:center;min-height:1.5em;font-weight:600}
+.bar{width:min(1100px,100%);height:14px;border-radius:9px;background:var(--panel2);overflow:hidden;margin-top:18px;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .9s linear,background .4s}
+#ctl{padding:10px 16px 16px;display:flex;flex-direction:column;gap:10px;align-items:center;transition:opacity .5s}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+button,.cus input{font-family:inherit;font-weight:600;font-size:15px;line-height:1.1;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--brand-ink);padding:11px 15px;cursor:pointer;min-height:44px}
+button.pri{background:var(--brand);border-color:var(--brand);color:#fff;font-size:17px;padding:12px 26px}
+button.on{border-color:var(--brand);background:var(--brand-soft)}
+button small{display:block;font-weight:500;font-size:11.5px;color:var(--dim);margin-top:3px}
+.cus{display:inline-flex;gap:6px;align-items:center}.cus input{width:84px;color:var(--ink);cursor:text;text-align:center}
+.hint{font-size:13px;color:var(--dim);text-align:center;margin:0}
+/* cảnh báo */
+body.w15 #big{color:var(--w15)}body.w15 .bar i{background:var(--w15)}
+body.w5{background:#fff4e6}body.w5 #big,body.w5 #sub{color:var(--w5)}body.w5 .bar i{background:var(--w5)}
+body.w1{background:#ffe3e3}body.w1 #big,body.w1 #sub{color:var(--w1)}body.w1 .bar i{background:var(--w1)}
+body.w1.run #big{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+#end{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:#c92a2a;color:#fff;text-align:center;padding:16px;z-index:5}
+body.done #end{display:flex}
+#end b{font-size:min(13vw,24vh);line-height:1.05}
+#end span{font-size:min(5.5vw,8vh);font-weight:700;margin-top:.3em}
+#end small{font-size:clamp(16px,2.4vw,28px);opacity:.85;margin-top:1em;font-variant-numeric:tabular-nums}
+#end button{margin-top:28px;background:#fff;color:#c92a2a;border-color:#fff}
+#toast{position:fixed;left:50%;top:18%;transform:translateX(-50%);background:var(--w5);color:#fff;font-weight:700;font-size:min(9vw,12vh);padding:.2em .7em;border-radius:24px;display:none;z-index:4;white-space:nowrap;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+body.idle #ctl,body.idle .top a{opacity:0}body.idle{cursor:none}
+@media (max-width:600px){button{padding:10px 12px;font-size:14px}button.pri{padding:12px 18px}#big{font-size:24vw}#big.h{font-size:18vw}}
+</style>
+<link rel="stylesheet" href="skin.css?v=1">
+</head>
+<body>
+<div class="top"><a href="gv.html">← Bảng lớp</a><input id="name" maxlength="80" placeholder="Tên bài thi · phòng (VD: Mock Test 2 · Phòng 3.4)" aria-label="Tên bài thi và phòng"><span id="now" aria-label="Giờ hiện tại">--:--</span></div>
+<main>
+  <div id="big" role="timer" aria-live="off">00:00</div>
+  <div id="sub">Chọn thời gian làm bài rồi bấm Bắt đầu</div>
+  <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+</main>
+<div id="ctl">
+  <div class="row" id="pre" role="group" aria-label="Thời gian làm bài"></div>
+  <div class="row">
+    <span class="cus"><input id="cus" type="number" min="1" max="600" inputmode="numeric" placeholder="phút" aria-label="Số phút tuỳ chọn"><button type="button" id="cusB">Đặt</button></span>
+    <button type="button" class="pri" id="go">▶ Bắt đầu</button>
+    <button type="button" id="minus" title="Bớt 1 phút (phím −)">−1′</button>
+    <button type="button" id="plus" title="Thêm 1 phút (phím +)">+1′</button>
+    <button type="button" id="reset" title="Đặt lại">↺ Đặt lại</button>
+    <button type="button" id="snd" title="Tiếng chuông nhắc">🔔 Chuông: bật</button>
+    <button type="button" id="fs" title="Toàn màn hình (phím F)">⛶ Toàn màn hình</button>
+  </div>
+  <p class="hint" id="hint">Phím tắt: Space = bắt đầu / tạm dừng · F = toàn màn hình · + / − = thêm / bớt 1 phút. Nhắc lúc còn 15, 5 và 1 phút. Lỡ tải lại trang, đồng hồ vẫn chạy tiếp.</p>
+</div>
+<div id="toast" role="status"></div>
+<div id="end" role="alert"><b>Hết giờ</b><span>Dừng bút ✋</span><small id="over"></small><button type="button" id="endB">Đóng</button></div>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);}, KEY='dongho.v1', MIN=60000;
+  var PRE=[[120,'TOEIC Full','L + R'],[45,'Listening','Part 1–4'],[75,'Reading','Part 5–7'],[60,'Mock test','60 phút'],[30,'Minitest','30 phút'],[20,'Part 5–6','20 phút'],[15,'Part 1–2','15 phút'],[10,'10 phút','ôn nhanh']];
+  // S: {name, dur, end (đang chạy: thời điểm hết giờ), left (đang dừng: còn lại), run, warn: [15,5,1 đã nhắc], snd}
+  var S={name:'',dur:120*MIN,end:0,left:120*MIN,run:false,warn:[],snd:true};
+  try{ var v=JSON.parse(localStorage.getItem(KEY)||'null'); if(v&&typeof v.dur==='number') S=Object.assign(S,v); }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+  function left(){ return S.run?S.end-Date.now():S.left; }
+  function p2(n){ return (n<10?'0':'')+n; }
+  function fmt(ms){ var s=Math.max(0,Math.ceil(ms/1000)), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return h?h+':'+p2(m)+':'+p2(x):p2(m)+':'+p2(x); }
+  $('name').value=S.name||'';
+  $('name').oninput=function(){ S.name=this.value; save(); document.title=(S.name?S.name+' · ':'')+'Đồng hồ coi thi'; };
+  $('pre').innerHTML=PRE.map(function(p){ return '<button type="button" data-m="'+p[0]+'">'+p[1]+' · '+p[0]+'′<small>'+p[2]+'</small></button>'; }).join('');
+
+  // ---- chuông nhẹ (Web Audio, không cần tải file) ----
+  var AC=null;
+  function chime(n){
+    if(!S.snd) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); }catch(e){ return; }
+    for(var k=0;k<(n||1);k++) [[660,0],[880,.18]].forEach(function(f){ var t=AC.currentTime+k*.9+f[1], o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=f[0]; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.18,t+.03); g.gain.exponentialRampToValueAtTime(.001,t+1.1); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+1.2); });
+  }
+  var tT=0; function toast(t){ var el=$('toast'); el.textContent=t; el.style.display='block'; clearTimeout(tT); tT=setTimeout(function(){ el.style.display='none'; },6000); }
+
+  // ---- giữ màn hình sáng ----
+  var WL=null;
+  function wake(on){
+    if(on&&!WL&&navigator.wakeLock&&document.visibilityState==='visible') navigator.wakeLock.request('screen').then(function(l){ WL=l; l.addEventListener('release',function(){ WL=null; }); }).catch(function(){});
+    if(!on&&WL){ WL.release().catch(function(){}); WL=null; }
+  }
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&S.run) wake(true); });
+
+  function setDur(m){ m=Math.max(1,Math.min(600,Math.round(m))); S.dur=m*MIN; S.left=S.dur; S.run=false; S.end=0; S.warn=[]; save(); wake(false); paint(); }
+  function start(){ if(S.run) return; if(left()<=0){ S.left=S.dur; S.warn=[]; } S.end=Date.now()+S.left; S.run=true; save(); wake(true); chime(0); paint(); }
+  function pause(){ if(!S.run) return; S.left=Math.max(0,S.end-Date.now()); S.run=false; save(); wake(false); paint(); }
+  function adj(d){ if(S.run) S.end+=d; else S.left=Math.max(0,S.left+d); if(d>0) S.dur=Math.max(S.dur,left()); S.warn=S.warn.filter(function(w){ return left()<=w*MIN; }); save(); paint(); }
+  function reset(){ S.left=S.dur; S.run=false; S.end=0; S.warn=[]; save(); wake(false); document.body.classList.remove('done'); paint(); }
+
+  var dismissed=false;
+  function paint(){
+    var L=left(), b=document.body, big=$('big');
+    big.textContent=fmt(L); big.classList.toggle('h',L>=3600000);
+    var d=new Date(); $('now').textContent=p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds());
+    $('prog').style.width=(S.dur?Math.max(0,Math.min(100,100-L/S.dur*100)):0)+'%';
+    b.classList.toggle('run',S.run);
+    b.classList.toggle('w15',L<=15*MIN&&L>5*MIN&&S.dur>15*MIN);
+    b.classList.toggle('w5',L<=5*MIN&&L>MIN);
+    b.classList.toggle('w1',L<=MIN&&L>0);
+    [[15,'Còn 15 phút'],[5,'Còn 5 phút'],[1,'Còn 1 phút']].forEach(function(w){
+      if(S.run&&L<=w[0]*MIN&&L>0&&S.warn.indexOf(w[0])<0){ S.warn.push(w[0]); save(); if(S.dur>w[0]*MIN&&L>w[0]*MIN-30000){ toast(w[1]); chime(w[0]===1?2:1); } }
+    });
+    var endAt=S.run?new Date(S.end):null;
+    $('sub').textContent=L<=0?'Hết giờ':S.run?(L<=MIN?'Còn 1 phút — kiểm tra lại phiếu trả lời':L<=5*MIN?'Còn 5 phút':'Hết giờ lúc '+p2(endAt.getHours())+':'+p2(endAt.getMinutes())):(S.left<S.dur?'Đang tạm dừng':'Thời gian làm bài: '+Math.round(S.dur/MIN)+' phút');
+    if(S.run&&L<=0){
+      if(!b.classList.contains('done')&&!dismissed){ b.classList.add('done'); if(S.warn.indexOf(0)<0){ S.warn.push(0); save(); chime(3); } }
+      $('over').textContent='Quá giờ '+fmt(-L);
+    }
+    $('go').textContent=S.run?(L<=0?'■ Dừng':'⏸ Tạm dừng'):(S.left<S.dur&&S.left>0?'▶ Chạy tiếp':'▶ Bắt đầu');
+    $('snd').textContent=S.snd?'🔔 Chuông: bật':'🔕 Chuông: tắt';
+    [].forEach.call($('pre').children,function(x){ x.classList.toggle('on',+x.dataset.m*MIN===S.dur); });
+  }
+  $('pre').onclick=function(e){ var b=e.target.closest('button[data-m]'); if(!b) return; if(S.run&&!confirm('Đồng hồ đang chạy. Đổi sang '+b.dataset.m+' phút và đặt lại?')) return; setDur(+b.dataset.m); };
+  $('cusB').onclick=function(){ var m=+$('cus').value; if(!m||m<1) { $('cus').focus(); return; } if(S.run&&!confirm('Đồng hồ đang chạy. Đặt lại '+m+' phút?')) return; setDur(m); };
+  $('cus').onkeydown=function(e){ if(e.key==='Enter') $('cusB').click(); };
+  $('go').onclick=function(){ if(S.run){ if(left()<=0){ reset(); return; } pause(); } else { dismissed=false; start(); } };
+  $('plus').onclick=function(){ adj(MIN); };
+  $('minus').onclick=function(){ adj(-MIN); };
+  $('reset').onclick=function(){ if(S.run&&left()>0&&!confirm('Đặt lại đồng hồ?')) return; reset(); };
+  $('snd').onclick=function(){ S.snd=!S.snd; save(); if(S.snd) chime(1); paint(); };
+  $('endB').onclick=function(){ dismissed=true; document.body.classList.remove('done'); };
+  function fsToggle(){ var d=document, el=d.documentElement; try{ if(d.fullscreenElement||d.webkitFullscreenElement) (d.exitFullscreen||d.webkitExitFullscreen).call(d); else (el.requestFullscreen||el.webkitRequestFullscreen).call(el); }catch(e){} }
+  $('fs').onclick=fsToggle;
+  if(!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen)) $('fs').hidden=true;
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='INPUT') return;
+    if(e.code==='Space'){ e.preventDefault(); $('go').click(); }
+    else if(e.key==='f'||e.key==='F') fsToggle();
+    else if(e.key==='+'||e.key==='=') adj(MIN);
+    else if(e.key==='-'||e.key==='_') adj(-MIN);
+    else if(e.key==='Escape'&&document.body.classList.contains('done')) $('endB').click();
+  });
+  // ẩn nút khi đang chạy và không động chuột 4 giây (màn chiếu gọn)
+  var iT=0; function act(){ document.body.classList.remove('idle'); clearTimeout(iT); iT=setTimeout(function(){ if(S.run&&document.activeElement.tagName!=='INPUT') document.body.classList.add('idle'); },4000); }
+  ['mousemove','touchstart','keydown'].forEach(function(t){ document.addEventListener(t,act,{passive:true}); });
+  // tải lại lúc đã hết giờ từ lâu: không hiện lại màn hình Hết giờ quá 10 phút
+  if(S.run&&left()< -10*MIN){ S.run=false; S.left=0; save(); }
+  if(S.run) wake(true);
+  document.title=(S.name?S.name+' · ':'')+'Đồng hồ coi thi';
+  paint(); act();
+  (function tick(){ paint(); setTimeout(tick,1000-Date.now()%1000+5); })();
+})();
+</script>
+</body>
+</html>
