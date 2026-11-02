@@ -63,7 +63,7 @@
   // lịch các ngày đã học (kiểu ô vuông), 'weeks' tuần gần nhất
   function heat(days, act, weeks) {
     weeks = weeks || 20; var end = new Date(), start = new Date(end.getFullYear(), end.getMonth(), end.getDate() - (end.getDay() + 6) % 7 - (weeks - 1) * 7);
-    var h = '<div class="mheat" role="img" aria-label="Các ngày đã học trong ' + weeks + ' tuần gần đây">', WD = ['T2', '', 'T4', '', 'T6', '', 'CN'];
+    var h = '<div class="mheat" role="img" tabindex="0" aria-label="Các ngày đã học trong ' + weeks + ' tuần gần đây">', WD = ['T2', '', 'T4', '', 'T6', '', 'CN'];
     h += '<div class="mh-l">' + WD.map(function (w) { return '<i>' + w + '</i>'; }).join('') + '</div><div class="mh-g">';
     for (var w = 0; w < weeks; w++) {
       h += '<div class="mh-c">';
@@ -77,7 +77,7 @@
     return h + '</div></div>';
   }
   var css = document.createElement('style');
-  css.textContent = '.mheat{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}.mh-l,.mh-c{display:grid;grid-template-rows:repeat(7,13px);gap:3px}.mh-l i{font:500 9.5px/13px "IBM Plex Sans",sans-serif;color:#8a8f99;font-style:normal;width:16px}' +
+  css.textContent = '.mheat{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}.mh-l,.mh-c{display:grid;grid-template-rows:repeat(7,13px);gap:3px}.mh-l i{font:500 9.5px/13px "IBM Plex Sans",sans-serif;color:var(--dim,#5f6672);font-style:normal;width:16px}' +
     '.mh-g{display:flex;gap:3px}.mh-c i{width:13px;height:13px;border-radius:3px;background:#eee7da}.mh-c i.l1{background:#f2d08f}.mh-c i.l2{background:#d9a248}.mh-c i.l3{background:#a8691a}.mh-c i.l-1{background:transparent}';
   document.head.appendChild(css);
   function summaryFrom(map) { SRC = map || {}; try { return summary(); } finally { SRC = null; } }
