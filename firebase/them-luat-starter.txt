@@ -13,8 +13,8 @@ Các bước:
 1. Mở https://console.firebase.google.com → project minto-english → Firestore Database → tab Rules.
 2. Tìm dòng   match /config/{doc} {   (đoạn "Mã giáo viên: chỉ thầy đọc/ghi").
 3. Dán đoạn bên dưới NGAY TRÊN dòng đó (vẫn nằm trong   match /databases/{database}/documents { ... }).
-4. Nếu luật đang chạy KHÔNG có hàm signedIn() và gv(): thay  signedIn()  bằng  request.auth != null
-   và thay  gv()  bằng đúng điều kiện đang dùng ở dòng  allow read, write  của  match /config/{doc}
+4. Nếu luật đang chạy KHÔNG có hàm signedIn() và isTeacher(): thay  signedIn()  bằng  request.auth != null
+   và thay  isTeacher()  bằng đúng điều kiện đang dùng ở dòng  allow read, write  của  match /config/{doc}
    (điều kiện có email của thầy — email chỉ nằm trong Console, không đưa lên GitHub).
 5. Bấm Publish.
 6. Mở https://mangomint1805.github.io/tai-de-gv.html (đăng nhập tài khoản thầy) → chọn MỘT LẦN nhiều file:
@@ -28,12 +28,12 @@ Các bước:
 ----- ĐOẠN CẦN DÁN (từ dòng dưới đến hết) -----
     // Đề cần đăng nhập (không để trên GitHub): ai đăng nhập Google, email đã xác minh, mới đọc; chỉ thầy ghi.
     match /starter/{unit} {
-      allow read: if gv() || (signedIn() && request.auth.token.email_verified == true);
-      allow write: if gv();
+      allow read: if isTeacher() || (signedIn() && request.auth.token.email_verified == true);
+      allow write: if isTeacher();
     }
     match /de/{doc} {
-      allow read: if gv() || (signedIn() && request.auth.token.email_verified == true);
-      allow write: if gv();
+      allow read: if isTeacher() || (signedIn() && request.auth.token.email_verified == true);
+      allow write: if isTeacher();
     }
 ----- HẾT -----
 
