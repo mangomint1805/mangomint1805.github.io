@@ -1,12 +1,13 @@
-THÊM LUẬT FIRESTORE CHO "STARTER TOEIC" (starter/)
-==================================================
-Bài tập sách Starter TOEIC nằm trong Firestore starter/u01 … starter/u12 (KHÔNG nằm trên GitHub).
-Ai đọc được: thầy, và học viên ĐÃ ĐĂNG NHẬP + ĐÃ ĐƯỢC GHÉP VÀO LỚP.
-"Đã ghép vào lớp" = có tài liệu priv/{uid} — tài liệu này chỉ thầy tạo được (gv.html → tab 📝 Bài test →
-chọn lớp → "📤 Cập nhật điểm cho học viên"), nên học viên không tự cấp quyền cho mình được.
-Ai ghi được: chỉ thầy (trang starter-gv.html).
+THÊM LUẬT FIRESTORE CHO ĐỀ "CẦN ĐĂNG NHẬP" (starter/ và de/)
+=============================================================
+Đề và đáp án có bản quyền KHÔNG nằm trên GitHub mà ở Firestore:
+  - starter/u01 … starter/u12 : bài tập sách Starter TOEIC (web TOEIC, test.html?t=101…112)
+  - de/{t}, de/{t}_1, de/{t}_2 … và de/_index : đề đầy đủ (vd. TOEIC 1000 Listening/Reading t=21…30, sau này YBM…)
+Ai đọc được: thầy, và MỌI tài khoản Google đã đăng nhập có email đã xác minh (không cần ghép lớp).
+Ai ghi được: chỉ thầy (trang https://mangomint1805.github.io/tai-de-gv.html).
 
 Chỉ THÊM đoạn dưới vào luật đang chạy. KHÔNG xoá gì, KHÔNG Publish đè bằng file firestore.rules trong repo.
+(Nếu trước đó đã dán đoạn "match /starter/{unit}" bản cũ — bản có exists(.../priv/...) — thì XOÁ đoạn cũ đó rồi dán đoạn này thay vào.)
 
 Các bước:
 1. Mở https://console.firebase.google.com → project minto-english → Firestore Database → tab Rules.
@@ -16,26 +17,27 @@ Các bước:
    và thay  gv()  bằng đúng điều kiện đang dùng ở dòng  allow read, write  của  match /config/{doc}
    (điều kiện có email của thầy — email chỉ nằm trong Console, không đưa lên GitHub).
 5. Bấm Publish.
-6. Mở https://mangomint1805.github.io/starter-gv.html (đăng nhập tài khoản thầy) → chọn các file
-   starter-u01.json … starter-u12.json (hoặc starter-all.json) → "📤 Tải lên Firestore".
-   Bảng "Đang có trên Firestore" hiện đủ Unit 1–12 là xong.
-7. Ở gv.html → tab 📝 Bài test: với mỗi lớp, bấm "📤 Cập nhật điểm cho học viên" để các bạn đã ghép
-   tài khoản có priv/{uid} (lớp nào đã bấm rồi thì thôi). Bạn nào chưa ghép tài khoản sẽ thấy thông báo
-   "chưa có trong danh sách lớp" khi mở bài.
-8. Kiểm tra (tuỳ chọn): Rules Playground → get /starter/u01
+6. Mở https://mangomint1805.github.io/tai-de-gv.html (đăng nhập tài khoản thầy) → chọn MỘT LẦN nhiều file:
+     starter-all.json (hoặc starter-u01.json … starter-u12.json) và de-t21.json … de-t30.json
+   → "📤 Tải … mục lên Firestore". Xong bấm "🔎 Kiểm tra": Starter Unit 1–12 và de/21 … de/30 đều "có" là xong.
+7. Kiểm tra (tuỳ chọn): Rules Playground → get /de/21
    - Unauthenticated → Denied
-   - Authenticated, uid không có priv/{uid} → Denied
-   - Authenticated, uid có priv/{uid} → Allowed
+   - Authenticated (provider google.com, email_verified true) → Allowed
+   - update /de/21 với tài khoản không phải thầy → Denied
 
 ----- ĐOẠN CẦN DÁN (từ dòng dưới đến hết) -----
-    // Bài tập sách Starter TOEIC: thầy ghi; đọc được nếu là thầy hoặc học viên đã được ghép vào lớp (có priv/{uid}).
+    // Đề cần đăng nhập (không để trên GitHub): ai đăng nhập Google, email đã xác minh, mới đọc; chỉ thầy ghi.
     match /starter/{unit} {
-      allow read: if gv() || (signedIn() && exists(/databases/$(database)/documents/priv/$(request.auth.uid)));
+      allow read: if gv() || (signedIn() && request.auth.token.email_verified == true);
+      allow write: if gv();
+    }
+    match /de/{doc} {
+      allow read: if gv() || (signedIn() && request.auth.token.email_verified == true);
       allow write: if gv();
     }
 ----- HẾT -----
 
 Ghi chú:
-- exists() trong luật không cần học viên có quyền đọc priv/ của người khác; mỗi lần mở bài tốn thêm 1 lượt đọc.
-- Muốn mở cho mọi tài khoản Google đã đăng nhập (không cần ghép lớp) thì đổi dòng read thành:
-      allow read: if gv() || (signedIn() && request.auth.token.email_verified == true);
+- "read" gồm cả get (mở một đề) và list/đếm (trang tai-de-gv.html dùng để kiểm tra đủ khúc chưa).
+- Ẩn danh (Anonymous Auth, dùng cho Minto Quiz) KHÔNG có email_verified nên không đọc được đề.
+- Lịch sử git của repo toeic vẫn còn các file data/t21.js … data/t30.js cũ (đã xoá ở bản mới nhất).

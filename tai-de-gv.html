@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light only">
+<title>Tải đề lên · Minto English</title>
+<link rel="icon" type="image/png" href="fav-64.png?v=3">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#faf8f4;--card:#fff;--line:#e6e0d3;--ink:#1e232b;--dim:#5f6672;--panel2:#f4f0e8;--brand:#a8691a;--brand-ink:#6b4410;--ok:#1a7a5c;--ok-soft:#e1f4ec;--bad:#b23b2c;--mid-soft:#fdf1dc}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 'IBM Plex Sans',system-ui,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 50px}
+header{display:flex;align-items:center;gap:12px;padding:18px 0 6px;flex-wrap:wrap}header b{font:600 22px/1.1 Fraunces,Georgia,serif;display:block}header small{color:var(--dim)}
+.nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}.nav a{color:var(--brand-ink);text-decoration:none;font-weight:600;font-size:14px;background:var(--panel2);border-radius:999px;padding:6px 12px}
+h2{font:500 21px/1.2 Fraunces,Georgia,serif;margin:22px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px}
+button,.file{font:inherit;font-weight:700;border:0;border-radius:9px;padding:10px 16px;background:var(--brand);color:#fff;cursor:pointer;min-height:42px;display:inline-flex;align-items:center;gap:6px}
+button.alt{background:var(--panel2);color:var(--brand-ink)}button:disabled{opacity:.6;cursor:wait}
+.file input{display:none}
+.note{color:var(--dim);font-size:13.5px;margin:8px 0 0}
+.msg{margin-top:10px;font-weight:600;white-space:pre-line}.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+.tw{overflow-x:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:7px 9px;border-bottom:1px solid #efeae0;text-align:left}th{background:var(--panel2);font-size:12.5px;color:var(--dim)}
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:700}.ok{background:var(--ok-soft);color:var(--ok)}.no{background:var(--mid-soft);color:#6b4a00}
+code{background:var(--panel2);border-radius:6px;padding:1px 5px}
+.prog{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:10px}.prog i{display:block;height:100%;width:0;background:var(--brand);transition:width .2s}
+.res td:first-child{white-space:nowrap}.res .bad{color:var(--bad);font-weight:600}.res .ok{color:var(--ok);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><b>📤 Tải đề lên (cần đăng nhập mới xem)</b><small>Chỉ dành cho thầy · đề và đáp án có bản quyền nằm trong Firestore, không đưa lên GitHub</small></div><nav class="nav"><a href="gv.html">← Bảng theo dõi lớp</a><a href="toeic/">Xem web TOEIC</a></nav></header>
+
+<div class="card" id="who"><span class="note">Đang kiểm tra đăng nhập…</span></div>
+
+<div class="card">
+  <h2 style="margin-top:0">1. Chọn file JSON (chọn nhiều file một lúc được)</h2>
+  <p class="note" style="margin-top:0">Nhận: bài tập Starter (<code>starter-u01.json</code> … <code>starter-u12.json</code>, hoặc <code>starter-all.json</code>) và đề đầy đủ (<code>de-t21.json</code> …, định dạng <code>{"kind":"de","t":…,"name":…,"data":{lc,rc}}</code>). File chỉ được đọc trên máy này, rồi ghi thẳng vào Firestore (<code>starter/uNN</code>, <code>de/{t}</code>) bằng tài khoản của thầy.</p>
+  <label class="file">📂 Chọn file…<input type="file" id="f" accept=".json,application/json" multiple></label>
+  <div class="tw"><table class="res"><thead><tr><th>File</th><th>Nội dung</th><th>Kết quả</th></tr></thead><tbody id="list"><tr><td colspan="3" class="note">Chưa chọn file.</td></tr></tbody></table></div>
+  <p><button type="button" id="up" disabled>📤 Tải lên Firestore</button></p>
+  <div class="prog" hidden id="prog"><i></i></div>
+  <div class="msg" id="out"></div>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">2. Kiểm tra trên Firestore</h2>
+  <p><button type="button" class="alt" id="chkBtn">🔎 Kiểm tra</button></p>
+  <div class="tw"><table><thead><tr><th>Tài liệu</th><th>Tên</th><th>Số câu</th><th>Tình trạng</th></tr></thead><tbody id="st"><tr><td colspan="4" class="note">Bấm “Kiểm tra” để xem đề nào đã có.</td></tr></tbody></table></div>
+  <p class="note">Ai xem được: mọi tài khoản <b>Google đã đăng nhập</b> (email đã xác minh). Chỉ thầy ghi được. Cần thêm luật Firestore trong <code>firebase/them-luat-starter.txt</code>.</p>
+</div>
+</div>
+
+<script src="acc.js?v=10"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); }, L4 = ['A', 'B', 'C', 'D'], JOBS = [], CHUNK = 250000;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function pad(u) { return (u < 10 ? '0' : '') + u; }
+  function str(x, max) { return typeof x === 'string' && x.length <= max; }
+
+  // ---------- Starter: starter/uNN ----------
+  function checkStarter(d) {
+    var e = [], seen = {};
+    if (!(d.u >= 1 && d.u <= 12 && d.u % 1 === 0)) e.push('u phải là số 1–12');
+    if (!str(d.title || '', 200)) e.push('title quá dài');
+    function q(x, where) {
+      if (!x || !(x.n >= 101 && x.n <= 200)) { e.push(where + ': số câu n không hợp lệ'); return; }
+      if (seen[x.n]) e.push('trùng số câu ' + x.n); seen[x.n] = 1;
+      if (!str(x.q || '', 1500)) e.push('câu ' + x.n + ': q quá dài');
+      if (!Array.isArray(x.o) || x.o.length !== 4 || !x.o.every(function (o) { return str(o, 300) && o.trim(); })) e.push('câu ' + x.n + ': cần đúng 4 đáp án');
+      if (L4.indexOf(x.a) < 0) e.push('câu ' + x.n + ': đáp án a phải là A/B/C/D');
+      if (!str(x.x || '', 3000)) e.push('câu ' + x.n + ': giải thích quá dài');
+    }
+    function set(s, k, kind) {
+      if (!s || !Array.isArray(s.ns) || s.ns.length !== 2 || !Array.isArray(s.qs) || !s.qs.length) { e.push(kind + ' #' + (k + 1) + ': thiếu ns / qs'); return; }
+      if (kind === 'p6' ? !str(s.text, 8000) : !(Array.isArray(s.texts) && s.texts.length && s.texts.every(function (t) { return str(t, 8000); }))) e.push(kind + ' #' + (k + 1) + ': thiếu đoạn văn');
+      s.qs.forEach(function (x, j) { q(x, kind + ' #' + (k + 1) + ' câu ' + (j + 1)); });
+    }
+    if (!Array.isArray(d.p5) || !Array.isArray(d.p6) || !Array.isArray(d.p7)) { e.push('cần p5, p6, p7'); return e; }
+    d.p5.forEach(function (x, j) { q(x, 'p5 #' + (j + 1)); });
+    d.p6.forEach(function (s, k) { set(s, k, 'p6'); });
+    d.p7.forEach(function (s, k) { set(s, k, 'p7'); });
+    if (JSON.stringify(d).length > 700000) e.push('dữ liệu quá lớn');
+    return e;
+  }
+  function countStarter(d) { var n = (d.p5 || []).length; (d.p6 || []).concat(d.p7 || []).forEach(function (s) { n += (s.qs || []).length; }); return n; }
+  function cleanStarter(d) {
+    var keep = function (x) { var o = { n: x.n, q: x.q || '', o: x.o.slice(0, 4), a: x.a, x: x.x || '' }; if (x.f) o.f = 1; return o; };
+    return { u: d.u, title: d.title || '', p5: d.p5.map(keep),
+      p6: d.p6.map(function (s) { return { ns: s.ns, head: s.head || '', text: s.text, qs: s.qs.map(keep) }; }),
+      p7: d.p7.map(function (s) { return { ns: s.ns, head: s.head || '', texts: s.texts, qs: s.qs.map(keep) }; }),
+      n: countStarter(d), v: 1, at: Date.now() };
+  }
+
+  // ---------- Đề đầy đủ: de/{t} (cấu trúc ETSDATA[t] = { lc, rc }) ----------
+  function allQs(D) {
+    var L = [], lc = D.lc, rc = D.rc;
+    if (lc) { (lc.p1 || []).concat(lc.p2 || []).forEach(function (q) { L.push(q); }); (lc.p3 || []).concat(lc.p4 || []).forEach(function (s) { (s.qs || []).forEach(function (q) { L.push(q); }); }); }
+    (rc.p5 || []).forEach(function (q) { L.push(q); }); (rc.p6 || []).concat(rc.p7 || []).forEach(function (s) { (s.qs || []).forEach(function (q) { L.push(q); }); });
+    return L;
+  }
+  function checkDe(x) {
+    var e = [];
+    if (!(x.t >= 1 && x.t <= 999 && x.t % 1 === 0)) e.push('t phải là số đề 1–999');
+    var D = x.data;
+    if (!D || !D.rc || !Array.isArray(D.rc.p5) || !Array.isArray(D.rc.p6) || !Array.isArray(D.rc.p7)) { e.push('data.rc cần p5, p6, p7'); return e; }
+    if (D.lc && !['p1', 'p2', 'p3', 'p4'].every(function (k) { return Array.isArray(D.lc[k]); })) e.push('data.lc cần p1–p4 (hoặc null)');
+    var seen = {};
+    allQs(D).forEach(function (q) {
+      if (!q || !(q.n > 0)) { e.push('có câu thiếu số n'); return; }
+      if (seen[q.n]) e.push('trùng câu ' + q.n); seen[q.n] = 1;
+      if (L4.indexOf(q.ans) < 0) e.push('câu ' + q.n + ': thiếu đáp án ans');
+    });
+    if (!Object.keys(seen).length) e.push('không có câu nào');
+    return e.slice(0, 6);
+  }
+
+  // ---------- đọc file ----------
+  function addJob(file, d) {
+    if (d && d.kind === 'de') {
+      (Array.isArray(d.tests) ? d.tests : [d]).forEach(function (x) {
+        var e = checkDe(x);
+        JOBS.push({ file: file, kind: 'de', key: 'de/' + x.t, label: (x.name || 'Đề ' + x.t) + ' · ' + (e.length ? '' : allQs(x.data).length + ' câu'), err: e, x: x });
+      });
+      return;
+    }
+    (d && Array.isArray(d.units) ? d.units : [d]).forEach(function (u) {
+      var e = u && u.p5 ? checkStarter(u) : ['không nhận ra định dạng (cần kind:"de" hoặc bài Starter có p5/p6/p7)'];
+      JOBS.push({ file: file, kind: 'starter', key: 'starter/u' + pad(u && u.u || 0), label: 'Starter · Unit ' + (u && u.u) + (e.length ? '' : ' · ' + countStarter(u) + ' câu'), err: e, x: u });
+    });
+  }
+  function paintList() {
+    $('list').innerHTML = JOBS.length ? JOBS.map(function (j, i) {
+      return '<tr><td>' + esc(j.file) + '</td><td>' + esc(j.label) + '<br><code>' + esc(j.key) + '</code></td><td id="r' + i + '" class="' + (j.err.length ? 'bad' : '') + '">' + (j.err.length ? '✗ ' + esc(j.err.join('; ')) : (j.res || 'sẵn sàng')) + '</td></tr>';
+    }).join('') : '<tr><td colspan="3" class="note">Chưa chọn file.</td></tr>';
+    var ok = JOBS.filter(function (j) { return !j.err.length; }).length;
+    $('up').disabled = !ok; $('up').textContent = '📤 Tải ' + ok + ' mục lên Firestore';
+  }
+  $('f').onchange = function () {
+    var files = [].slice.call(this.files || []); JOBS = []; $('out').textContent = '';
+    Promise.all(files.map(function (f) { return f.text().then(function (t) { return { f: f.name, t: t }; }); })).then(function (L) {
+      L.forEach(function (x) {
+        var d; try { d = JSON.parse(x.t); } catch (e) { JOBS.push({ file: x.f, kind: '?', key: '–', label: '', err: ['không đọc được JSON'] }); return; }
+        addJob(x.f, d);
+      });
+      paintList();
+    });
+  };
+
+  // ---------- ghi Firestore ----------
+  function writeDe(x, j) {
+    var D = j.x, s = JSON.stringify({ lc: D.data.lc || null, rc: D.data.rc }), parts = [];
+    for (var i = 0; i < s.length; i += CHUNK) parts.push(s.slice(i, i + CHUNK));
+    var t = D.t, F = x.F, ref = function (id) { return F.doc(x.db, 'de', id); };
+    // ghi các khúc phụ trước, khúc chính (de/{t}) sau cùng để học viên không bao giờ đọc thiếu khúc
+    return parts.slice(1).reduce(function (p, c, k) { return p.then(function () { return F.setDoc(ref(t + '_' + (k + 1)), { t: t, k: k + 1, j: c }); }); }, Promise.resolve())
+      .then(function () { return F.setDoc(ref(String(t)), { t: t, name: String(D.name || '').slice(0, 120), n: parts.length, size: s.length, q: allQs(D.data).length, at: Date.now(), v: 1, j: parts[0] }); })
+      .then(function () { var o = {}; o[t] = { name: String(D.name || '').slice(0, 120), n: parts.length, q: allQs(D.data).length, at: Date.now() }; return F.setDoc(ref('_index'), { list: o }, { merge: true }); })
+      .then(function () { return '✓ đã tải (' + parts.length + ' khúc)'; });
+  }
+  function writeStarter(x, j) {
+    var d = cleanStarter(j.x);
+    return x.F.setDoc(x.F.doc(x.db, 'starter', 'u' + pad(d.u)), d).then(function () { return '✓ đã tải'; });
+  }
+  $('up').onclick = function () {
+    var b = this, todo = JOBS.map(function (j, i) { return i; }).filter(function (i) { return !JOBS[i].err.length; }), done = 0, bad = 0;
+    b.disabled = true; $('prog').hidden = false; $('prog').firstChild.style.width = '0'; $('out').className = 'msg'; $('out').textContent = 'Đang tải lên…';
+    MACC.fs().then(function (x) {
+      if (!x.user) throw { code: 'chưa đăng nhập' };
+      return todo.reduce(function (p, i) {
+        return p.then(function () {
+          var j = JOBS[i]; $('r' + i).textContent = '⏳ đang tải…';
+          return (j.kind === 'de' ? writeDe(x, j) : writeStarter(x, j)).then(function (r) { j.res = r; $('r' + i).className = 'ok'; $('r' + i).textContent = r; }, function (e) {
+            bad++; var c = (e && (e.code || e.message)) || 'lỗi'; $('r' + i).className = 'bad'; $('r' + i).textContent = '✗ ' + (/permission/i.test(c) ? 'Firestore từ chối (cần tài khoản thầy + luật mới)' : c);
+          }).then(function () { done++; $('prog').firstChild.style.width = Math.round(done / todo.length * 100) + '%'; });
+        });
+      }, Promise.resolve());
+    }).then(function () {
+      $('out').className = 'msg ' + (bad ? 'bad' : 'ok');
+      $('out').textContent = bad ? '⚠ ' + (todo.length - bad) + '/' + todo.length + ' mục tải được. Xem cột Kết quả.' : '✓ Đã tải ' + todo.length + ' mục lên. Học viên đăng nhập Google là làm được.';
+      check();
+    }, function (e) { $('out').className = 'msg bad'; $('out').textContent = '✗ Không tải được (' + ((e && (e.code || e.message)) || 'lỗi') + ').'; })
+      .then(function () { b.disabled = false; });
+  };
+
+  // ---------- kiểm tra ----------
+  function check() {
+    $('st').innerHTML = '<tr><td colspan="4" class="note">Đang kiểm tra…</td></tr>';
+    MACC.fs().then(function (x) {
+      if (!x.user) { $('st').innerHTML = '<tr><td colspan="4" class="note">Đăng nhập để kiểm tra.</td></tr>'; return; }
+      var F = x.F, rows = [];
+      var su = []; for (var u = 1; u <= 12; u++) su.push(u);
+      var pS = Promise.all(su.map(function (u) { return F.getDoc(F.doc(x.db, 'starter', 'u' + pad(u))).then(function (s) { return s.exists() ? s.data() : null; }, function (e) { return { err: e.code || 'lỗi' }; }); }));
+      var pD = F.getDoc(F.doc(x.db, 'de', '_index')).then(function (s) {
+        var L = s.exists() ? (s.data().list || {}) : {}, ts = Object.keys(L).map(Number).sort(function (a, b) { return a - b; });
+        // đếm số khúc thật sự có (không tải nội dung) để chắc đủ khúc
+        return Promise.all(ts.map(function (t) {
+          return F.getCountFromServer(F.query(F.collection(x.db, 'de'), F.where('t', '==', t))).then(function (c) { return { t: t, i: L[t], have: c.data().count }; }, function () { return { t: t, i: L[t], have: null }; });
+        }));
+      }, function (e) { return [{ err: e.code || 'lỗi' }]; });
+      return Promise.all([pS, pD]).then(function (R) {
+        R[0].forEach(function (d, i) {
+          rows.push('<tr><td><code>starter/u' + pad(i + 1) + '</code></td><td>' + (d && d.title ? esc(d.title) : 'Starter · Unit ' + (i + 1)) + '</td><td>' + (d && d.n ? d.n : '') + '</td><td>' + (d && d.err ? '<span class="tag no">' + esc(d.err) + '</span>' : d ? '<span class="tag ok">có · ' + new Date(d.at).toLocaleString('vi-VN') + '</span>' : '<span class="tag no">chưa có</span>') + '</td></tr>');
+        });
+        R[1].forEach(function (r) {
+          if (r.err) { rows.push('<tr><td colspan="4"><span class="tag no">de/: ' + esc(r.err) + '</span></td></tr>'); return; }
+          var okk = r.have == null ? null : r.have >= r.i.n;
+          rows.push('<tr><td><code>de/' + r.t + '</code></td><td>' + esc(r.i.name || '') + '</td><td>' + (r.i.q || '') + '</td><td>' + (okk === false ? '<span class="tag no">thiếu khúc (' + r.have + '/' + r.i.n + ') · tải lại</span>' : '<span class="tag ok">có' + (okk ? ' · đủ ' + r.i.n + ' khúc' : '') + ' · ' + new Date(r.i.at).toLocaleString('vi-VN') + '</span>') + '</td></tr>');
+        });
+        if (!R[1].length) rows.push('<tr><td><code>de/…</code></td><td colspan="3" class="note">Chưa có đề nào.</td></tr>');
+        $('st').innerHTML = rows.join('');
+      });
+    });
+  }
+  $('chkBtn').onclick = check;
+  function who() {
+    var u = MACC.user();
+    $('who').innerHTML = u ? '✓ Đăng nhập: <b>' + esc(u.email || '') + '</b>' : 'Chưa đăng nhập. <button type="button" id="li">Đăng nhập Google</button>';
+    if ($('li')) $('li').onclick = function () { MACC.quick(); };
+  }
+  var last = null;
+  MACC.ready().then(function () { setInterval(function () { var u = MACC.user(), k = u ? u.uid : ''; if (k !== last) { last = k; who(); } }, 400); who(); }, function () { $('who').textContent = 'Không tải được dịch vụ đăng nhập.'; });
+})();
+</script>
+</body>
+</html>
