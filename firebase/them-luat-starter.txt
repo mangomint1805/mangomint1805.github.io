@@ -1,0 +1,41 @@
+THÊM LUẬT FIRESTORE CHO "STARTER TOEIC" (starter/)
+==================================================
+Bài tập sách Starter TOEIC nằm trong Firestore starter/u01 … starter/u12 (KHÔNG nằm trên GitHub).
+Ai đọc được: thầy, và học viên ĐÃ ĐĂNG NHẬP + ĐÃ ĐƯỢC GHÉP VÀO LỚP.
+"Đã ghép vào lớp" = có tài liệu priv/{uid} — tài liệu này chỉ thầy tạo được (gv.html → tab 📝 Bài test →
+chọn lớp → "📤 Cập nhật điểm cho học viên"), nên học viên không tự cấp quyền cho mình được.
+Ai ghi được: chỉ thầy (trang starter-gv.html).
+
+Chỉ THÊM đoạn dưới vào luật đang chạy. KHÔNG xoá gì, KHÔNG Publish đè bằng file firestore.rules trong repo.
+
+Các bước:
+1. Mở https://console.firebase.google.com → project minto-english → Firestore Database → tab Rules.
+2. Tìm dòng   match /config/{doc} {   (đoạn "Mã giáo viên: chỉ thầy đọc/ghi").
+3. Dán đoạn bên dưới NGAY TRÊN dòng đó (vẫn nằm trong   match /databases/{database}/documents { ... }).
+4. Nếu luật đang chạy KHÔNG có hàm signedIn() và gv(): thay  signedIn()  bằng  request.auth != null
+   và thay  gv()  bằng đúng điều kiện đang dùng ở dòng  allow read, write  của  match /config/{doc}
+   (điều kiện có email của thầy — email chỉ nằm trong Console, không đưa lên GitHub).
+5. Bấm Publish.
+6. Mở https://mangomint1805.github.io/starter-gv.html (đăng nhập tài khoản thầy) → chọn các file
+   starter-u01.json … starter-u12.json (hoặc starter-all.json) → "📤 Tải lên Firestore".
+   Bảng "Đang có trên Firestore" hiện đủ Unit 1–12 là xong.
+7. Ở gv.html → tab 📝 Bài test: với mỗi lớp, bấm "📤 Cập nhật điểm cho học viên" để các bạn đã ghép
+   tài khoản có priv/{uid} (lớp nào đã bấm rồi thì thôi). Bạn nào chưa ghép tài khoản sẽ thấy thông báo
+   "chưa có trong danh sách lớp" khi mở bài.
+8. Kiểm tra (tuỳ chọn): Rules Playground → get /starter/u01
+   - Unauthenticated → Denied
+   - Authenticated, uid không có priv/{uid} → Denied
+   - Authenticated, uid có priv/{uid} → Allowed
+
+----- ĐOẠN CẦN DÁN (từ dòng dưới đến hết) -----
+    // Bài tập sách Starter TOEIC: thầy ghi; đọc được nếu là thầy hoặc học viên đã được ghép vào lớp (có priv/{uid}).
+    match /starter/{unit} {
+      allow read: if gv() || (signedIn() && exists(/databases/$(database)/documents/priv/$(request.auth.uid)));
+      allow write: if gv();
+    }
+----- HẾT -----
+
+Ghi chú:
+- exists() trong luật không cần học viên có quyền đọc priv/ của người khác; mỗi lần mở bài tốn thêm 1 lượt đọc.
+- Muốn mở cho mọi tài khoản Google đã đăng nhập (không cần ghép lớp) thì đổi dòng read thành:
+      allow read: if gv() || (signedIn() && request.auth.token.email_verified == true);
