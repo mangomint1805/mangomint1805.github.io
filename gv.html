@@ -32,7 +32,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 .err{color:var(--bad);font-weight:600;margin-top:8px}
 .hint{color:var(--dim);font-size:13px;margin:6px 0 0}
 .fb{display:grid;gap:8px}.fb .card{padding:10px 14px}.fb small{color:var(--dim)}
-@media (max-width:700px){th:nth-child(n+6),td:nth-child(n+6){display:none}}
+@media (max-width:700px){#tbl th:nth-child(n+6),#tbl td:nth-child(n+6){display:none}}
 
 /* ===== Tab Truy cập web (trước là summary-new/thong-ke-gv.html) ===== */
 #vTraffic{--amber:var(--brand);--amber-ink:var(--brand-ink);--amber-soft:var(--brand-soft);--teal:var(--ok)}
@@ -121,7 +121,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTests .note{color:var(--dim);font-size:13.5px;margin:6px 0 0}
 #vTests label.chk{display:inline-flex;flex-direction:row;align-items:center;gap:6px;font-size:14.5px;font-weight:500;cursor:pointer;color:var(--ink)}#vTests .chk input{min-width:0;width:17px;height:17px}
 #vTests .tw{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
-#vTests table{border-collapse:collapse;width:100%;font-size:14px}
+#vTests table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;overflow:visible;border:0;border-radius:0}
 #vTests th,#vTests td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
 #vTests th{font-size:12.5px;color:var(--dim);background:#f6f2ea;position:sticky;top:0}
 #vTests td.nm,#vTests th.nm{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
@@ -134,6 +134,7 @@ tr:last-child td{border-bottom:0}td.n{text-align:right;white-space:nowrap}
 #vTests tfoot td{font-weight:700;background:#f6f2ea}
 #vTests .odd{margin-top:10px;font-size:13.5px;color:var(--dim)}
 @media (max-width:480px){#vTests th,#vTests td{padding:6px 7px;font-size:13px}}
+@media (max-width:700px){#vTests td.nm,#vTests th.nm{white-space:normal;min-width:92px;max-width:118px;line-height:1.25;box-shadow:2px 0 0 var(--line)}#vTests td.ok small{font-size:10.5px}#vTests .tw{max-height:75vh}}
 </style>
 </head>
 <body>
